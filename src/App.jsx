@@ -39,7 +39,7 @@ const PACKAGES = [
     cta:"Commencer l'essai", ctaBg:"#555", free:true,
   },
   {
-    id:"premium", name:"Accès Premium", price:"9,99 €", period:"paiement unique", badge:"⭐ Recommandé",
+    id:"premium", name:"Accès Premium", price:"5,00 €", period:"paiement unique", badge:"⭐ Recommandé",
     color:"#0d2060", bg:"linear-gradient(135deg,#eef2ff,#f5f0ff)", border:"#1a3a8f",
     features:["✓ 2000 questions officielles","✓ Mode écoute — Play All","✓ 11 langues + traduction IA","✓ Résultats et analyses détaillés","✓ Vitesse audio réglable","✓ Accès à vie"],
     cta:"Obtenir l'accès complet", ctaBg:"linear-gradient(135deg,#0d2060,#1a3a8f)", free:false,
@@ -388,7 +388,7 @@ function PaywallModal({ reason, onClose, codeInput, setCodeInput, codeStatus, ha
           {["✓ "+ALL_QUESTIONS.length+" questions","✓ Mode écoute Play All","✓ 11 langues","✓ Accès à vie"].map(f=>(
             <div key={f} style={{fontSize:12.5,color:"#0d2060",fontWeight:600,marginBottom:4}}>{f}</div>
           ))}
-          <div style={{marginTop:8,fontSize:20,fontWeight:800,color:"#0d2060",textAlign:"center"}}>9,99 € <span style={{fontSize:12,fontWeight:400,color:"#666"}}>paiement unique</span></div>
+          <div style={{marginTop:8,fontSize:20,fontWeight:800,color:"#0d2060",textAlign:"center"}}>5,00 € <span style={{fontSize:12,fontWeight:400,color:"#666"}}>paiement unique</span></div>
           <a href={STRIPE_LINK} target="_blank" rel="noopener noreferrer" style={{display:"block",marginTop:10,background:"linear-gradient(135deg,#0d2060,#1a3a8f)",color:"white",borderRadius:10,padding:"11px",fontWeight:800,fontSize:14,textDecoration:"none",textAlign:"center",boxShadow:"0 4px 14px rgba(13,32,96,.3)"}}>
             💳 Acheter maintenant →
           </a>
@@ -938,7 +938,7 @@ export default function App() {
               <div className="lift" onClick={()=>setScreen("pricing")} style={{background:"linear-gradient(135deg,#1a0a3a,#3b1f7a)",borderRadius:16,padding:"18px 20px",marginBottom:14,cursor:"pointer",display:"flex",alignItems:"center",gap:16}}>
                 <div style={{fontSize:36}}>⭐</div>
                 <div style={{flex:1}}>
-                  <div style={{color:"#ffd700",fontWeight:800,fontSize:15}}>Accès Premium — 9,99 € une seule fois</div>
+                  <div style={{color:"#ffd700",fontWeight:800,fontSize:15}}>Accès Premium — 5,00 € une seule fois</div>
                   <div style={{color:"rgba(255,255,255,.8)",fontSize:12,marginTop:3}}>{ALL_QUESTIONS.length} questions · Mode écoute · 11 langues · Accès à vie</div>
                 </div>
                 <div style={{color:"#ffd700",fontSize:20}}>→</div>
@@ -973,7 +973,7 @@ export default function App() {
               <button className="lift" onClick={()=>setScreen("pricing")} style={{background:isPremium?"white":"linear-gradient(135deg,#ffd700,#ffb300)",color:isPremium?"#0d2060":"#3a2000",border:isPremium?"2px solid #1a3a8f":"none",borderRadius:14,padding:"18px 12px",cursor:"pointer",textAlign:"center"}}>
                 <div style={{fontSize:26,marginBottom:4}}>{isPremium?"✅":"💳"}</div>
                 <div style={{fontWeight:700,fontSize:14}}>{isPremium?"Accès complet actif":"Voir les offres"}</div>
-                <div style={{fontSize:11,opacity:.8,marginTop:2}}>{isPremium?"Toutes fonctionnalités":"à partir de 9,99 €"}</div>
+                <div style={{fontSize:11,opacity:.8,marginTop:2}}>{isPremium?"Toutes fonctionnalités":"à partir de 5,00 €"}</div>
               </button>
             </div>
 
@@ -1164,7 +1164,7 @@ export default function App() {
                     Vous avez complété l'essai de {currentQuizTheme?`ce thème (${TRIAL_PER_THEME}/${themeTotal})`:`chaque thème (${TRIAL_PER_THEME} questions sur ${themeTotal} au total)`}.
                   </div>
                   <a href={STRIPE_LINK} target="_blank" rel="noopener noreferrer" style={{display:"inline-block",background:"#ffd700",color:"#1a0a3a",borderRadius:12,padding:"11px 24px",fontWeight:800,fontSize:14,textDecoration:"none"}}>
-                    💳 Accès complet — 9,99 €
+                    💳 Accès complet — 5,00 €
                   </a>
                 </div>
               );
