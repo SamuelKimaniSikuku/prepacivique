@@ -5,7 +5,7 @@ const STRIPE_LINK = "https://buy.stripe.com/9B63cxewr3QW3w2bXG0sU00";
 const TRIAL_PER_THEME = 10;
 const ANTHROPIC_KEY = (import.meta.env.VITE_ANTHROPIC_KEY || "").trim();
 const SUPABASE_URL = "https://vnctdsnfxvwvmkxqygaw.supabase.co";
-const SUPABASE_KEY = (import.meta.env.VITE_SUPABASE_KEY || "").trim();
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZuY3Rkc25meHZ3dm1reHF5Z2F3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzEyNDk1NjcsImV4cCI6MjA4NjgyNTU2N30.qGAMzs2doeMFo3HoIlp4ao2s-crYR2JoOL_A7xrRCm8";
 
 const THEMES = [
   { id:"valeurs",      label:"Principes & Valeurs",      icon:"⚖️",  color:"#1a3a8f" },
