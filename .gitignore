@@ -1,0 +1,30 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+dist-ssr/
+
+# Environment variables (add your secrets here)
+.env
+.env.local
+.env.production
+
+# !! IMPORTANT — Never commit the raw activation codes !!
+activation-codes.txt
+
+# Editor
+.vscode/
+.idea/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+
+# Cache
+.vite/
