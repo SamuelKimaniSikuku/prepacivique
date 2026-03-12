@@ -2357,8 +2357,4 @@ export default function App() {
       </div>
 
       <div style={{textAlign:"center",padding:"12px",fontSize:10,color:"#bbb",borderTop:"1px solid #e0ddd6",marginTop:8}}>
-        Programme officiel 2026 · {ALL_QUESTIONS.length} questions · Paiement sécurisé par Stripe
-      </div>
-    </div>
-  );
-}
+        Programme officiel 2026 · {ALL_QUESTIONS.length}
