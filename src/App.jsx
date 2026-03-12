@@ -891,16 +891,20 @@ export default function App() {
               <p style={{color:"#666",fontSize:14}}>Merci pour votre achat. Nous récupérons votre code d'activation, veuillez patienter…</p>
             ):(
               <>
-                <p style={{color:"#666",fontSize:14,marginBottom:20}}>Votre code d'activation est prêt.</p>
+                <p style={{color:"#666",fontSize:14,marginBottom:20}}><strong>📋 Copiez et sauvegardez ce code</strong> — il vous sera demandé à l'étape suivante.</p>
                 {assignedCode&&(
                   <div style={{background:"#eef2ff",border:"2px solid #1a3a8f",borderRadius:14,padding:"20px",marginBottom:20,display:"inline-block"}}>
                     <div style={{fontSize:12,color:"#666",marginBottom:6}}>Votre code :</div>
-                    <div style={{fontFamily:"monospace",fontSize:22,fontWeight:800,color:"#0d2060",letterSpacing:2}}>{assignedCode}</div>
+                    <div style={{fontFamily:"monospace",fontSize:22,fontWeight:800,color:"#0d2060",letterSpacing:2,marginBottom:12}}>{assignedCode}</div>
+                    <button onClick={()=>{navigator.clipboard.writeText(assignedCode);alert("Code copié !");}} style={{background:"white",border:"1px solid #1a3a8f",borderRadius:8,padding:"6px 16px",cursor:"pointer",fontSize:13,color:"#1a3a8f",fontWeight:700}}>
+                      📋 Copier le code
+                    </button>
                   </div>
                 )}
-                <div style={{marginTop:16}}>
+                <p style={{color:"#cc0000",fontSize:12,marginBottom:16}}>⚠️ Notez ce code — il ne sera affiché qu'une seule fois.</p>
+                <div style={{marginTop:8}}>
                   <button onClick={()=>{setCodeInput(assignedCode);setScreen("pricing");}} style={{background:"linear-gradient(135deg,#0d2060,#1a3a8f)",color:"white",border:"none",borderRadius:12,padding:"12px 28px",cursor:"pointer",fontSize:14,fontWeight:800}}>
-                    Activer maintenant →
+                    Utiliser ce code pour accéder au Premium →
                   </button>
                 </div>
               </>
