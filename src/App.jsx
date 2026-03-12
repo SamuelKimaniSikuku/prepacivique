@@ -559,8 +559,8 @@ export default function App() {
       setScreen("payment-success");
       (async()=>{
         try{
-          await new Promise(r=>setTimeout(r,3000));
-          for(let attempt=0;attempt<8;attempt++){
+          await new Promise(r=>setTimeout(r,5000));
+          for(let attempt=0;attempt<15;attempt++){
             let url="";
             if(sessionId){
               url=`${SUPABASE_URL}/rest/v1/activation_codes?stripe_session_id=eq.${encodeURIComponent(sessionId)}&used=eq.true&select=code,customer_email&order=used_at.desc&limit=1`;
