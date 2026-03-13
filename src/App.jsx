@@ -1081,7 +1081,14 @@ export default function App() {
       setTrialUsed(u=>({...u,[theme]:Math.max(u[theme]||0, qIdx+1)}));
     }
     stopAll();
-    speakOne(`La bonne réponse est : ${quizQs[qIdx].c[quizQs[qIdx].a]}`,"fr",null);
+    if(autoReadQuiz){
+      quizSpeakAbortRef.current=false;
+      const utt=new SpeechSynthesisUtterance(`La bonne réponse est : ${quizQs[qIdx].c[quizQs[qIdx].a]}`);
+      utt.lang="fr-FR"; utt.rate=speed;
+      utt.onend=()=>setIsSpeakingQuiz(false);
+      utt.onerror=()=>setIsSpeakingQuiz(false);
+      setTimeout(()=>synthRef.current?.speak(utt),50);
+    }
   };
 
   const nextQ=()=>{
