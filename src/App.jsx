@@ -1098,9 +1098,11 @@ export default function App() {
                 </div>
               )}
             </div>
+          </div>
+        </div>
+      </div>
 
-            {/* ── Premium upsell ── */}
-            {!isPremium&&(
+      {!isPremium&&screen!=="pricing"&&(
               <div className="lift" onClick={()=>setScreen("pricing")} style={{background:"linear-gradient(135deg,#1C1917,#6B21A8)",borderRadius:4,padding:"18px 20px",marginBottom:14,cursor:"pointer",display:"flex",alignItems:"center",gap:16}}>
                 <div style={{fontSize:36}}>⭐</div>
                 <div style={{flex:1}}>
@@ -1455,8 +1457,6 @@ export default function App() {
             </div>
           </div>
         )}
-
-      </div>
 
       <div style={{textAlign:"center",padding:"12px",fontSize:10,color:"#B0A898",borderTop:"1px solid #EDE8DF",marginTop:8}}>
         Programme officiel 2026 · {ALL_QUESTIONS.length} questions · Paiement sécurisé par Stripe
