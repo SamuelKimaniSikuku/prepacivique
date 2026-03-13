@@ -828,6 +828,7 @@ export default function App() {
   const [listenPhase,setListenPhase]   = useState("");
   const [readingChoiceIdx,setReadingChoiceIdx] = useState(null);
   const [isSpeakingQuiz,setIsSpeakingQuiz] = useState(false);
+  const [autoReadQuiz,setAutoReadQuiz]     = useState(false);
   const [payEmail,setPayEmail]         = useState("");
   const [paymentSuccess,setPaymentSuccess] = useState(false);
   const [codeLoading,setCodeLoading]   = useState(false);
@@ -927,7 +928,28 @@ export default function App() {
     })();
   },[lang,isPremium]);
 
-  const getT=useCallback((idx)=>(lang==="fr"||!translations[lang]||!isPremium)?null:translations[lang][idx]||null,[lang,translations,isPremium]);
+  // Auto-read question when autoReadQuiz is enabled
+  useEffect(()=>{
+    if(!autoReadQuiz||screen!=="quiz"||quizQs.length===0) return;
+    quizSpeakAbortRef.current=false;
+    synthRef.current?.cancel();
+    const q=quizQs[qIdx];
+    if(!q) return;
+    const segs=[{text:q.q},...q.c.map((ch,i)=>({text:`${String.fromCharCode(65+i)}. ${ch}`,ci:i}))];
+    setIsSpeakingQuiz(true);
+    let si=0;
+    const next=()=>{
+      if(quizSpeakAbortRef.current||si>=segs.length){setReadingChoiceIdx(null);setIsSpeakingQuiz(false);return;}
+      const seg=segs[si++];
+      if(seg.ci!==undefined)setReadingChoiceIdx(seg.ci);else setReadingChoiceIdx(null);
+      const utt=new SpeechSynthesisUtterance(seg.text);
+      utt.lang="fr-FR"; utt.rate=speed;
+      utt.onend=next; utt.onerror=next;
+      synthRef.current?.speak(utt);
+    };
+    setTimeout(next,100);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  },[autoReadQuiz,qIdx,screen]);((idx)=>(lang==="fr"||!translations[lang]||!isPremium)?null:translations[lang][idx]||null,[lang,translations,isPremium]);
   const isLoading=isPremium&&lang!=="fr"&&!translations[lang];
   const loadPct=Math.round((xlateProgress/ALL_QUESTIONS.length)*100);
   const getLangTTS=(c)=>LANGUAGES.find(l=>l.code===c)?.tts||"fr-FR";
@@ -1034,6 +1056,7 @@ export default function App() {
     setCurrentQuizTheme(themeId);
     setQuizQs(pool); setQIdx(0); setSelected(null); setAnswered(false); setScores({}); setWrongAnswers([]);
     setIsMockExam(false); setMockTimeLeft(null); clearTimeout(mockTimerRef.current);
+    setAutoReadQuiz(false);
     setScreen("quiz");
   };
 
@@ -1482,14 +1505,31 @@ export default function App() {
           return (
             <div className="fade">
               <div style={{background:"white",borderRadius:6,border:"1px solid #eef0f8",boxShadow:"none",padding:"14px 18px",marginBottom:12}}>
-                <div style={{display:"flex",justifyContent:"space-between",fontSize:12,marginBottom:6}}>
+                <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",fontSize:12,marginBottom:6}}>
                   <span style={{fontWeight:600,color:th?.color}}>{th?.icon} {th?.label}</span>
-                  <span style={{fontWeight:700,color:"#C41E3A"}}>
-                    {qIdx+1}/{quizQs.length}
-                    {!isPremium&&<span style={{marginLeft:8,color:"#B8720A",fontSize:11}}>· essai {Math.min(qIdx+1,TRIAL_PER_THEME)}/{TRIAL_PER_THEME}</span>}
-                    <span style={{marginLeft:8,color:"#2D6A4F"}}>✓{totalScore}</span>
-                    <span style={{marginLeft:5,color:"#C41E3A"}}>✗{totalAnswered-totalScore}</span>
-                  </span>
+                  <div style={{display:"flex",alignItems:"center",gap:10}}>
+                    {/* Global voice toggle */}
+                    <button
+                      onClick={()=>{
+                        const next=!autoReadQuiz;
+                        setAutoReadQuiz(next);
+                        if(!next){quizSpeakAbortRef.current=true;synthRef.current?.cancel();setIsSpeakingQuiz(false);setReadingChoiceIdx(null);}
+                      }}
+                      title={autoReadQuiz?"Désactiver la lecture automatique":"Activer la lecture automatique pour toutes les questions"}
+                      style={{display:"flex",alignItems:"center",gap:5,background:autoReadQuiz?"#C41E3A":"#FEF3EE",border:autoReadQuiz?"none":"1.5px solid #EBCAC4",color:autoReadQuiz?"white":"#C41E3A",borderRadius:4,padding:"4px 10px",cursor:"pointer",fontSize:11,fontWeight:700,transition:"all .2s",whiteSpace:"nowrap"}}
+                    >
+                      {autoReadQuiz
+                        ? <><svg width="10" height="10" viewBox="0 0 14 14" fill="currentColor"><rect x="2" y="2" width="4" height="10" rx="1"/><rect x="8" y="2" width="4" height="10" rx="1"/></svg> Voix ON — désactiver</>
+                        : <><svg width="11" height="11" viewBox="0 0 20 20" fill="currentColor"><path d="M10 1a4 4 0 0 1 4 4v5a4 4 0 0 1-8 0V5a4 4 0 0 1 4-4zm-6 9a6 6 0 0 0 12 0h-2a4 4 0 0 1-8 0H4zm6 7v-2h-1v2H7v1h6v-1h-2z"/></svg> Voix OFF</>
+                      }
+                    </button>
+                    <span style={{fontWeight:700,color:"#C41E3A"}}>
+                      {qIdx+1}/{quizQs.length}
+                      {!isPremium&&<span style={{marginLeft:8,color:"#B8720A",fontSize:11}}>· essai {Math.min(qIdx+1,TRIAL_PER_THEME)}/{TRIAL_PER_THEME}</span>}
+                      <span style={{marginLeft:8,color:"#2D6A4F"}}>✓{totalScore}</span>
+                      <span style={{marginLeft:5,color:"#C41E3A"}}>✗{totalAnswered-totalScore}</span>
+                    </span>
+                  </div>
                 </div>
                 <div style={{background:"#e4e4e4",borderRadius:5,height:6}}>
                   <div style={{width:`${(qIdx/quizQs.length)*100}%`,height:"100%",background:`linear-gradient(90deg,${th?.color||"#C41E3A"},#C41E3A)`,borderRadius:5,transition:"width .5s ease"}}/>
