@@ -8,11 +8,11 @@ const SUPABASE_URL = "https://vnctdsnfxvwvmkxqygaw.supabase.co";
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZuY3Rkc25meHZ3dm1reHF5Z2F3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzEyNDk1NjcsImV4cCI6MjA4NjgyNTU2N30.qGAMzs2doeMFo3HoIlp4ao2s-crYR2JoOL_A7xrRCm8";
 
 const THEMES = [
-  { id:"valeurs",      label:"Principes & Valeurs",      icon:"⚖️",  color:"#1a3a8f" },
-  { id:"institutions", label:"Institutions & Politique",  icon:"🏛️", color:"#2c5f2e" },
-  { id:"droits",       label:"Droits & Devoirs",          icon:"📜",  color:"#7b2335" },
-  { id:"histoire",     label:"Histoire, Géo & Culture",   icon:"🗺️", color:"#5b3a8e" },
-  { id:"societe",      label:"Vie en Société",            icon:"🤝",  color:"#b35c00" },
+  { id:"valeurs",      label:"Principes & Valeurs",      icon:"⚖️",  color:"#C41E3A" },
+  { id:"institutions", label:"Institutions & Politique",  icon:"🏛️", color:"#2D6A4F" },
+  { id:"droits",       label:"Droits & Devoirs",          icon:"📜",  color:"#C41E3A" },
+  { id:"histoire",     label:"Histoire, Géo & Culture",   icon:"🗺️", color:"#6B21A8" },
+  { id:"societe",      label:"Vie en Société",            icon:"🤝",  color:"#B8720A" },
 ];
 
 const LANGUAGES = [
@@ -34,22 +34,22 @@ const SPEEDS = [{ label:"0.75×", v:0.75 },{ label:"1×", v:1 },{ label:"1.25×"
 const PACKAGES = [
   {
     id:"trial", name:"Essai gratuit", price:"0 €", period:"",
-    color:"#555", bg:"white", border:"#ddd",
+    color:"#4A4540", bg:"white", border:"#D4CEC5",
     features:["✓ 10 questions par thème (50 au total)","✓ Langue française uniquement","✗ Questions complètes par thème","✗ Mode écoute Play All","✗ 11 langues + traduction IA","✗ Résultats détaillés"],
-    cta:"Commencer l'essai", ctaBg:"#555", free:true,
+    cta:"Commencer l'essai", ctaBg:"#4A4540", free:true,
   },
   {
     id:"premium", name:"Accès Premium", price:"5,00 €", period:"paiement unique", badge:"⭐ Recommandé",
-    color:"#0d2060", bg:"linear-gradient(135deg,#eef2ff,#f5f0ff)", border:"#1a3a8f",
+    color:"#1C1917", bg:"linear-gradient(135deg,#FEF3EE,#FAF7F2)", border:"#C41E3A",
     features:["✓ 2000 questions officielles","✓ Mode écoute — Play All","✓ 11 langues + traduction IA","✓ Résultats et analyses détaillés","✓ Vitesse audio réglable","✓ Accès à vie"],
-    cta:"Obtenir l'accès complet", ctaBg:"linear-gradient(135deg,#0d2060,#1a3a8f)", free:false,
+    cta:"Obtenir l'accès complet", ctaBg:"linear-gradient(135deg,#1C1917,#C41E3A)", free:false,
     stripeLink: STRIPE_LINK,
   },
   {
     id:"group", name:"École / Centre", price:"Sur devis", period:"à partir de 10 apprenants", badge:"🏫 Groupes",
-    color:"#2c5f2e", bg:"linear-gradient(135deg,#f0faf0,#e8f5e8)", border:"#2c5f2e",
+    color:"#2D6A4F", bg:"linear-gradient(135deg,#EDF7F2,#E8F5EE)", border:"#2D6A4F",
     features:["✓ Tout le pack Premium","✓ Tableau de bord formateur","✓ Suivi de progression","✓ Facture officielle","✓ Support dédié","✓ Personnalisation possible"],
-    cta:"Nous contacter", ctaBg:"linear-gradient(135deg,#1a4020,#2c5f2e)", free:false, contact:true,
+    cta:"Nous contacter", ctaBg:"linear-gradient(135deg,#1B4332,#2D6A4F)", free:false, contact:true,
   },
 ];
 
@@ -375,90 +375,90 @@ function PaywallModal({ reason, onClose, codeInput, setCodeInput, codeStatus, ha
     lang:   { icon:"🌐", title:"Fonctionnalité Premium", sub:"La traduction en 11 langues est réservée aux abonnés." },
   };
   const r = reasons[reason]||reasons.quiz;
-  const statusColor = codeStatus==="ok"?"#1a7a4a":codeStatus==="error"?"#c0392b":"#1a3a8f";
+  const statusColor = codeStatus==="ok"?"#2D6A4F":codeStatus==="error"?"#C41E3A":"#C41E3A";
   const statusMsg = codeStatus==="checking"?"⏳ Vérification…":codeStatus==="ok"?"✅ Code valide ! Déblocage en cours…":codeStatus==="error"?"❌ Code invalide. Vérifiez et réessayez.":null;
   return (
     <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.65)",zIndex:200,display:"flex",alignItems:"center",justifyContent:"center",padding:16}} onClick={onClose}>
-      <div onClick={e=>e.stopPropagation()} style={{background:"white",borderRadius:20,padding:"28px 24px",maxWidth:420,width:"100%",textAlign:"center",boxShadow:"0 24px 64px rgba(0,0,0,.3)",position:"relative"}}>
-        <button onClick={onClose} style={{position:"absolute",top:14,right:16,background:"none",border:"none",fontSize:20,cursor:"pointer",color:"#aaa"}}>✕</button>
+      <div onClick={e=>e.stopPropagation()} style={{background:"white",borderRadius:6,padding:"28px 24px",maxWidth:420,width:"100%",textAlign:"center",boxShadow:"0 24px 64px rgba(28,25,23,.2)",position:"relative"}}>
+        <button onClick={onClose} style={{position:"absolute",top:14,right:16,background:"none",border:"none",fontSize:20,cursor:"pointer",color:"#A09890"}}>✕</button>
         <div style={{fontSize:48,marginBottom:10}}>{r.icon}</div>
-        <h2 style={{margin:"0 0 8px",fontSize:19,fontWeight:800,color:"#0d2060"}}>{r.title}</h2>
-        <p style={{margin:"0 0 18px",color:"#666",fontSize:13,lineHeight:1.7}}>{r.sub}<br/>Débloquez les {ALL_QUESTIONS.length} questions pour réussir votre examen.</p>
-        <div style={{background:"linear-gradient(135deg,#f0f4ff,#f5f0ff)",borderRadius:14,padding:"14px",marginBottom:14,border:"2px solid #1a3a8f",textAlign:"left"}}>
-          <div style={{fontWeight:800,fontSize:12,color:"#1a3a8f",marginBottom:8,textAlign:"center"}}>ÉTAPE 1 — PAYER</div>
+        <h2 style={{margin:"0 0 8px",fontSize:19,fontWeight:800,color:"#1C1917"}}>{r.title}</h2>
+        <p style={{margin:"0 0 18px",color:"#4A4540",fontSize:13,lineHeight:1.7}}>{r.sub}<br/>Débloquez les {ALL_QUESTIONS.length} questions pour réussir votre examen.</p>
+        <div style={{background:"linear-gradient(135deg,#FEF3EE,#FAF7F2)",borderRadius:4,padding:"14px",marginBottom:14,border:"2px solid #C41E3A",textAlign:"left"}}>
+          <div style={{fontWeight:800,fontSize:12,color:"#C41E3A",marginBottom:8,textAlign:"center"}}>ÉTAPE 1 — PAYER</div>
           {["✓ "+ALL_QUESTIONS.length+" questions","✓ Mode écoute Play All","✓ 11 langues","✓ Accès à vie"].map(f=>(
-            <div key={f} style={{fontSize:12.5,color:"#0d2060",fontWeight:600,marginBottom:4}}>{f}</div>
+            <div key={f} style={{fontSize:12.5,color:"#1C1917",fontWeight:600,marginBottom:4}}>{f}</div>
           ))}
-          <div style={{marginTop:8,fontSize:20,fontWeight:800,color:"#0d2060",textAlign:"center"}}>5,00 € <span style={{fontSize:12,fontWeight:400,color:"#666"}}>paiement unique</span></div>
-          <a href={STRIPE_LINK} target="_blank" rel="noopener noreferrer" style={{display:"block",marginTop:10,background:"linear-gradient(135deg,#0d2060,#1a3a8f)",color:"white",borderRadius:10,padding:"11px",fontWeight:800,fontSize:14,textDecoration:"none",textAlign:"center",boxShadow:"0 4px 14px rgba(13,32,96,.3)"}}>
+          <div style={{marginTop:8,fontSize:20,fontWeight:800,color:"#1C1917",textAlign:"center"}}>5,00 € <span style={{fontSize:12,fontWeight:400,color:"#4A4540"}}>paiement unique</span></div>
+          <a href={STRIPE_LINK} target="_blank" rel="noopener noreferrer" style={{display:"block",marginTop:10,background:"linear-gradient(135deg,#1C1917,#C41E3A)",color:"white",borderRadius:4,padding:"11px",fontWeight:800,fontSize:14,textDecoration:"none",textAlign:"center",boxShadow:"0 4px 14px rgba(196,30,58,.2)"}}>
             💳 Acheter maintenant →
           </a>
         </div>
-        <div style={{background:"#f9f9f9",borderRadius:14,padding:"14px",border:"2px solid #ddd",textAlign:"left"}}>
-          <div style={{fontWeight:800,fontSize:12,color:"#555",marginBottom:10,textAlign:"center"}}>ÉTAPE 2 — ENTRER VOTRE CODE D'ACTIVATION</div>
+        <div style={{background:"#f9f9f9",borderRadius:4,padding:"14px",border:"2px solid #ddd",textAlign:"left"}}>
+          <div style={{fontWeight:800,fontSize:12,color:"#4A4540",marginBottom:10,textAlign:"center"}}>ÉTAPE 2 — ENTRER VOTRE CODE D'ACTIVATION</div>
           <div style={{display:"flex",gap:7}}>
             <input
               value={codeInput}
               onChange={e=>setCodeInput(e.target.value)}
               onKeyDown={e=>e.key==="Enter"&&handleCodeSubmit()}
               placeholder="CIVIC-XXXX-XXXX-XXXX"
-              style={{flex:1,padding:"10px 12px",borderRadius:9,border:`2px solid ${codeStatus==="error"?"#c0392b":codeStatus==="ok"?"#1a7a4a":"#ddd"}`,fontSize:13,fontFamily:"monospace",letterSpacing:1,outline:"none",background:codeStatus==="ok"?"#e6f7ee":"white"}}
+              style={{flex:1,padding:"10px 12px",borderRadius:4,border:`2px solid ${codeStatus==="error"?"#C41E3A":codeStatus==="ok"?"#2D6A4F":"#D4CEC5"}`,fontSize:13,fontFamily:"monospace",letterSpacing:1,outline:"none",background:codeStatus==="ok"?"#D8F0E5":"white"}}
             />
             <button
               onClick={handleCodeSubmit}
               disabled={codeStatus==="checking"||codeStatus==="ok"}
-              style={{background:codeStatus==="ok"?"#1a7a4a":"linear-gradient(135deg,#0d2060,#1a3a8f)",color:"white",border:"none",borderRadius:9,padding:"10px 16px",cursor:"pointer",fontWeight:800,fontSize:13,whiteSpace:"nowrap"}}
+              style={{background:codeStatus==="ok"?"#2D6A4F":"linear-gradient(135deg,#1C1917,#C41E3A)",color:"white",border:"none",borderRadius:4,padding:"10px 16px",cursor:"pointer",fontWeight:800,fontSize:13,whiteSpace:"nowrap"}}
             >
               {codeStatus==="checking"?"…":"✓ OK"}
             </button>
           </div>
           {statusMsg&&<div style={{marginTop:8,fontSize:12,fontWeight:600,color:statusColor,textAlign:"center"}}>{statusMsg}</div>}
-          <div style={{marginTop:8,fontSize:11,color:"#aaa",textAlign:"center"}}>Le code vous est envoyé par email après votre achat.</div>
+          <div style={{marginTop:8,fontSize:11,color:"#A09890",textAlign:"center"}}>Le code vous est envoyé par email après votre achat.</div>
         </div>
-        <button onClick={onClose} style={{marginTop:12,background:"none",border:"none",color:"#aaa",cursor:"pointer",fontSize:12}}>Continuer l'essai gratuit</button>
+        <button onClick={onClose} style={{marginTop:12,background:"none",border:"none",color:"#A09890",cursor:"pointer",fontSize:12}}>Continuer l'essai gratuit</button>
       </div>
     </div>
   );
 }
 
 function PricingPage({ onActivateTrial, isPremium, codeInput, setCodeInput, codeStatus, handleCodeSubmit }) {
-  const statusColor = codeStatus==="ok"?"#1a7a4a":codeStatus==="error"?"#c0392b":"#1a3a8f";
+  const statusColor = codeStatus==="ok"?"#2D6A4F":codeStatus==="error"?"#C41E3A":"#C41E3A";
   const statusMsg = codeStatus==="checking"?"⏳ Vérification…":codeStatus==="ok"?"✅ Accès débloqué ! Bienvenue.":codeStatus==="error"?"❌ Code invalide. Vérifiez et réessayez.":null;
   return (
     <div className="fade">
       <div style={{textAlign:"center",marginBottom:28}}>
-        <div style={{fontSize:13,color:"#888",fontWeight:600,letterSpacing:1,textTransform:"uppercase",marginBottom:8}}>Tarifs</div>
-        <h2 style={{margin:"0 0 10px",fontSize:24,fontWeight:800,color:"#0d2060"}}>Choisissez votre formule</h2>
-        <p style={{margin:0,color:"#666",fontSize:14}}>Préparez votre examen civique avec {ALL_QUESTIONS.length} questions officielles.</p>
+        <div style={{fontSize:13,color:"#6B6560",fontWeight:600,letterSpacing:1,textTransform:"uppercase",marginBottom:8}}>Tarifs</div>
+        <h2 style={{margin:"0 0 10px",fontSize:24,fontWeight:800,color:"#1C1917"}}>Choisissez votre formule</h2>
+        <p style={{margin:0,color:"#4A4540",fontSize:14}}>Préparez votre examen civique avec {ALL_QUESTIONS.length} questions officielles.</p>
       </div>
       <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(240px,1fr))",gap:16,marginBottom:24}}>
         {PACKAGES.map(pkg=>(
-          <div key={pkg.id} style={{background:pkg.bg,borderRadius:18,border:`2px solid ${pkg.border}`,padding:"24px 22px",display:"flex",flexDirection:"column",position:"relative",boxShadow:pkg.id==="premium"?"0 8px 32px rgba(26,58,143,.15)":"none"}}>
-            {pkg.badge&&<div style={{position:"absolute",top:-12,left:"50%",transform:"translateX(-50%)",background:pkg.id==="premium"?"linear-gradient(135deg,#0d2060,#1a3a8f)":"linear-gradient(135deg,#1a4020,#2c5f2e)",color:"white",borderRadius:20,padding:"4px 14px",fontSize:11,fontWeight:700,whiteSpace:"nowrap"}}>{pkg.badge}</div>}
+          <div key={pkg.id} style={{background:pkg.bg,borderRadius:6,border:`2px solid ${pkg.border}`,padding:"24px 22px",display:"flex",flexDirection:"column",position:"relative",boxShadow:pkg.id==="premium"?"0 4px 20px rgba(196,30,58,.1)":"none"}}>
+            {pkg.badge&&<div style={{position:"absolute",top:-12,left:"50%",transform:"translateX(-50%)",background:pkg.id==="premium"?"linear-gradient(135deg,#1C1917,#C41E3A)":"linear-gradient(135deg,#1B4332,#2c5f2e)",color:"white",borderRadius:6,padding:"4px 14px",fontSize:11,fontWeight:700,whiteSpace:"nowrap"}}>{pkg.badge}</div>}
             <div style={{marginBottom:8}}>
               <div style={{fontWeight:800,fontSize:17,color:pkg.color}}>{pkg.name}</div>
               <div style={{fontSize:26,fontWeight:800,color:pkg.color,marginTop:4}}>{pkg.price}</div>
-              {pkg.period&&<div style={{fontSize:12,color:"#888",marginTop:2}}>{pkg.period}</div>}
+              {pkg.period&&<div style={{fontSize:12,color:"#6B6560",marginTop:2}}>{pkg.period}</div>}
             </div>
             <div style={{flex:1,marginBottom:20}}>
-              {pkg.features.map(f=><div key={f} style={{fontSize:13,color:f.startsWith("✗")?"#bbb":pkg.color,marginBottom:7,fontWeight:f.startsWith("✓")?600:400}}>{f}</div>)}
+              {pkg.features.map(f=><div key={f} style={{fontSize:13,color:f.startsWith("✗")?"#B0A898":pkg.color,marginBottom:7,fontWeight:f.startsWith("✓")?600:400}}>{f}</div>)}
             </div>
             {pkg.stripeLink?(
-              <a href={pkg.stripeLink} target="_blank" rel="noopener noreferrer" style={{display:"block",background:pkg.ctaBg,color:"white",borderRadius:10,padding:"12px 16px",textAlign:"center",textDecoration:"none",fontWeight:800,fontSize:14,boxShadow:"0 4px 14px rgba(13,32,96,.25)"}}>💳 {pkg.cta}</a>
+              <a href={pkg.stripeLink} target="_blank" rel="noopener noreferrer" style={{display:"block",background:pkg.ctaBg,color:"white",borderRadius:4,padding:"12px 16px",textAlign:"center",textDecoration:"none",fontWeight:800,fontSize:14,boxShadow:"0 4px 14px rgba(196,30,58,.2)"}}>💳 {pkg.cta}</a>
             ):pkg.contact?(
-              <button style={{background:pkg.ctaBg,color:"white",border:"none",borderRadius:10,padding:"12px 16px",width:"100%",cursor:"pointer",fontWeight:800,fontSize:14}}>✉️ {pkg.cta}</button>
+              <button style={{background:pkg.ctaBg,color:"white",border:"none",borderRadius:4,padding:"12px 16px",width:"100%",cursor:"pointer",fontWeight:800,fontSize:14}}>✉️ {pkg.cta}</button>
             ):(
-              <button onClick={onActivateTrial} style={{background:pkg.ctaBg,color:"white",border:"none",borderRadius:10,padding:"12px 16px",width:"100%",cursor:"pointer",fontWeight:800,fontSize:14}}>▶ {pkg.cta}</button>
+              <button onClick={onActivateTrial} style={{background:pkg.ctaBg,color:"white",border:"none",borderRadius:4,padding:"12px 16px",width:"100%",cursor:"pointer",fontWeight:800,fontSize:14}}>▶ {pkg.cta}</button>
             )}
           </div>
         ))}
       </div>
       {!isPremium&&(
-        <div style={{background:"linear-gradient(135deg,#eef2ff,#f5f0ff)",borderRadius:18,border:"2px solid #1a3a8f",padding:"22px",marginBottom:16}}>
+        <div style={{background:"linear-gradient(135deg,#FEF3EE,#FAF7F2)",borderRadius:6,border:"2px solid #C41E3A",padding:"22px",marginBottom:16}}>
           <div style={{textAlign:"center",marginBottom:14}}>
             <div style={{fontSize:26,marginBottom:4}}>🔑</div>
-            <div style={{fontWeight:800,fontSize:16,color:"#0d2060"}}>Vous avez déjà payé ?</div>
-            <div style={{fontSize:13,color:"#666",marginTop:4}}>Entrez votre code d'activation reçu par email.</div>
+            <div style={{fontWeight:800,fontSize:16,color:"#1C1917"}}>Vous avez déjà payé ?</div>
+            <div style={{fontSize:13,color:"#4A4540",marginTop:4}}>Entrez votre code d'activation reçu par email.</div>
           </div>
           <div style={{display:"flex",gap:8,maxWidth:420,margin:"0 auto"}}>
             <input
@@ -466,12 +466,12 @@ function PricingPage({ onActivateTrial, isPremium, codeInput, setCodeInput, code
               onChange={e=>setCodeInput(e.target.value)}
               onKeyDown={e=>e.key==="Enter"&&handleCodeSubmit()}
               placeholder="CIVIC-XXXX-XXXX-XXXX"
-              style={{flex:1,padding:"12px 14px",borderRadius:10,border:`2px solid ${codeStatus==="error"?"#c0392b":codeStatus==="ok"?"#1a7a4a":"#a0b0e0"}`,fontSize:13,fontFamily:"monospace",letterSpacing:1.5,outline:"none",background:codeStatus==="ok"?"#e6f7ee":"white",textTransform:"uppercase"}}
+              style={{flex:1,padding:"12px 14px",borderRadius:4,border:`2px solid ${codeStatus==="error"?"#C41E3A":codeStatus==="ok"?"#2D6A4F":"#C41E3A"}`,fontSize:13,fontFamily:"monospace",letterSpacing:1.5,outline:"none",background:codeStatus==="ok"?"#D8F0E5":"white",textTransform:"uppercase"}}
             />
             <button
               onClick={handleCodeSubmit}
               disabled={codeStatus==="checking"||codeStatus==="ok"}
-              style={{background:"linear-gradient(135deg,#0d2060,#1a3a8f)",color:"white",border:"none",borderRadius:10,padding:"12px 20px",cursor:"pointer",fontWeight:800,fontSize:14,whiteSpace:"nowrap",boxShadow:"0 4px 14px rgba(13,32,96,.3)"}}
+              style={{background:"linear-gradient(135deg,#1C1917,#C41E3A)",color:"white",border:"none",borderRadius:4,padding:"12px 20px",cursor:"pointer",fontWeight:800,fontSize:14,whiteSpace:"nowrap",boxShadow:"0 4px 14px rgba(196,30,58,.2)"}}
             >
               {codeStatus==="checking"?"…":"Activer"}
             </button>
@@ -479,8 +479,8 @@ function PricingPage({ onActivateTrial, isPremium, codeInput, setCodeInput, code
           {statusMsg&&<div style={{marginTop:10,textAlign:"center",fontWeight:700,fontSize:13,color:statusColor}}>{statusMsg}</div>}
         </div>
       )}
-      <div style={{background:"white",borderRadius:16,padding:"24px",boxShadow:"0 2px 16px rgba(0,0,0,.06)"}}>
-        <div style={{fontWeight:800,fontSize:15,marginBottom:16,color:"#0d2060"}}>Questions fréquentes</div>
+      <div style={{background:"white",borderRadius:4,padding:"24px",boxShadow:"0 2px 16px rgba(0,0,0,.06)"}}>
+        <div style={{fontWeight:800,fontSize:15,marginBottom:16,color:"#1C1917"}}>Questions fréquentes</div>
         {[
           ["Comment recevoir mon code d'activation ?","Après votre paiement Stripe, vous recevez un reçu par email avec votre code. Entrez-le dans l'onglet 'J'ai un code' ou sur la page Tarifs."],
           ["Qu'est-ce que l'accès à vie ?","Vous payez une seule fois et accédez au contenu pour toujours, sur le même navigateur."],
@@ -489,8 +489,8 @@ function PricingPage({ onActivateTrial, isPremium, codeInput, setCodeInput, code
           ["Combien y a-t-il de questions ?",`Le programme contient ${ALL_QUESTIONS.length} questions couvrant les 5 thèmes officiels.`],
         ].map(([q,a])=>(
           <div key={q} style={{marginBottom:14,paddingBottom:14,borderBottom:"1px solid #f0f0f0"}}>
-            <div style={{fontWeight:700,fontSize:13,color:"#333",marginBottom:4}}>❓ {q}</div>
-            <div style={{fontSize:13,color:"#666",lineHeight:1.7}}>{a}</div>
+            <div style={{fontWeight:700,fontSize:13,color:"#1C1917",marginBottom:4}}>→ {q}</div>
+            <div style={{fontSize:13,color:"#4A4540",lineHeight:1.7}}>{a}</div>
           </div>
         ))}
       </div>
@@ -504,59 +504,59 @@ function LandingModules({ onStartQuiz, onStartMockExam, isPremium, checkPremium 
   const modules = [
     {
       badge:"Fondamental", level:"Niveau A2",
-      icon:"🎓", color:"#1a7a4a", borderColor:"#a8e6c8", bg:"linear-gradient(145deg,#f0faf4,#e6f7ee)",
+      icon:"🎓", color:"#2D6A4F", borderColor:"#B7DFD0", bg:"linear-gradient(145deg,#EDF7F2,#e6f7ee)",
       title:"Titre de séjour pluriannuel (CSP)",
       desc:"Maîtrisez les bases essentielles de la vie en France pour une première installation réussie.",
       count:193, countDesc:"Questions officielles sur la vie quotidienne et les valeurs fondamentales",
       audience:"Candidats au CSP",
-      cta:"Accéder au module", ctaBg:"#1a7a4a",
+      cta:"Accéder au module", ctaBg:"#2D6A4F",
     },
     {
       badge:"Intermédiaire", level:"Niveau B1",
-      icon:"🏅", color:"#1a3a8f", borderColor:"#a0b8f0", bg:"linear-gradient(145deg,#f0f4ff,#e8efff)",
+      icon:"🏅", color:"#C41E3A", borderColor:"#EBCAC4", bg:"linear-gradient(145deg,#f0f4ff,#FEF3EE)",
       title:"Carte de résident (CR)",
       desc:"Un parcours avancé pour ceux qui visent une résidence longue durée (10 ans).",
       count:209, countDesc:"Questions couvrant l'histoire, les institutions et le système politique",
       audience:"Candidats à la carte de résident",
-      cta:"Accéder au module", ctaBg:"#1a3a8f",
+      cta:"Accéder au module", ctaBg:"#C41E3A",
     },
     {
       badge:"Approfondi", level:"Niveau B2",
-      icon:"👑", color:"#5b1f8e", borderColor:"#c8a0f0", bg:"linear-gradient(145deg,#f5f0ff,#ede0ff)",
+      icon:"👑", color:"#6B21A8", borderColor:"#c8a0f0", bg:"linear-gradient(145deg,#FEF3EE,#ede0ff)",
       title:"Naturalisation française",
       desc:"La préparation la plus exigeante pour devenir citoyen français, par décret ou mariage.",
       count:240, countDesc:"Questions complexes sur les connaissances générales, le patrimoine et les nuances républicaines",
       audience:"Préparation intensive à l'entretien de naturalisation",
-      cta:"Accéder au module", ctaBg:"#5b1f8e",
+      cta:"Accéder au module", ctaBg:"#6B21A8",
     },
   ];
   return (
     <div style={{marginBottom:20}}>
       <div style={{textAlign:"center",marginBottom:18}}>
-        <h2 style={{margin:"0 0 6px",fontSize:20,fontWeight:800,color:"#0d2060"}}>Modules de Formation par Niveau</h2>
-        <p style={{margin:0,color:"#666",fontSize:13}}>Depuis le décret 2025-1345, chaque démarche administrative requiert des connaissances spécifiques.<br/>Choisissez le module qui correspond à votre situation.</p>
+        <h2 style={{margin:"0 0 6px",fontSize:20,fontWeight:800,color:"#1C1917"}}>Modules de Formation par Niveau</h2>
+        <p style={{margin:0,color:"#4A4540",fontSize:13}}>Depuis le décret 2025-1345, chaque démarche administrative requiert des connaissances spécifiques.<br/>Choisissez le module qui correspond à votre situation.</p>
       </div>
       <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(250px,1fr))",gap:14}}>
         {modules.map((m,i)=>(
-          <div key={i} style={{background:m.bg,borderRadius:18,border:`2px solid ${m.borderColor}`,padding:"22px 20px",display:"flex",flexDirection:"column",transition:"transform .2s,box-shadow .2s",cursor:"pointer"}} className="lift">
+          <div key={i} style={{background:m.bg,borderRadius:6,border:`2px solid ${m.borderColor}`,padding:"22px 20px",display:"flex",flexDirection:"column",transition:"transform .2s,box-shadow .2s",cursor:"pointer"}} className="lift">
             <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:14}}>
-              <span style={{background:"rgba(0,0,0,.06)",borderRadius:20,padding:"3px 11px",fontSize:11,fontWeight:700,color:m.color}}>{m.badge}</span>
-              <span style={{background:"rgba(0,0,0,.06)",borderRadius:20,padding:"3px 11px",fontSize:11,fontWeight:700,color:m.color}}>{m.level}</span>
+              <span style={{background:"rgba(0,0,0,.06)",borderRadius:6,padding:"3px 11px",fontSize:11,fontWeight:700,color:m.color}}>{m.badge}</span>
+              <span style={{background:"rgba(0,0,0,.06)",borderRadius:6,padding:"3px 11px",fontSize:11,fontWeight:700,color:m.color}}>{m.level}</span>
             </div>
             <div style={{fontSize:28,marginBottom:10}}>{m.icon}</div>
-            <div style={{fontWeight:800,fontSize:15,color:"#0d1a3a",marginBottom:6}}>{m.title}</div>
-            <div style={{fontSize:12.5,color:"#555",lineHeight:1.7,marginBottom:12,flex:1}}>{m.desc}</div>
+            <div style={{fontWeight:800,fontSize:15,color:"#1C1917",marginBottom:6}}>{m.title}</div>
+            <div style={{fontSize:12.5,color:"#4A4540",lineHeight:1.7,marginBottom:12,flex:1}}>{m.desc}</div>
             <div style={{display:"flex",alignItems:"flex-start",gap:8,marginBottom:4}}>
               <span style={{fontSize:14}}>📄</span>
               <div>
-                <div style={{fontWeight:800,fontSize:13,color:"#0d1a3a"}}>{m.count} questions officielles</div>
-                <div style={{fontSize:11,color:"#777",marginTop:2}}>{m.countDesc}</div>
+                <div style={{fontWeight:800,fontSize:13,color:"#1C1917"}}>{m.count} questions officielles</div>
+                <div style={{fontSize:11,color:"#6B6560",marginTop:2}}>{m.countDesc}</div>
               </div>
             </div>
-            <div style={{fontSize:12,color:"#888",margin:"10px 0 14px"}}><strong>Public cible :</strong> {m.audience}</div>
+            <div style={{fontSize:12,color:"#6B6560",margin:"10px 0 14px"}}><strong>Public cible :</strong> {m.audience}</div>
             <button
               onClick={()=>{ if(!isPremium && i>0){ checkPremium("quiz"); return; } onStartQuiz(null); }}
-              style={{background:m.ctaBg,color:"white",border:"none",borderRadius:10,padding:"11px 16px",cursor:"pointer",fontWeight:700,fontSize:13,display:"flex",alignItems:"center",justifyContent:"center",gap:6,boxShadow:`0 4px 14px rgba(0,0,0,.15)`}}
+              style={{background:m.ctaBg,color:"white",border:"none",borderRadius:4,padding:"11px 16px",cursor:"pointer",fontWeight:700,fontSize:13,display:"flex",alignItems:"center",justifyContent:"center",gap:6,boxShadow:`0 4px 14px rgba(0,0,0,.15)`}}
             >
               {m.cta} <span style={{fontSize:11}}>↗</span>
             </button>
@@ -575,20 +575,20 @@ function LandingAdvantages({ onStartQuiz }) {
     { icon:"📖", title:"Livret du citoyen", desc:"Accès gratuit au livret interactif du citoyen" },
   ];
   return (
-    <div style={{background:"white",borderRadius:20,border:"1px solid #eef0f8",padding:"24px 20px",marginBottom:16,boxShadow:"0 2px 12px rgba(0,0,0,.05)"}}>
-      <h3 style={{textAlign:"center",margin:"0 0 20px",fontSize:17,fontWeight:800,color:"#0d1a3a"}}>Les avantages de la plateforme Civic MCQ</h3>
+    <div style={{background:"white",borderRadius:6,border:"1px solid #eef0f8",padding:"24px 20px",marginBottom:16,boxShadow:"none"}}>
+      <h3 style={{textAlign:"center",margin:"0 0 20px",fontSize:17,fontWeight:800,color:"#1C1917"}}>Les avantages de la plateforme PrépaCivique 2026</h3>
       <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(160px,1fr))",gap:14,marginBottom:18}}>
         {adv.map((a,i)=>(
           <div key={i} style={{textAlign:"center"}}>
-            <div style={{width:48,height:48,borderRadius:"50%",background:"#eef2ff",display:"flex",alignItems:"center",justifyContent:"center",fontSize:20,margin:"0 auto 10px"}}>{a.icon}</div>
-            <div style={{fontWeight:700,fontSize:13,color:"#0d1a3a",marginBottom:4}}>{a.title}</div>
-            <div style={{fontSize:12,color:"#666",lineHeight:1.6}}>{a.desc}</div>
+            <div style={{width:48,height:48,borderRadius:"6px",background:"#FEF3EE",display:"flex",alignItems:"center",justifyContent:"center",fontSize:20,margin:"0 auto 10px"}}>{a.icon}</div>
+            <div style={{fontWeight:700,fontSize:13,color:"#1C1917",marginBottom:4}}>{a.title}</div>
+            <div style={{fontSize:12,color:"#4A4540",lineHeight:1.6}}>{a.desc}</div>
           </div>
         ))}
       </div>
       <div style={{textAlign:"center",paddingTop:14,borderTop:"1px solid #eef0f8"}}>
-        <div style={{fontSize:13,marginBottom:14}}><strong style={{color:"#1a3a8f"}}>2 quiz gratuits</strong> pour évaluer votre niveau immédiatement</div>
-        <button onClick={()=>onStartQuiz(null)} style={{background:"linear-gradient(135deg,#1a3a8f,#2d5fd4)",color:"white",border:"none",borderRadius:12,padding:"13px 28px",cursor:"pointer",fontWeight:700,fontSize:14,boxShadow:"0 4px 16px rgba(26,58,143,.3)"}}>
+        <div style={{fontSize:13,marginBottom:14}}><strong style={{color:"#C41E3A"}}>2 quiz gratuits</strong> pour évaluer votre niveau immédiatement</div>
+        <button onClick={()=>onStartQuiz(null)} style={{background:"linear-gradient(135deg,#C41E3A,#E8364E)",color:"white",border:"none",borderRadius:4,padding:"13px 28px",cursor:"pointer",fontWeight:700,fontSize:14,boxShadow:"0 4px 16px rgba(196,30,58,.2)"}}>
           Réussir votre examen civique du premier coup →
         </button>
       </div>
@@ -606,16 +606,16 @@ function LandingHowItWorks() {
   return (
     <div style={{marginBottom:16}}>
       <div style={{textAlign:"center",marginBottom:16}}>
-        <h3 style={{margin:"0 0 5px",fontSize:18,fontWeight:800,color:"#0d1a3a"}}>Comment fonctionne l'examen civique ?</h3>
-        <p style={{margin:0,fontSize:12,color:"#888"}}>Le test civique OFII se déroule en présentiel dans un centre agréé</p>
+        <h3 style={{margin:"0 0 5px",fontSize:18,fontWeight:800,color:"#1C1917"}}>Comment fonctionne l'examen civique ?</h3>
+        <p style={{margin:0,fontSize:12,color:"#6B6560"}}>Le test civique OFII se déroule en présentiel dans un centre agréé</p>
       </div>
       <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(160px,1fr))",gap:12}}>
         {steps.map((s,i)=>(
-          <div key={i} style={{background:"white",borderRadius:16,padding:"18px 14px",textAlign:"center",border:"1px solid #eef0f8",boxShadow:"0 2px 10px rgba(0,0,0,.04)"}}>
-            <div style={{width:34,height:34,borderRadius:"50%",background:"#eef2ff",color:"#1a3a8f",fontWeight:800,fontSize:15,display:"flex",alignItems:"center",justifyContent:"center",margin:"0 auto 10px"}}>{s.n}</div>
+          <div key={i} style={{background:"white",borderRadius:4,padding:"18px 14px",textAlign:"center",border:"1px solid #eef0f8",boxShadow:"none"}}>
+            <div style={{width:34,height:34,borderRadius:"6px",background:"#FEF3EE",color:"#C41E3A",fontWeight:800,fontSize:15,display:"flex",alignItems:"center",justifyContent:"center",margin:"0 auto 10px"}}>{s.n}</div>
             <div style={{fontSize:24,marginBottom:8}}>{s.icon}</div>
-            <div style={{fontWeight:700,fontSize:13,color:"#0d1a3a",marginBottom:4}}>{s.title}</div>
-            <div style={{fontSize:11.5,color:"#777",lineHeight:1.6}}>{s.desc}</div>
+            <div style={{fontWeight:700,fontSize:13,color:"#1C1917",marginBottom:4}}>{s.title}</div>
+            <div style={{fontSize:11.5,color:"#6B6560",lineHeight:1.6}}>{s.desc}</div>
           </div>
         ))}
       </div>
@@ -625,9 +625,9 @@ function LandingHowItWorks() {
 
 function LandingWhoMustTake() {
   const audiences = [
-    { icon:"👥", color:"#1a3a8f", title:"Titre de séjour pluriannuel", desc:"Étrangers primo-arrivants souhaitant renouveler leur titre de séjour après le CIR.", level:"Niveau A2 requis (nouveau 2026)", levelColor:"#b35c00" },
-    { icon:"🏅", color:"#1a7a4a", title:"Carte de résident (10 ans)", desc:"Candidats à une carte de résident longue durée en France.", level:"Niveau B1 requis", levelColor:"#b35c00" },
-    { icon:"🎓", color:"#5b1f8e", title:"Naturalisation", desc:"Candidats à l'acquisition de la nationalité française.", level:"Niveau B2 (probable 2026)", levelColor:"#b35c00" },
+    { icon:"👥", color:"#C41E3A", title:"Titre de séjour pluriannuel", desc:"Étrangers primo-arrivants souhaitant renouveler leur titre de séjour après le CIR.", level:"Niveau A2 requis (nouveau 2026)", levelColor:"#B8720A" },
+    { icon:"🏅", color:"#2D6A4F", title:"Carte de résident (10 ans)", desc:"Candidats à une carte de résident longue durée en France.", level:"Niveau B1 requis", levelColor:"#B8720A" },
+    { icon:"🎓", color:"#6B21A8", title:"Naturalisation", desc:"Candidats à l'acquisition de la nationalité française.", level:"Niveau B2 (probable 2026)", levelColor:"#B8720A" },
   ];
   const exemptions = [
     "Titulaires d'un diplôme français de niveau baccalauréat ou supérieur",
@@ -637,25 +637,25 @@ function LandingWhoMustTake() {
   return (
     <div style={{marginBottom:16}}>
       <div style={{textAlign:"center",marginBottom:14}}>
-        <h3 style={{margin:"0 0 5px",fontSize:18,fontWeight:800,color:"#0d1a3a"}}>Qui doit passer l'examen civique ?</h3>
-        <p style={{margin:0,fontSize:12,color:"#888"}}>L'examen civique est obligatoire dans le cadre du Contrat d'Intégration Républicaine (CIR).</p>
+        <h3 style={{margin:"0 0 5px",fontSize:18,fontWeight:800,color:"#1C1917"}}>Qui doit passer l'examen civique ?</h3>
+        <p style={{margin:0,fontSize:12,color:"#6B6560"}}>L'examen civique est obligatoire dans le cadre du Contrat d'Intégration Républicaine (CIR).</p>
       </div>
       <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(200px,1fr))",gap:12,marginBottom:12}}>
         {audiences.map((a,i)=>(
-          <div key={i} style={{background:"white",borderRadius:16,border:"1px solid #eef0f8",padding:"18px 16px",boxShadow:"0 2px 10px rgba(0,0,0,.04)"}}>
+          <div key={i} style={{background:"white",borderRadius:4,border:"1px solid #eef0f8",padding:"18px 16px",boxShadow:"none"}}>
             <div style={{fontSize:24,color:a.color,marginBottom:8}}>{a.icon}</div>
-            <div style={{fontWeight:700,fontSize:14,color:"#0d1a3a",marginBottom:5}}>{a.title}</div>
-            <div style={{fontSize:12.5,color:"#666",lineHeight:1.65,marginBottom:10}}>{a.desc}</div>
+            <div style={{fontWeight:700,fontSize:14,color:"#1C1917",marginBottom:5}}>{a.title}</div>
+            <div style={{fontSize:12.5,color:"#4A4540",lineHeight:1.65,marginBottom:10}}>{a.desc}</div>
             <div style={{fontWeight:700,fontSize:12,color:a.levelColor}}>{a.level}</div>
           </div>
         ))}
       </div>
-      <div style={{background:"#fffbee",border:"2px solid #f5c842",borderRadius:14,padding:"16px 18px"}}>
-        <div style={{fontWeight:800,fontSize:13,color:"#7a5a00",marginBottom:10}}>Cas d'exemption</div>
+      <div style={{background:"#FFFBF0",border:"2px solid #D4A012",borderRadius:4,padding:"16px 18px"}}>
+        <div style={{fontWeight:800,fontSize:13,color:"#7A5500",marginBottom:10}}>Cas d'exemption</div>
         {exemptions.map((e,i)=>(
           <div key={i} style={{display:"flex",alignItems:"flex-start",gap:8,marginBottom:i<exemptions.length-1?7:0}}>
-            <span style={{color:"#b35c00",fontWeight:700,flexShrink:0}}>•</span>
-            <span style={{fontSize:13,color:"#7a5000"}}>{e}</span>
+            <span style={{color:"#B8720A",fontWeight:700,flexShrink:0}}>•</span>
+            <span style={{fontSize:13,color:"#7A5500"}}>{e}</span>
           </div>
         ))}
       </div>
@@ -665,25 +665,25 @@ function LandingWhoMustTake() {
 
 function LandingStudyGuides() {
   const guides = [
-    { icon:"📄", iconColor:"#1a3a8f", title:"Liste complète des questions 2026", desc:"1800+ questions officielles avec réponses organisées par 5 thèmes", link:"Consulter →" },
-    { icon:"📚", iconColor:"#e67e22", title:"Guide de procédure d'examen", desc:"Durée, format tablette, score minimum et conseils pour le grand jour", link:"Lire le guide →" },
-    { icon:"⚖️", iconColor:"#1a7a4a", title:"OFII vs Naturalisation : les différences", desc:"Examen civique QCM ou entretien en préfecture ? Comparez les deux parcours", link:"Comparer →" },
-    { icon:"🛡️", iconColor:"#c0392b", title:"Les valeurs de la République expliquées", desc:"Liberté, Égalité, Fraternité, Laïcité : comprendre les principes fondamentaux", link:"Découvrir →", active:true },
+    { icon:"📄", iconColor:"#C41E3A", title:"Liste complète des questions 2026", desc:"1800+ questions officielles avec réponses organisées par 5 thèmes", link:"Consulter →" },
+    { icon:"📚", iconColor:"#B8720A", title:"Guide de procédure d'examen", desc:"Durée, format tablette, score minimum et conseils pour le grand jour", link:"Lire le guide →" },
+    { icon:"⚖️", iconColor:"#2D6A4F", title:"OFII vs Naturalisation : les différences", desc:"Examen civique QCM ou entretien en préfecture ? Comparez les deux parcours", link:"Comparer →" },
+    { icon:"🛡️", iconColor:"#C41E3A", title:"Les valeurs de la République expliquées", desc:"Liberté, Égalité, Fraternité, Laïcité : comprendre les principes fondamentaux", link:"Découvrir →", active:true },
   ];
   return (
     <div style={{marginBottom:16}}>
       <div style={{textAlign:"center",marginBottom:14}}>
-        <span style={{background:"#eef2ff",color:"#1a3a8f",border:"1px solid #c0d0f0",borderRadius:20,padding:"4px 14px",fontSize:11,fontWeight:700}}>🎓 Guides d'étude</span>
-        <h3 style={{margin:"10px 0 5px",fontSize:18,fontWeight:800,color:"#0d1a3a"}}>Guide de Préparation Naturalisation / Titre de Séjour</h3>
-        <p style={{margin:0,fontSize:12.5,color:"#888"}}>Nos ressources complètes pour maximiser vos chances de succès</p>
+        <span style={{background:"#FEF3EE",color:"#C41E3A",border:"1px solid #c0d0f0",borderRadius:6,padding:"4px 14px",fontSize:11,fontWeight:700}}>🎓 Guides d'étude</span>
+        <h3 style={{margin:"10px 0 5px",fontSize:18,fontWeight:800,color:"#1C1917"}}>Guide de Préparation Naturalisation / Titre de Séjour</h3>
+        <p style={{margin:0,fontSize:12.5,color:"#6B6560"}}>Nos ressources complètes pour maximiser vos chances de succès</p>
       </div>
       <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(190px,1fr))",gap:12}}>
         {guides.map((g,i)=>(
-          <div key={i} style={{background:"white",borderRadius:16,border:`2px solid ${g.active?"#1a3a8f":"#eef0f8"}`,padding:"18px 16px",boxShadow:g.active?"0 4px 18px rgba(26,58,143,.1)":"0 2px 10px rgba(0,0,0,.04)",transition:"transform .2s,box-shadow .2s",cursor:"pointer"}} className="lift">
+          <div key={i} style={{background:"white",borderRadius:4,border:`2px solid ${g.active?"#C41E3A":"#EDE8DF"}`,padding:"18px 16px",boxShadow:g.active?"0 4px 18px rgba(196,30,58,.1)":"none",transition:"transform .2s,box-shadow .2s",cursor:"pointer"}} className="lift">
             <div style={{fontSize:26,color:g.iconColor,marginBottom:10}}>{g.icon}</div>
-            <div style={{fontWeight:700,fontSize:13,color:g.active?"#1a3a8f":"#0d1a3a",marginBottom:6}}>{g.title}</div>
-            <div style={{fontSize:12,color:"#666",lineHeight:1.65,marginBottom:12}}>{g.desc}</div>
-            <div style={{color:"#1a3a8f",fontWeight:700,fontSize:12}}>{g.link}</div>
+            <div style={{fontWeight:700,fontSize:13,color:g.active?"#C41E3A":"#1C1917",marginBottom:6}}>{g.title}</div>
+            <div style={{fontSize:12,color:"#4A4540",lineHeight:1.65,marginBottom:12}}>{g.desc}</div>
+            <div style={{color:"#C41E3A",fontWeight:700,fontSize:12}}>{g.link}</div>
           </div>
         ))}
       </div>
@@ -693,14 +693,14 @@ function LandingStudyGuides() {
 
 function LandingExamSimulator({ onStartTraining, onStartMockExam }) {
   return (
-    <div style={{background:"linear-gradient(145deg,#f8faff,#f0f4ff)",borderRadius:20,border:"1px solid #d8e2f8",padding:"28px 24px",textAlign:"center",marginBottom:16,boxShadow:"0 2px 12px rgba(26,58,143,.06)"}}>
-      <h3 style={{margin:"0 0 8px",fontSize:20,fontWeight:800,color:"#0d1a3a"}}>Testez-vous en conditions réelles (45 min, 40 questions)</h3>
-      <p style={{margin:"0 0 20px",fontSize:13,color:"#666"}}>Simulateur gratuit inspiré de l'examen officiel : 40 questions, 45 minutes, score minimum 32/40.</p>
+    <div style={{background:"linear-gradient(145deg,#FAF7F2,#f0f4ff)",borderRadius:6,border:"1px solid #E8DDD0",padding:"28px 24px",textAlign:"center",marginBottom:16,boxShadow:"0 2px 12px rgba(28,25,23,.06)"}}>
+      <h3 style={{margin:"0 0 8px",fontSize:20,fontWeight:800,color:"#1C1917"}}>Testez-vous en conditions réelles (45 min, 40 questions)</h3>
+      <p style={{margin:"0 0 20px",fontSize:13,color:"#4A4540"}}>Simulateur gratuit inspiré de l'examen officiel : 40 questions, 45 minutes, score minimum 32/40.</p>
       <div style={{display:"flex",gap:12,justifyContent:"center",flexWrap:"wrap"}}>
-        <button onClick={onStartTraining} style={{background:"linear-gradient(135deg,#1a3a8f,#2d5fd4)",color:"white",border:"none",borderRadius:12,padding:"13px 28px",cursor:"pointer",fontWeight:700,fontSize:14,boxShadow:"0 4px 16px rgba(26,58,143,.3)"}}>
+        <button onClick={onStartTraining} style={{background:"linear-gradient(135deg,#C41E3A,#E8364E)",color:"white",border:"none",borderRadius:4,padding:"13px 28px",cursor:"pointer",fontWeight:700,fontSize:14,boxShadow:"0 4px 16px rgba(196,30,58,.2)"}}>
           Commencer l'entraînement →
         </button>
-        <button onClick={onStartMockExam} style={{background:"linear-gradient(135deg,#e67e22,#f39c12)",color:"white",border:"none",borderRadius:12,padding:"13px 28px",cursor:"pointer",fontWeight:700,fontSize:14,boxShadow:"0 4px 16px rgba(230,126,34,.3)"}}>
+        <button onClick={onStartMockExam} style={{background:"linear-gradient(135deg,#D4A012,#C08C00)",color:"white",border:"none",borderRadius:4,padding:"13px 28px",cursor:"pointer",fontWeight:700,fontSize:14,boxShadow:"0 4px 16px rgba(212,160,18,.25)"}}>
           Examen 45 min →
         </button>
       </div>
@@ -730,17 +730,17 @@ function LandingOfficialFAQ() {
   return (
     <div style={{marginBottom:16}}>
       <div style={{textAlign:"center",marginBottom:14}}>
-        <h3 style={{margin:"0 0 5px",fontSize:18,fontWeight:800,color:"#0d1a3a"}}>Questions Officielles pour l'Examen Civique</h3>
-        <p style={{margin:0,fontSize:12.5,color:"#888"}}>Réponses directes aux questions les plus fréquentes sur le test civique OFII</p>
+        <h3 style={{margin:"0 0 5px",fontSize:18,fontWeight:800,color:"#1C1917"}}>Questions Officielles pour l'Examen Civique</h3>
+        <p style={{margin:0,fontSize:12.5,color:"#6B6560"}}>Réponses directes aux questions les plus fréquentes sur le test civique OFII</p>
       </div>
       <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(280px,1fr))",gap:12}}>
         {faqs.map((f,i)=>(
-          <div key={i} style={{background:"white",borderRadius:16,border:`2px solid ${i===0?"#c0d0f0":"#eef0f8"}`,padding:"18px 16px",boxShadow:i===0?"0 4px 16px rgba(26,58,143,.07)":"0 2px 8px rgba(0,0,0,.03)"}}>
+          <div key={i} style={{background:"white",borderRadius:4,border:`2px solid ${i===0?"#EBCAC4":"#EDE8DF"}`,padding:"18px 16px",boxShadow:i===0?"0 4px 16px rgba(196,30,58,.07)":"0 2px 8px rgba(0,0,0,.03)"}}>
             <div style={{display:"flex",alignItems:"flex-start",gap:10,marginBottom:8}}>
-              <span style={{color:"#1a3a8f",fontSize:15,flexShrink:0}}>✅</span>
-              <div style={{fontWeight:700,fontSize:13.5,color:"#0d1a3a",lineHeight:1.5}}>{f.q}</div>
+              <span style={{color:"#C41E3A",fontSize:15,flexShrink:0}}>✅</span>
+              <div style={{fontWeight:700,fontSize:13.5,color:"#1C1917",lineHeight:1.5}}>{f.q}</div>
             </div>
-            <div style={{fontSize:12.5,color:"#666",lineHeight:1.75,paddingLeft:25}}>{f.a}</div>
+            <div style={{fontSize:12.5,color:"#4A4540",lineHeight:1.75,paddingLeft:25}}>{f.a}</div>
           </div>
         ))}
       </div>
@@ -750,13 +750,13 @@ function LandingOfficialFAQ() {
 
 function LandingHandbook() {
   return (
-    <div style={{background:"white",borderRadius:20,border:"1px solid #eef0f8",padding:"28px 24px",marginBottom:16,boxShadow:"0 2px 12px rgba(0,0,0,.04)"}}>
+    <div style={{background:"white",borderRadius:6,border:"1px solid #eef0f8",padding:"28px 24px",marginBottom:16,boxShadow:"0 2px 12px rgba(0,0,0,.04)"}}>
       <div style={{textAlign:"center",marginBottom:22}}>
-        <h3 style={{margin:"0 0 6px",fontSize:20,fontWeight:800,color:"#0d1a3a"}}>Livret du citoyen PDF gratuit</h3>
-        <p style={{margin:0,fontSize:13,color:"#666"}}>Téléchargez la version officielle du livret du citoyen pour réviser les notions clés.</p>
+        <h3 style={{margin:"0 0 6px",fontSize:20,fontWeight:800,color:"#1C1917"}}>Livret du citoyen PDF gratuit</h3>
+        <p style={{margin:0,fontSize:13,color:"#4A4540"}}>Téléchargez la version officielle du livret du citoyen pour réviser les notions clés.</p>
       </div>
       <div style={{maxWidth:560,margin:"0 auto"}}>
-        <p style={{fontSize:13,color:"#555",textAlign:"center",lineHeight:1.7,marginBottom:16}}>
+        <p style={{fontSize:13,color:"#4A4540",textAlign:"center",lineHeight:1.7,marginBottom:16}}>
           Le Livret du citoyen est une ressource officielle pour comprendre les valeurs et institutions françaises. Téléchargez-le gratuitement et complétez votre préparation avec le quiz de 40 questions.
         </p>
         <div style={{textAlign:"center",marginBottom:22}}>
@@ -764,21 +764,21 @@ function LandingHandbook() {
             href="https://www.immigration.interieur.gouv.fr/content/download/124697/994211/file/livret-citoyen.pdf"
             target="_blank"
             rel="noopener noreferrer"
-            style={{display:"inline-block",background:"linear-gradient(135deg,#1a3a8f,#2d5fd4)",color:"white",borderRadius:12,padding:"13px 28px",fontWeight:700,fontSize:14,textDecoration:"none",boxShadow:"0 4px 16px rgba(26,58,143,.3)"}}
+            style={{display:"inline-block",background:"linear-gradient(135deg,#C41E3A,#E8364E)",color:"white",borderRadius:4,padding:"13px 28px",fontWeight:700,fontSize:14,textDecoration:"none",boxShadow:"0 4px 16px rgba(196,30,58,.2)"}}
           >
             Télécharger le livret du citoyen (PDF)
           </a>
         </div>
         <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:20}}>
           <div>
-            <div style={{fontWeight:700,fontSize:14,marginBottom:10,color:"#0d1a3a"}}>Qu'est-ce que l'examen civique ?</div>
-            <p style={{fontSize:12.5,color:"#555",lineHeight:1.75,margin:"0 0 10px"}}>L'examen civique, aussi connu sous le nom de test civique OFII, est un test obligatoire pour tout étranger souhaitant obtenir un titre de séjour pluriannuel en France. Établi dans le cadre du Contrat d'Intégration Républicaine (CIR), cet examen évalue vos connaissances des valeurs, de l'histoire et des institutions françaises.</p>
-            <p style={{fontSize:12.5,color:"#555",lineHeight:1.75,margin:0}}>Pour réussir, vous devez obtenir un score minimum de <strong>32 bonnes réponses sur 40</strong>, soit 80%. L'examen est passé sur tablette dans un centre OFII agréé et dure au maximum 45 minutes.</p>
+            <div style={{fontWeight:700,fontSize:14,marginBottom:10,color:"#1C1917"}}>Qu'est-ce que l'examen civique ?</div>
+            <p style={{fontSize:12.5,color:"#4A4540",lineHeight:1.75,margin:"0 0 10px"}}>L'examen civique, aussi connu sous le nom de test civique OFII, est un test obligatoire pour tout étranger souhaitant obtenir un titre de séjour pluriannuel en France. Établi dans le cadre du Contrat d'Intégration Républicaine (CIR), cet examen évalue vos connaissances des valeurs, de l'histoire et des institutions françaises.</p>
+            <p style={{fontSize:12.5,color:"#4A4540",lineHeight:1.75,margin:0}}>Pour réussir, vous devez obtenir un score minimum de <strong>32 bonnes réponses sur 40</strong>, soit 80%. L'examen est passé sur tablette dans un centre OFII agréé et dure au maximum 45 minutes.</p>
           </div>
           <div>
-            <div style={{fontWeight:700,fontSize:14,marginBottom:10,color:"#0d1a3a"}}>Comment se préparer efficacement ?</div>
-            <p style={{fontSize:12.5,color:"#555",lineHeight:1.75,margin:"0 0 10px"}}>Se préparer à l'examen civique nécessite une révision méthodique des 1800+ questions publiées par le ministère de l'Intérieur. Notre simulateur gratuit reproduit les conditions exactes de l'examen avec des questions générées aléatoirement à chaque session.</p>
-            <p style={{fontSize:12.5,color:"#555",lineHeight:1.75,margin:0}}>Les sujets les plus importants à maîtriser sont la <strong>laïcité</strong>, la <strong>devise française</strong> (Liberté, Égalité, Fraternité), les <strong>symboles de la République</strong> (Marianne, le drapeau tricolore, la Marseillaise), et les grandes dates de l'histoire de France.</p>
+            <div style={{fontWeight:700,fontSize:14,marginBottom:10,color:"#1C1917"}}>Comment se préparer efficacement ?</div>
+            <p style={{fontSize:12.5,color:"#4A4540",lineHeight:1.75,margin:"0 0 10px"}}>Se préparer à l'examen civique nécessite une révision méthodique des 1800+ questions publiées par le ministère de l'Intérieur. Notre simulateur gratuit reproduit les conditions exactes de l'examen avec des questions générées aléatoirement à chaque session.</p>
+            <p style={{fontSize:12.5,color:"#4A4540",lineHeight:1.75,margin:0}}>Les sujets les plus importants à maîtriser sont la <strong>laïcité</strong>, la <strong>devise française</strong> (Liberté, Égalité, Fraternité), les <strong>symboles de la République</strong> (Marianne, le drapeau tricolore, la Marseillaise), et les grandes dates de l'histoire de France.</p>
           </div>
         </div>
       </div>
@@ -1085,12 +1085,12 @@ export default function App() {
   const passed=totalScore>=passMark;
   const listenCurQ=listenQs[listenIdx];
   const phaseLabel={question:"🗣️ Question",answer:"✅ Réponse correcte",explanation:"💡 Explication",pause:"⏸ Pause"};
-  const card={background:"white",borderRadius:20,boxShadow:"0 2px 16px rgba(0,0,0,.05)",border:"1px solid #eef0f8",padding:"20px",marginBottom:14};
+  const card={background:"white",borderRadius:6,boxShadow:"0 2px 16px rgba(0,0,0,.05)",border:"1px solid #eef0f8",padding:"20px",marginBottom:14};
 
   return (
-    <div style={{fontFamily:"'Inter',sans-serif",minHeight:"100vh",background:"#f3f5fb",color:"#1a1a28",direction:isRTL?"rtl":"ltr"}}>
+    <div style={{fontFamily:"'DM Sans',sans-serif",minHeight:"100vh",background:"#FAF7F2",color:"#1C1917",direction:isRTL?"rtl":"ltr"}}>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Inter:wght@400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800;900&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap');
         *{box-sizing:border-box;}
         @keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
         @keyframes shimmer{0%,100%{opacity:.35}50%{opacity:.85}}
@@ -1098,23 +1098,23 @@ export default function App() {
         @keyframes wv1{0%,100%{transform:scaleY(.8)}50%{transform:scaleY(.3)}}
         @keyframes wv2{0%,100%{transform:scaleY(.5)}50%{transform:scaleY(1)}}
         @keyframes wv3{0%,100%{transform:scaleY(1)}50%{transform:scaleY(.4)}}
-        @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(45,79,170,.4)}70%{box-shadow:0 0 0 12px rgba(45,79,170,0)}}
+        @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(196,30,58,.4)}70%{box-shadow:0 0 0 12px rgba(196,30,58,0)}}
         @keyframes timerBlink{0%,100%{opacity:1}50%{opacity:.5}}
         .fade{animation:fadeUp .4s cubic-bezier(.16,1,.3,1) forwards}
         .lift{transition:transform .22s cubic-bezier(.16,1,.3,1),box-shadow .22s;cursor:pointer}
-        .lift:hover{transform:translateY(-5px);box-shadow:0 20px 48px rgba(0,0,0,.12)!important}
+        .lift:hover{transform:translateY(-4px);box-shadow:0 16px 40px rgba(28,25,23,.13)!important}
         .lift:active{transform:translateY(-2px)}
-        .cBtn{transition:all .2s cubic-bezier(.16,1,.3,1);border:1.5px solid #e8ebf5;background:white;width:100%;cursor:pointer;font-family:'Inter',sans-serif;border-radius:14px;box-shadow:0 1px 3px rgba(0,0,0,.04)}
-        .cBtn:not(:disabled):hover{border-color:#2d4faa;background:#f4f7ff;transform:translateX(4px);box-shadow:0 4px 16px rgba(45,79,170,.1)}
-        .cReveal{border-color:#2f9e44!important;background:linear-gradient(135deg,#ebfbee,#d3f9d8)!important;transform:none!important;box-shadow:0 4px 16px rgba(47,158,68,.12)!important}
+        .cBtn{transition:all .2s cubic-bezier(.16,1,.3,1);border:1.5px solid #e8ebf5;background:white;width:100%;cursor:pointer;font-family:'DM Sans',sans-serif;border-radius:14px;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+        .cBtn:not(:disabled):hover{border-color:#C41E3A;background:#FEF3EE;transform:translateX(4px);box-shadow:0 4px 16px rgba(196,30,58,.1)}
+        .cReveal{border-color:#2D6A4F!important;background:linear-gradient(135deg,#D8F0E5,#B7DFD0)!important;transform:none!important;box-shadow:0 4px 16px rgba(45,106,79,.12)!important}
         .cWrong{border-color:#e03131!important;background:linear-gradient(135deg,#fff5f5,#ffe3e3)!important;transform:none!important}
-        .cSpeaking{border-color:#2d4faa!important;background:#eef2ff!important;box-shadow:0 4px 16px rgba(45,79,170,.12)!important}
+        .cSpeaking{border-color:#C41E3A!important;background:#FEF3EE!important;box-shadow:0 4px 16px rgba(196,30,58,.12)!important}
         .shimmer{animation:shimmer 1.2s ease infinite}
         .pulse{animation:pulse 2s infinite}
         .timerBlink{animation:timerBlink 1s ease infinite}
         .themeCard{transition:all .22s cubic-bezier(.16,1,.3,1);cursor:pointer}
         .themeCard:hover{transform:translateY(-6px);box-shadow:0 24px 48px rgba(0,0,0,.09)!important}
-        .navBtn{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:22px;color:white;cursor:pointer;font-family:'Inter',sans-serif;font-size:12px;font-weight:600;padding:6px 13px;transition:all .18s;display:inline-flex;align-items:center;gap:5px}
+        .navBtn{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:22px;color:white;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;padding:6px 13px;transition:all .18s;display:inline-flex;align-items:center;gap:5px}
         .navBtn:hover{background:rgba(255,255,255,.2);border-color:rgba(255,255,255,.35)}
         ::-webkit-scrollbar{width:4px}::-webkit-scrollbar-thumb{background:#d0d5e8;border-radius:4px}
         @media(max-width:600px){.hide-mobile{display:none!important}}
@@ -1123,7 +1123,7 @@ export default function App() {
       {paywallReason&&<PaywallModal reason={paywallReason} onClose={()=>setPaywallReason(null)} codeInput={codeInput} setCodeInput={setCodeInput} codeStatus={codeStatus} handleCodeSubmit={handleCodeSubmit}/>}
 
       {/* HEADER */}
-      <div style={{background:"linear-gradient(135deg,#0d2060,#1a3a8f)",color:"white",position:"sticky",top:0,zIndex:100,boxShadow:"0 2px 16px rgba(0,0,0,.25)"}}>
+      <div style={{background:"linear-gradient(135deg,#1C1917,#C41E3A)",color:"white",position:"sticky",top:0,zIndex:100,boxShadow:"0 2px 16px rgba(0,0,0,.25)"}}>
         <div style={{maxWidth:920,margin:"0 auto",padding:"0 14px",height:54,display:"flex",alignItems:"center",justifyContent:"space-between",gap:8}}>
           <div style={{display:"flex",alignItems:"center",gap:8}}>
             {screen!=="home"&&<button onClick={()=>{stopAll();setScreen("home");}} style={{background:"rgba(255,255,255,.15)",border:"none",color:"white",borderRadius:8,padding:"5px 11px",cursor:"pointer",fontSize:13}}>←</button>}
@@ -1135,20 +1135,20 @@ export default function App() {
           </div>
           <div style={{display:"flex",gap:6,alignItems:"center"}}>
             {isPremium
-              ?<div style={{background:"linear-gradient(135deg,#ffd700,#ffb300)",color:"#5a3a00",borderRadius:20,padding:"4px 12px",fontSize:11,fontWeight:800}}>⭐ PREMIUM</div>
+              ?<div style={{background:"linear-gradient(135deg,#D4A012,#C08C00)",color:"#5A4000",borderRadius:6,padding:"4px 12px",fontSize:11,fontWeight:800}}>⭐ PREMIUM</div>
               :<div style={{display:"flex",gap:5}}>
-                  <button onClick={()=>setScreen("pricing")} style={{background:"rgba(255,255,255,.18)",color:"white",border:"1px solid rgba(255,255,255,.35)",borderRadius:20,padding:"5px 11px",cursor:"pointer",fontWeight:700,fontSize:11}}>🔑 J'ai un code</button>
-                  <button onClick={()=>setScreen("pricing")} style={{background:"linear-gradient(135deg,#ffd700,#ffb300)",color:"#5a3a00",border:"none",borderRadius:20,padding:"5px 12px",cursor:"pointer",fontWeight:800,fontSize:11}}>🔓 Débloquer</button>
+                  <button onClick={()=>setScreen("pricing")} style={{background:"rgba(255,255,255,.18)",color:"white",border:"1px solid rgba(255,255,255,.35)",borderRadius:6,padding:"5px 11px",cursor:"pointer",fontWeight:700,fontSize:11}}>🔑 J'ai un code</button>
+                  <button onClick={()=>setScreen("pricing")} style={{background:"linear-gradient(135deg,#D4A012,#C08C00)",color:"#5A4000",border:"none",borderRadius:6,padding:"5px 12px",cursor:"pointer",fontWeight:800,fontSize:11}}>🔓 Débloquer</button>
                </div>
             }
             <div style={{position:"relative"}}>
-              <button onClick={()=>{setShowSettings(v=>!v);setShowLangMenu(false);}} style={{background:"rgba(255,255,255,.15)",border:"1px solid rgba(255,255,255,.3)",borderRadius:20,padding:"5px 11px",cursor:"pointer",color:"white",fontSize:12}}>⚙️</button>
+              <button onClick={()=>{setShowSettings(v=>!v);setShowLangMenu(false);}} style={{background:"rgba(255,255,255,.15)",border:"1px solid rgba(255,255,255,.3)",borderRadius:6,padding:"5px 11px",cursor:"pointer",color:"white",fontSize:12}}>⚙️</button>
               {showSettings&&(
-                <div style={{position:"absolute",top:"calc(100% + 8px)",right:0,background:"white",borderRadius:14,boxShadow:"0 8px 32px rgba(0,0,0,.18)",padding:"16px",minWidth:230,zIndex:120}}>
+                <div style={{position:"absolute",top:"calc(100% + 8px)",right:0,background:"white",borderRadius:4,boxShadow:"0 8px 32px rgba(0,0,0,.18)",padding:"16px",minWidth:230,zIndex:120}}>
                   <div style={{fontWeight:700,fontSize:13,marginBottom:12}}>⚙️ Paramètres audio</div>
-                  <div style={{fontSize:12,color:"#888",marginBottom:7}}>Vitesse</div>
+                  <div style={{fontSize:12,color:"#6B6560",marginBottom:7}}>Vitesse</div>
                   <div style={{display:"flex",gap:5,marginBottom:14}}>
-                    {SPEEDS.map(s=><button key={s.v} onClick={()=>setSpeed(s.v)} style={{flex:1,padding:"5px 0",borderRadius:7,border:speed===s.v?"2px solid #1a3a8f":"2px solid #ddd",background:speed===s.v?"#eef1fb":"white",color:speed===s.v?"#1a3a8f":"#666",fontSize:12,fontWeight:700,cursor:"pointer"}}>{s.label}</button>)}
+                    {SPEEDS.map(s=><button key={s.v} onClick={()=>setSpeed(s.v)} style={{flex:1,padding:"5px 0",borderRadius:7,border:speed===s.v?"2px solid #C41E3A":"2px solid #ddd",background:speed===s.v?"#eef1fb":"white",color:speed===s.v?"#C41E3A":"#4A4540",fontSize:12,fontWeight:700,cursor:"pointer"}}>{s.label}</button>)}
                   </div>
                   <label style={{display:"flex",alignItems:"center",gap:8,cursor:"pointer",marginBottom:8}}>
                     <input type="checkbox" checked={listenIncludeExpl} onChange={e=>setListenIncludeExpl(e.target.checked)} style={{width:15,height:15}}/>
@@ -1162,19 +1162,19 @@ export default function App() {
               )}
             </div>
             <div style={{position:"relative"}}>
-              <button onClick={()=>{if(!isPremium&&lang==="fr"){requirePremium("lang");return;}setShowLangMenu(v=>!v);setShowSettings(false);}} style={{display:"flex",alignItems:"center",gap:5,background:"rgba(255,255,255,.15)",border:"1px solid rgba(255,255,255,.3)",borderRadius:20,padding:"5px 11px",cursor:"pointer",color:"white",fontSize:12}}>
+              <button onClick={()=>{if(!isPremium&&lang==="fr"){requirePremium("lang");return;}setShowLangMenu(v=>!v);setShowSettings(false);}} style={{display:"flex",alignItems:"center",gap:5,background:"rgba(255,255,255,.15)",border:"1px solid rgba(255,255,255,.3)",borderRadius:6,padding:"5px 11px",cursor:"pointer",color:"white",fontSize:12}}>
                 <span>{currentLang.flag}</span>
                 <span style={{fontWeight:700}}>{lang==="fr"?"Français":currentLang.native}</span>
                 {!isPremium&&<span style={{fontSize:10,opacity:.7}}>🔒</span>}
-                {isLoading&&<span className="shimmer" style={{width:6,height:6,borderRadius:"50%",background:"#ffd700",display:"inline-block"}}/>}
+                {isLoading&&<span className="shimmer" style={{width:6,height:6,borderRadius:"6px",background:"#D4A012",display:"inline-block"}}/>}
               </button>
               {showLangMenu&&isPremium&&(
-                <div style={{position:"absolute",top:"calc(100% + 8px)",right:0,background:"white",borderRadius:14,boxShadow:"0 8px 32px rgba(0,0,0,.18)",overflow:"hidden",minWidth:185,zIndex:120,maxHeight:340,overflowY:"auto"}}>
+                <div style={{position:"absolute",top:"calc(100% + 8px)",right:0,background:"white",borderRadius:4,boxShadow:"0 8px 32px rgba(0,0,0,.18)",overflow:"hidden",minWidth:185,zIndex:120,maxHeight:340,overflowY:"auto"}}>
                   {LANGUAGES.map(l=>(
                     <button key={l.code} onClick={()=>{setLang(l.code);setShowLangMenu(false);}} style={{display:"flex",alignItems:"center",gap:9,padding:"9px 14px",border:"none",borderBottom:"1px solid #f0f0f0",background:lang===l.code?"#eef1fb":"white",cursor:"pointer",width:"100%",textAlign:"left"}}>
                       <span style={{fontSize:17}}>{l.flag}</span>
-                      <div><div style={{fontWeight:700,fontSize:12,color:"#1a1a28"}}>{l.native}</div><div style={{fontSize:10,color:"#999"}}>{l.label}</div></div>
-                      {lang===l.code&&<span style={{marginLeft:"auto",color:"#1a3a8f"}}>✓</span>}
+                      <div><div style={{fontWeight:700,fontSize:12,color:"#1C1917"}}>{l.native}</div><div style={{fontSize:10,color:"#8A8480"}}>{l.label}</div></div>
+                      {lang===l.code&&<span style={{marginLeft:"auto",color:"#C41E3A"}}>✓</span>}
                     </button>
                   ))}
                 </div>
@@ -1182,11 +1182,11 @@ export default function App() {
             </div>
           </div>
         </div>
-        {isLoading&&<div style={{background:"rgba(0,0,0,.3)",height:3}}><div className="shimmer" style={{height:"100%",background:"#ffd700",width:`${loadPct}%`,transition:"width .4s"}}/></div>}
+        {isLoading&&<div style={{background:"rgba(0,0,0,.3)",height:3}}><div className="shimmer" style={{height:"100%",background:"#C41E3A",width:`${loadPct}%`,transition:"width .4s"}}/></div>}
       </div>
 
       {!isPremium&&screen!=="pricing"&&(
-        <div style={{background:"linear-gradient(90deg,#1a0a3a,#3b1f7a)",color:"white",padding:"7px 18px",display:"flex",alignItems:"center",justifyContent:"space-between",gap:12,flexWrap:"wrap"}}>
+        <div style={{background:"linear-gradient(90deg,#1C1917,#6B21A8)",color:"white",padding:"7px 18px",display:"flex",alignItems:"center",justifyContent:"space-between",gap:12,flexWrap:"wrap"}}>
           <div style={{fontSize:12,display:"flex",alignItems:"center",gap:10,flexWrap:"wrap"}}>
             <span>🆓 Essai gratuit — <strong>10 questions par thème</strong></span>
             <div style={{display:"flex",gap:5,alignItems:"center"}}>
@@ -1197,7 +1197,7 @@ export default function App() {
                     <span style={{fontSize:11}}>{t.icon}</span>
                     <div style={{display:"flex",gap:1}}>
                       {Array.from({length:TRIAL_PER_THEME}).map((_,i)=>(
-                        <div key={i} style={{width:4,height:4,borderRadius:"50%",background:i<used?"white":"rgba(255,255,255,.25)"}}/>
+                        <div key={i} style={{width:4,height:4,borderRadius:"6px",background:i<used?"white":"rgba(255,255,255,.2)"}}/>
                       ))}
                     </div>
                   </div>
@@ -1205,10 +1205,10 @@ export default function App() {
               })}
             </div>
           </div>
-          <button onClick={()=>setScreen("pricing")} style={{background:"#ffd700",color:"#1a0a3a",border:"none",borderRadius:14,padding:"4px 14px",cursor:"pointer",fontSize:12,fontWeight:800,whiteSpace:"nowrap"}}>Tout débloquer →</button>
+          <button onClick={()=>setScreen("pricing")} style={{background:"#D4A012",color:"#1C1917",border:"none",borderRadius:4,padding:"4px 14px",cursor:"pointer",fontSize:12,fontWeight:800,whiteSpace:"nowrap"}}>Tout débloquer →</button>
         </div>
       )}
-      {xlateError&&<div style={{background:"#fdecea",padding:"7px 18px",textAlign:"center",fontSize:12,color:"#c0392b"}}>⚠️ {xlateError}</div>}
+      {xlateError&&<div style={{background:"#fdecea",padding:"7px 18px",textAlign:"center",fontSize:12,color:"#C41E3A"}}>⚠️ {xlateError}</div>}
 
       <div style={{maxWidth:920,margin:"0 auto",padding:"18px 14px"}} onClick={()=>{showLangMenu&&setShowLangMenu(false);showSettings&&setShowSettings(false);}}>
 
@@ -1216,26 +1216,26 @@ export default function App() {
         {screen==="payment-success"&&(
           <div className="fade" style={{textAlign:"center",padding:"40px 20px"}}>
             <div style={{fontSize:60,marginBottom:16}}>{codeLoading?"⏳":"🎉"}</div>
-            <h2 style={{color:"#0d2060",fontSize:22,fontWeight:800,marginBottom:8}}>
+            <h2 style={{color:"#1C1917",fontSize:22,fontWeight:800,marginBottom:8}}>
               {codeLoading?"Récupération de votre code…":"Paiement confirmé !"}
             </h2>
             {codeLoading?(
-              <p style={{color:"#666",fontSize:14}}>Merci pour votre achat. Nous récupérons votre code d'activation, veuillez patienter…</p>
+              <p style={{color:"#4A4540",fontSize:14}}>Merci pour votre achat. Nous récupérons votre code d'activation, veuillez patienter…</p>
             ):(
               <>
-                <p style={{color:"#666",fontSize:14,marginBottom:20}}><strong>📋 Copiez et sauvegardez ce code</strong> — il vous sera demandé à l'étape suivante.</p>
+                <p style={{color:"#4A4540",fontSize:14,marginBottom:20}}><strong>📋 Copiez et sauvegardez ce code</strong> — il vous sera demandé à l'étape suivante.</p>
                 {assignedCode&&(
-                  <div style={{background:"#eef2ff",border:"2px solid #1a3a8f",borderRadius:14,padding:"20px",marginBottom:20,display:"inline-block"}}>
-                    <div style={{fontSize:12,color:"#666",marginBottom:6}}>Votre code :</div>
-                    <div style={{fontFamily:"monospace",fontSize:22,fontWeight:800,color:"#0d2060",letterSpacing:2,marginBottom:12}}>{assignedCode}</div>
-                    <button onClick={()=>{navigator.clipboard.writeText(assignedCode);alert("Code copié !");}} style={{background:"white",border:"1px solid #1a3a8f",borderRadius:8,padding:"6px 16px",cursor:"pointer",fontSize:13,color:"#1a3a8f",fontWeight:700}}>
+                  <div style={{background:"#FEF3EE",border:"2px solid #C41E3A",borderRadius:4,padding:"20px",marginBottom:20,display:"inline-block"}}>
+                    <div style={{fontSize:12,color:"#4A4540",marginBottom:6}}>Votre code :</div>
+                    <div style={{fontFamily:"monospace",fontSize:22,fontWeight:800,color:"#1C1917",letterSpacing:2,marginBottom:12}}>{assignedCode}</div>
+                    <button onClick={()=>{navigator.clipboard.writeText(assignedCode);alert("Code copié !");}} style={{background:"white",border:"1px solid #C41E3A",borderRadius:8,padding:"6px 16px",cursor:"pointer",fontSize:13,color:"#C41E3A",fontWeight:700}}>
                       📋 Copier le code
                     </button>
                   </div>
                 )}
                 <p style={{color:"#cc0000",fontSize:12,marginBottom:16}}>⚠️ Notez ce code — il ne sera affiché qu'une seule fois.</p>
                 <div style={{marginTop:8}}>
-                  <button onClick={()=>{setCodeInput(assignedCode);setScreen("pricing");}} style={{background:"linear-gradient(135deg,#0d2060,#1a3a8f)",color:"white",border:"none",borderRadius:12,padding:"12px 28px",cursor:"pointer",fontSize:14,fontWeight:800}}>
+                  <button onClick={()=>{setCodeInput(assignedCode);setScreen("pricing");}} style={{background:"linear-gradient(135deg,#1C1917,#C41E3A)",color:"white",border:"none",borderRadius:4,padding:"12px 28px",cursor:"pointer",fontSize:14,fontWeight:800}}>
                     Utiliser ce code pour accéder au Premium →
                   </button>
                 </div>
@@ -1251,18 +1251,18 @@ export default function App() {
         {screen==="home"&&(
           <div className="fade">
             {/* ── Hero banner ── */}
-            <div style={{background:"linear-gradient(145deg,#0d1b4b,#1a3480,#1e5ca0)",color:"white",padding:"30px 26px",borderRadius:24,position:"relative",overflow:"hidden",marginBottom:16,boxShadow:"0 12px 48px rgba(13,27,75,.4)"}}>
-              <div style={{position:"absolute",top:-50,right:-50,width:220,height:220,borderRadius:"50%",background:"rgba(255,255,255,.04)",pointerEvents:"none"}}/>
-              <div style={{position:"absolute",bottom:-40,left:20,width:160,height:160,borderRadius:"50%",background:"rgba(245,196,0,.06)",pointerEvents:"none"}}/>
+            <div style={{background:"linear-gradient(160deg,#1C1917 0%,#2A0A10 50%,#C41E3A 100%)",color:"white",padding:"30px 26px",borderRadius:8,position:"relative",overflow:"hidden",marginBottom:16,boxShadow:"0 8px 32px rgba(28,25,23,.2)"}}>
+              <div style={{position:"absolute",top:-50,right:-50,width:220,height:220,borderRadius:"6px",background:"rgba(196,30,58,.06)",pointerEvents:"none"}}/>
+              <div style={{position:"absolute",bottom:-40,left:20,width:160,height:160,borderRadius:"6px",background:"rgba(212,160,18,.08)",pointerEvents:"none"}}/>
               <div style={{marginBottom:20}}>
-                <div style={{display:"inline-flex",alignItems:"center",gap:6,background:"rgba(255,255,255,.13)",border:"1px solid rgba(255,255,255,.2)",borderRadius:20,padding:"4px 12px",fontSize:10,fontWeight:700,letterSpacing:1.5,textTransform:"uppercase",marginBottom:14}}>🇫🇷 Programme officiel 2026</div>
-                <h1 style={{margin:"0 0 8px",fontSize:26,fontWeight:800,lineHeight:1.2,fontFamily:"'Sora',sans-serif",letterSpacing:-.5}}>Préparez votre<br/>Examen Civique</h1>
+                <div style={{display:"inline-flex",alignItems:"center",gap:6,background:"rgba(255,255,255,.13)",border:"1px solid rgba(255,255,255,.2)",borderRadius:6,padding:"4px 12px",fontSize:10,fontWeight:700,letterSpacing:1.5,textTransform:"uppercase",marginBottom:14}}>🇫🇷 Programme officiel 2026</div>
+                <h1 style={{margin:"0 0 8px",fontSize:26,fontWeight:800,lineHeight:1.2,fontFamily:"'Playfair Display',serif",letterSpacing:-.5}}>Préparez votre<br/>Examen Civique</h1>
                 <p style={{margin:0,opacity:.72,fontSize:13,lineHeight:1.6}}>Obligatoire depuis le <strong style={{opacity:1,fontWeight:700}}>1er janvier 2026</strong></p>
               </div>
               <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:8}}>
                 {[[`${ALL_QUESTIONS.length}`,"Questions"],["🎧","Écoute"],["11","Langues"],["80%","Seuil"]].map(([v,l])=>(
-                  <div key={l} style={{background:"rgba(255,255,255,.12)",backdropFilter:"blur(8px)",border:"1px solid rgba(255,255,255,.18)",borderRadius:14,padding:"13px 6px",textAlign:"center"}}>
-                    <div style={{fontSize:17,fontWeight:800,fontFamily:"'Sora',sans-serif"}}>{v}</div>
+                  <div key={l} style={{background:"rgba(255,255,255,.12)",backdropFilter:"blur(8px)",border:"1px solid rgba(255,255,255,.18)",borderRadius:4,padding:"13px 6px",textAlign:"center"}}>
+                    <div style={{fontSize:17,fontWeight:800,fontFamily:"'Playfair Display',serif"}}>{v}</div>
                     <div style={{fontSize:9,opacity:.75,marginTop:3,fontWeight:600,textTransform:"uppercase",letterSpacing:.8}}>{l}</div>
                   </div>
                 ))}
@@ -1271,13 +1271,13 @@ export default function App() {
 
             {/* ── Premium upsell ── */}
             {!isPremium&&(
-              <div className="lift" onClick={()=>setScreen("pricing")} style={{background:"linear-gradient(135deg,#1a0a3a,#3b1f7a)",borderRadius:16,padding:"18px 20px",marginBottom:14,cursor:"pointer",display:"flex",alignItems:"center",gap:16}}>
+              <div className="lift" onClick={()=>setScreen("pricing")} style={{background:"linear-gradient(135deg,#1C1917,#6B21A8)",borderRadius:4,padding:"18px 20px",marginBottom:14,cursor:"pointer",display:"flex",alignItems:"center",gap:16}}>
                 <div style={{fontSize:36}}>⭐</div>
                 <div style={{flex:1}}>
-                  <div style={{color:"#ffd700",fontWeight:800,fontSize:15}}>Accès Premium — 5,00 € une seule fois</div>
+                  <div style={{color:"#D4A012",fontWeight:800,fontSize:15}}>Accès Premium — 5,00 € une seule fois</div>
                   <div style={{color:"rgba(255,255,255,.8)",fontSize:12,marginTop:3}}>{ALL_QUESTIONS.length} questions · Mode écoute · 11 langues · Accès à vie</div>
                 </div>
-                <div style={{color:"#ffd700",fontSize:20}}>→</div>
+                <div style={{color:"#D4A012",fontSize:20}}>→</div>
               </div>
             )}
 
@@ -1291,33 +1291,33 @@ export default function App() {
             <LandingAdvantages onStartQuiz={startQuiz} />
 
             {/* ── Listen mode card ── */}
-            <div style={{...card,background:"linear-gradient(145deg,#130e30,#251860,#1a2f6e)",color:"white",padding:"24px",borderRadius:22,boxShadow:"0 8px 36px rgba(19,14,48,.32)"}}>
+            <div style={{...card,background:"linear-gradient(145deg,#1C1917,#2D1832,#6B21A8)",color:"white",padding:"24px",borderRadius:6,boxShadow:"0 8px 32px rgba(28,25,23,.2)"}}>
               <div style={{display:"flex",alignItems:"center",gap:12,marginBottom:14}}>
-                <div style={{width:48,height:48,borderRadius:"50%",background:"rgba(255,255,255,.15)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:22,flexShrink:0}}>🎧</div>
+                <div style={{width:48,height:48,borderRadius:"6px",background:"rgba(255,255,255,.15)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:22,flexShrink:0}}>🎧</div>
                 <div>
                   <div style={{fontWeight:800,fontSize:15}}>Mode Écoute — Play All</div>
-                  <div style={{fontSize:12,opacity:.8,marginTop:2}}>Question + bonne réponse + explication. Parfait en déplacement.{!isPremium&&<span style={{marginLeft:6,color:"#ffd700",fontWeight:700}}>🔒 Premium</span>}</div>
+                  <div style={{fontSize:12,opacity:.8,marginTop:2}}>Question + bonne réponse + explication. Parfait en déplacement.{!isPremium&&<span style={{marginLeft:6,color:"#D4A012",fontWeight:700}}>🔒 Premium</span>}</div>
                 </div>
               </div>
               <div style={{display:"flex",gap:9,flexWrap:"wrap"}}>
-                <button className="lift" onClick={()=>startListen("all")} style={{flex:1,minWidth:150,background:"white",color:"#3b1f7a",border:"none",borderRadius:10,padding:"11px 14px",cursor:"pointer",fontWeight:800,fontSize:13}}>
+                <button className="lift" onClick={()=>startListen("all")} style={{flex:1,minWidth:150,background:"white",color:"#6B21A8",border:"none",borderRadius:4,padding:"11px 14px",cursor:"pointer",fontWeight:800,fontSize:13}}>
                   ▶ Tout écouter ({ALL_QUESTIONS.length} Q)
                 </button>
-                <select onChange={e=>{if(e.target.value)startListen(e.target.value);}} defaultValue="" style={{flex:1,minWidth:150,background:"rgba(255,255,255,.15)",color:"white",border:"1px solid rgba(255,255,255,.3)",borderRadius:10,padding:"11px 12px",cursor:"pointer",fontSize:12}}>
-                  <option value="" style={{color:"#333"}}>🎧 Écouter un thème…</option>
-                  {THEMES.map(t=><option key={t.id} value={t.id} style={{color:"#333"}}>{t.icon} {t.label}</option>)}
+                <select onChange={e=>{if(e.target.value)startListen(e.target.value);}} defaultValue="" style={{flex:1,minWidth:150,background:"rgba(255,255,255,.15)",color:"white",border:"1px solid rgba(255,255,255,.3)",borderRadius:4,padding:"11px 12px",cursor:"pointer",fontSize:12}}>
+                  <option value="" style={{color:"#1C1917"}}>🎧 Écouter un thème…</option>
+                  {THEMES.map(t=><option key={t.id} value={t.id} style={{color:"#1C1917"}}>{t.icon} {t.label}</option>)}
                 </select>
               </div>
             </div>
 
             {/* ── Quiz + Mock exam ── */}
             <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:11,marginBottom:16}}>
-              <button className="lift" onClick={()=>startQuiz(null)} style={{background:"linear-gradient(135deg,#0d2060,#1a3a8f)",color:"white",border:"none",borderRadius:14,padding:"18px 12px",cursor:"pointer",textAlign:"center",boxShadow:"0 4px 18px rgba(13,32,96,.28)"}}>
+              <button className="lift" onClick={()=>startQuiz(null)} style={{background:"linear-gradient(135deg,#1C1917,#C41E3A)",color:"white",border:"none",borderRadius:4,padding:"18px 12px",cursor:"pointer",textAlign:"center",boxShadow:"0 4px 16px rgba(196,30,58,.2)"}}>
                 <div style={{fontSize:26,marginBottom:4}}>🎯</div>
                 <div style={{fontWeight:700,fontSize:14}}>Quiz complet</div>
                 <div style={{fontSize:11,opacity:.8,marginTop:2}}>{isPremium?`${ALL_QUESTIONS.length} questions`:`${TRIAL_PER_THEME} par thème (essai)`}</div>
               </button>
-              <button className="lift" onClick={startMockExam} style={{background:"linear-gradient(135deg,#0a4020,#1a7a4a)",color:"white",border:"none",borderRadius:14,padding:"18px 12px",cursor:"pointer",textAlign:"center",boxShadow:"0 4px 18px rgba(10,64,32,.28)"}}>
+              <button className="lift" onClick={startMockExam} style={{background:"linear-gradient(135deg,#1B4332,#2D6A4F)",color:"white",border:"none",borderRadius:4,padding:"18px 12px",cursor:"pointer",textAlign:"center",boxShadow:"0 4px 16px rgba(45,106,79,.2)"}}>
                 <div style={{fontSize:26,marginBottom:4}}>📝</div>
                 <div style={{fontWeight:700,fontSize:14}}>Examen blanc</div>
                 <div style={{fontSize:11,opacity:.8,marginTop:2}}>{isPremium?"40 questions · 45 min":"🔒 Premium"}</div>
@@ -1325,7 +1325,7 @@ export default function App() {
             </div>
 
             {!isPremium&&(
-              <button className="lift" onClick={()=>setScreen("pricing")} style={{background:"linear-gradient(135deg,#ffd700,#ffb300)",color:"#3a2000",border:"none",borderRadius:14,padding:"14px 12px",cursor:"pointer",textAlign:"center",width:"100%",marginBottom:16,boxShadow:"0 4px 18px rgba(255,180,0,.35)"}}>
+              <button className="lift" onClick={()=>setScreen("pricing")} style={{background:"linear-gradient(135deg,#D4A012,#C08C00)",color:"#3A2800",border:"none",borderRadius:4,padding:"14px 12px",cursor:"pointer",textAlign:"center",width:"100%",marginBottom:16,boxShadow:"0 4px 18px rgba(212,160,18,.3)"}}>
                 <div style={{fontWeight:800,fontSize:14}}>💳 Débloquer l'accès complet — 5,00 €</div>
                 <div style={{fontSize:11,opacity:.8,marginTop:2}}>{ALL_QUESTIONS.length} questions · Mode écoute · 11 langues · Accès à vie</div>
               </button>
@@ -1338,25 +1338,25 @@ export default function App() {
             <LandingWhoMustTake />
 
             {/* ── Themes grid ── */}
-            <div style={{fontWeight:700,fontSize:13,color:"#555",marginBottom:10}}>Thèmes ({THEMES.length})</div>
+            <div style={{fontWeight:700,fontSize:13,color:"#4A4540",marginBottom:10}}>Thèmes ({THEMES.length})</div>
             <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(190px,1fr))",gap:10,marginBottom:16}}>
               {THEMES.map(t=>{
                 const cnt=ALL_QUESTIONS.filter(q=>q.theme===t.id).length;
                 const used = trialUsed[t.id]||0;
                 const trialDone = !isPremium && used >= TRIAL_PER_THEME;
                 return (
-                  <div key={t.id} style={{background:"white",borderRadius:18,border:"1px solid #eef0f8",borderTop:`3px solid ${t.color}`,boxShadow:"0 2px 12px rgba(0,0,0,.05)",padding:"18px 16px",marginBottom:0,transition:"all .22s cubic-bezier(.16,1,.3,1)",cursor:"pointer"}}>
+                  <div key={t.id} style={{background:"white",borderRadius:6,border:"1px solid #eef0f8",borderTop:`3px solid ${t.color}`,boxShadow:"none",padding:"18px 16px",marginBottom:0,transition:"all .22s cubic-bezier(.16,1,.3,1)",cursor:"pointer"}}>
                     <div style={{fontSize:22,marginBottom:6}}>{t.icon}</div>
                     <div style={{fontWeight:700,fontSize:13,marginBottom:2}}>{t.label}</div>
-                    <div style={{fontSize:11,color:"#999",marginBottom:isPremium?8:4}}>{cnt} questions</div>
+                    <div style={{fontSize:11,color:"#8A8480",marginBottom:isPremium?8:4}}>{cnt} questions</div>
                     {!isPremium&&(
                       <div style={{marginBottom:8}}>
-                        <div style={{display:"flex",justifyContent:"space-between",fontSize:10,color:trialDone?"#1a7a4a":t.color,fontWeight:700,marginBottom:3}}>
+                        <div style={{display:"flex",justifyContent:"space-between",fontSize:10,color:trialDone?"#2D6A4F":t.color,fontWeight:700,marginBottom:3}}>
                           <span>{trialDone?"✓ Essai terminé":`${used}/${TRIAL_PER_THEME} essai`}</span>
-                          <span style={{color:"#bbb"}}>{TRIAL_PER_THEME} gratuit</span>
+                          <span style={{color:"#B0A898"}}>{TRIAL_PER_THEME} gratuit</span>
                         </div>
                         <div style={{background:"#eee",borderRadius:4,height:4}}>
-                          <div style={{width:`${Math.min(100,(used/TRIAL_PER_THEME)*100)}%`,height:"100%",borderRadius:4,background:trialDone?"#1a7a4a":t.color,transition:"width .4s"}}/>
+                          <div style={{width:`${Math.min(100,(used/TRIAL_PER_THEME)*100)}%`,height:"100%",borderRadius:4,background:trialDone?"#2D6A4F":t.color,transition:"width .4s"}}/>
                         </div>
                       </div>
                     )}
@@ -1394,9 +1394,9 @@ export default function App() {
         {/* LISTEN MODE */}
         {screen==="listen"&&listenCurQ&&(
           <div className="fade">
-            <div style={{...card,background:"linear-gradient(160deg,#1a0a3a,#3b1f7a,#1a3a8f)",color:"white",padding:"24px"}}>
+            <div style={{...card,background:"linear-gradient(160deg,#1a0a3a,#3b1f7a,#C41E3A)",color:"white",padding:"24px"}}>
               <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:14}}>
-                <div style={{padding:"4px 12px",borderRadius:20,background:"rgba(255,255,255,.15)",fontSize:12,fontWeight:700}}>
+                <div style={{padding:"4px 12px",borderRadius:6,background:"rgba(255,255,255,.15)",fontSize:12,fontWeight:700}}>
                   {listenPlaying?(phaseLabel[listenPhase]||"⏳"):"⏸ En pause"}
                 </div>
                 {listenPlaying&&<Waveform active={true} color="rgba(255,255,255,.9)" size={16}/>}
@@ -1410,23 +1410,23 @@ export default function App() {
               </div>
               <div style={{fontSize:15,fontWeight:700,lineHeight:1.65,marginBottom:8}}>{listenCurQ.q}</div>
               {(listenPhase==="answer"||listenPhase==="explanation"||listenPhase==="pause")&&(
-                <div style={{background:"rgba(255,255,255,.15)",borderRadius:10,padding:"10px 14px",marginBottom:10}}>
+                <div style={{background:"rgba(255,255,255,.15)",borderRadius:4,padding:"10px 14px",marginBottom:10}}>
                   <div style={{fontSize:11,opacity:.7,marginBottom:3}}>✅ Bonne réponse</div>
                   <div style={{fontWeight:700,fontSize:14}}>{listenCurQ.c[listenCurQ.a]}</div>
                 </div>
               )}
               {(listenPhase==="explanation"||listenPhase==="pause")&&(
-                <div style={{background:"rgba(255,255,255,.1)",borderRadius:10,padding:"10px 14px",fontSize:12,lineHeight:1.75}}>💡 {listenCurQ.e}</div>
+                <div style={{background:"rgba(255,255,255,.1)",borderRadius:4,padding:"10px 14px",fontSize:12,lineHeight:1.75}}>💡 {listenCurQ.e}</div>
               )}
               <div style={{display:"flex",justifyContent:"center",alignItems:"center",gap:14,marginTop:20}}>
-                <button onClick={()=>skipTo(Math.max(0,listenIdx-1))} style={{background:"rgba(255,255,255,.15)",border:"none",color:"white",borderRadius:"50%",width:40,height:40,cursor:"pointer",fontSize:16}}>⏮</button>
-                <button onClick={toggleListenPause} className={listenPlaying?"pulse":""} style={{background:"white",border:"none",color:"#3b1f7a",borderRadius:"50%",width:56,height:56,cursor:"pointer",fontSize:22,fontWeight:700,boxShadow:"0 4px 16px rgba(0,0,0,.2)"}}>
+                <button onClick={()=>skipTo(Math.max(0,listenIdx-1))} style={{background:"rgba(255,255,255,.15)",border:"none",color:"white",borderRadius:"6px",width:40,height:40,cursor:"pointer",fontSize:16}}>⏮</button>
+                <button onClick={toggleListenPause} className={listenPlaying?"pulse":""} style={{background:"white",border:"none",color:"#6B21A8",borderRadius:"6px",width:56,height:56,cursor:"pointer",fontSize:22,fontWeight:700,boxShadow:"0 4px 16px rgba(0,0,0,.2)"}}>
                   {listenPlaying?"⏸":"▶"}
                 </button>
-                <button onClick={()=>skipTo(Math.min(listenQs.length-1,listenIdx+1))} style={{background:"rgba(255,255,255,.15)",border:"none",color:"white",borderRadius:"50%",width:40,height:40,cursor:"pointer",fontSize:16}}>⏭</button>
+                <button onClick={()=>skipTo(Math.min(listenQs.length-1,listenIdx+1))} style={{background:"rgba(255,255,255,.15)",border:"none",color:"white",borderRadius:"6px",width:40,height:40,cursor:"pointer",fontSize:16}}>⏭</button>
               </div>
               <div style={{display:"flex",justifyContent:"center",gap:7,marginTop:12}}>
-                {SPEEDS.map(s=><button key={s.v} onClick={()=>setSpeed(s.v)} style={{padding:"4px 10px",borderRadius:14,border:"none",background:speed===s.v?"white":"rgba(255,255,255,.15)",color:speed===s.v?"#3b1f7a":"white",fontSize:11,fontWeight:700,cursor:"pointer"}}>{s.label}</button>)}
+                {SPEEDS.map(s=><button key={s.v} onClick={()=>setSpeed(s.v)} style={{padding:"4px 10px",borderRadius:4,border:"none",background:speed===s.v?"white":"rgba(255,255,255,.15)",color:speed===s.v?"#6B21A8":"white",fontSize:11,fontWeight:700,cursor:"pointer"}}>{s.label}</button>)}
               </div>
             </div>
             <div style={{...card,padding:"16px"}}>
@@ -1436,15 +1436,15 @@ export default function App() {
                   const th=THEMES.find(t=>t.id===q.theme);
                   const isCur=i===listenIdx,isPast=i<listenIdx;
                   return (
-                    <div key={i} onClick={()=>skipTo(i)} style={{display:"flex",alignItems:"center",gap:9,padding:"9px 11px",borderRadius:10,background:isCur?"#eef1fb":isPast?"#f9f9f6":"white",border:`2px solid ${isCur?"#1a3a8f":"#eee"}`,cursor:"pointer"}}>
-                      <div style={{width:24,height:24,borderRadius:"50%",background:isCur?"#1a3a8f":isPast?"#ccc":"#f0f0f0",color:isCur?"white":isPast?"white":"#999",display:"flex",alignItems:"center",justifyContent:"center",fontSize:10,fontWeight:700,flexShrink:0}}>
+                    <div key={i} onClick={()=>skipTo(i)} style={{display:"flex",alignItems:"center",gap:9,padding:"9px 11px",borderRadius:4,background:isCur?"#eef1fb":isPast?"#f9f9f6":"white",border:`2px solid ${isCur?"#C41E3A":"#eee"}`,cursor:"pointer"}}>
+                      <div style={{width:24,height:24,borderRadius:"6px",background:isCur?"#C41E3A":isPast?"#ccc":"#f0f0f0",color:isCur?"white":isPast?"white":"#8A8480",display:"flex",alignItems:"center",justifyContent:"center",fontSize:10,fontWeight:700,flexShrink:0}}>
                         {isCur&&listenPlaying?<Waveform active={true} color="white" size={10}/>:i+1}
                       </div>
                       <div style={{flex:1,minWidth:0}}>
-                        <div style={{fontSize:12,fontWeight:isCur?700:400,color:isCur?"#1a3a8f":isPast?"#999":"#333",whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{q.q}</div>
+                        <div style={{fontSize:12,fontWeight:isCur?700:400,color:isCur?"#C41E3A":isPast?"#8A8480":"#1C1917",whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{q.q}</div>
                         <div style={{fontSize:10,color:th?.color,marginTop:1}}>{th?.icon} {th?.label}</div>
                       </div>
-                      {isPast&&<span style={{color:"#1a7a4a",fontSize:13}}>✓</span>}
+                      {isPast&&<span style={{color:"#2D6A4F",fontSize:13}}>✓</span>}
                     </div>
                   );
                 })}
@@ -1460,30 +1460,30 @@ export default function App() {
           const th=THEMES.find(x=>x.id===q.theme);
           return (
             <div className="fade">
-              <div style={{background:"white",borderRadius:18,border:"1px solid #eef0f8",boxShadow:"0 2px 12px rgba(0,0,0,.05)",padding:"14px 18px",marginBottom:12}}>
+              <div style={{background:"white",borderRadius:6,border:"1px solid #eef0f8",boxShadow:"none",padding:"14px 18px",marginBottom:12}}>
                 <div style={{display:"flex",justifyContent:"space-between",fontSize:12,marginBottom:6}}>
                   <span style={{fontWeight:600,color:th?.color}}>{th?.icon} {th?.label}</span>
-                  <span style={{fontWeight:700,color:"#1a3a8f"}}>
+                  <span style={{fontWeight:700,color:"#C41E3A"}}>
                     {qIdx+1}/{quizQs.length}
-                    {!isPremium&&<span style={{marginLeft:8,color:"#e67e22",fontSize:11}}>· essai {Math.min(qIdx+1,TRIAL_PER_THEME)}/{TRIAL_PER_THEME}</span>}
-                    <span style={{marginLeft:8,color:"#1a7a4a"}}>✓{totalScore}</span>
-                    <span style={{marginLeft:5,color:"#c0392b"}}>✗{totalAnswered-totalScore}</span>
+                    {!isPremium&&<span style={{marginLeft:8,color:"#B8720A",fontSize:11}}>· essai {Math.min(qIdx+1,TRIAL_PER_THEME)}/{TRIAL_PER_THEME}</span>}
+                    <span style={{marginLeft:8,color:"#2D6A4F"}}>✓{totalScore}</span>
+                    <span style={{marginLeft:5,color:"#C41E3A"}}>✗{totalAnswered-totalScore}</span>
                   </span>
                 </div>
                 <div style={{background:"#e4e4e4",borderRadius:5,height:6}}>
-                  <div style={{width:`${(qIdx/quizQs.length)*100}%`,height:"100%",background:`linear-gradient(90deg,${th?.color||"#1a3a8f"},#1a3a8f)`,borderRadius:5,transition:"width .5s ease"}}/>
+                  <div style={{width:`${(qIdx/quizQs.length)*100}%`,height:"100%",background:`linear-gradient(90deg,${th?.color||"#C41E3A"},#C41E3A)`,borderRadius:5,transition:"width .5s ease"}}/>
                 </div>
                 {isMockExam&&mockTimeLeft!==null&&(()=>{
                   const m=Math.floor(mockTimeLeft/60);
                   const s=mockTimeLeft%60;
                   const urgent=mockTimeLeft<300;
                   return(
-                    <div style={{display:"flex",alignItems:"center",justifyContent:"center",gap:6,marginTop:10,background:urgent?"linear-gradient(135deg,#fff5f5,#ffe3e3)":"linear-gradient(135deg,#eef2ff,#e8efff)",borderRadius:12,padding:"10px 16px",border:`1.5px solid ${urgent?"#e03131":"#3b5bdb"}`,boxShadow:`0 4px 12px ${urgent?"rgba(224,49,49,.12)":"rgba(59,91,219,.1)"}`,marginTop:10}}>
+                    <div style={{display:"flex",alignItems:"center",justifyContent:"center",gap:6,marginTop:10,background:urgent?"linear-gradient(135deg,#fff5f5,#ffe3e3)":"linear-gradient(135deg,#FEF3EE,#FAF7F2)",borderRadius:4,padding:"10px 16px",border:`1.5px solid ${urgent?"#C41E3A":"#C41E3A"}`,boxShadow:`0 4px 12px ${urgent?"rgba(224,49,49,.12)":"rgba(59,91,219,.1)"}`,marginTop:10}}>
                       <span style={{fontSize:16}}>{urgent?"⚠️":"⏱️"}</span>
-                      <span style={{fontWeight:800,fontSize:16,color:urgent?"#c0392b":"#1a3a8f",fontFamily:"monospace",letterSpacing:2}}>
+                      <span style={{fontWeight:800,fontSize:16,color:urgent?"#C41E3A":"#C41E3A",fontFamily:"monospace",letterSpacing:2}}>
                         {String(m).padStart(2,"0")}:{String(s).padStart(2,"0")}
                       </span>
-                      <span style={{fontSize:11,color:urgent?"#c0392b":"#666",fontWeight:600}}>
+                      <span style={{fontSize:11,color:urgent?"#C41E3A":"#4A4540",fontWeight:600}}>
                         {urgent?"Dépêchez-vous !":"restant"}
                       </span>
                     </div>
@@ -1492,8 +1492,8 @@ export default function App() {
               </div>
               <div key={qIdx} className="fade" style={{...card}}>
                 <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",gap:10,marginBottom:t?5:18}}>
-                  <div style={{fontSize:18,fontWeight:700,lineHeight:1.6,flex:1,fontFamily:"'Sora',sans-serif",color:"#0d1a3a",letterSpacing:-.2}}>{q.q}</div>
-                  <button onClick={readCurrentQuiz} style={{background:"#f0f4ff",border:"none",color:"#1a3a8f",borderRadius:"50%",width:36,height:36,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",flexShrink:0,fontSize:15}}>🔊</button>
+                  <div style={{fontSize:18,fontWeight:700,lineHeight:1.6,flex:1,fontFamily:"'Playfair Display',serif",color:"#1C1917",letterSpacing:-.2}}>{q.q}</div>
+                  <button onClick={readCurrentQuiz} style={{background:"#FEF3EE",border:"none",color:"#C41E3A",borderRadius:"6px",width:36,height:36,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",flexShrink:0,fontSize:15}}>🔊</button>
                 </div>
                 {t&&<div style={{fontSize:13,color:"#4a6fa0",fontStyle:"italic",marginBottom:16,lineHeight:1.65,direction:isRTL?"rtl":"ltr",borderLeft:isRTL?"none":"3px solid #c0d0e8",paddingLeft:isRTL?0:10}}>{t.q}</div>}
                 <div style={{display:"flex",flexDirection:"column",gap:8}}>
@@ -1501,24 +1501,24 @@ export default function App() {
                     let cls="cBtn";
                     if(answered){if(idx===q.a)cls+=" cReveal";else if(idx===selected)cls+=" cWrong";}
                     else if(readingChoiceIdx===idx)cls+=" cSpeaking";
-                    const iconBg=answered&&idx===q.a?"#1a7a4a":answered&&idx===selected&&idx!==q.a?"#c0392b":readingChoiceIdx===idx?"#1a3a8f":"#dde4f5";
-                    const iconTx=(answered&&(idx===q.a||(idx===selected&&idx!==q.a)))||readingChoiceIdx===idx?"white":"#1a3a8f";
+                    const iconBg=answered&&idx===q.a?"#2D6A4F":answered&&idx===selected&&idx!==q.a?"#C41E3A":readingChoiceIdx===idx?"#C41E3A":"#dde4f5";
+                    const iconTx=(answered&&(idx===q.a||(idx===selected&&idx!==q.a)))||readingChoiceIdx===idx?"white":"#C41E3A";
                     const icon=answered&&idx===q.a?"✓":answered&&idx===selected&&idx!==q.a?"✗":readingChoiceIdx===idx?<Waveform active={true} color="white" size={11}/>:String.fromCharCode(65+idx);
                     return (
-                      <button key={idx} className={cls} onClick={()=>handleAnswer(idx)} disabled={answered} style={{display:"flex",alignItems:"flex-start",gap:12,padding:"14px 16px",borderRadius:12,textAlign:"left",fontSize:13.5,lineHeight:1.5}}>
-                        <span style={{width:25,height:25,borderRadius:"50%",background:iconBg,color:iconTx,display:"flex",alignItems:"center",justifyContent:"center",fontSize:11,fontWeight:700,flexShrink:0,marginTop:2,transition:"all .2s"}}>{icon}</span>
+                      <button key={idx} className={cls} onClick={()=>handleAnswer(idx)} disabled={answered} style={{display:"flex",alignItems:"flex-start",gap:12,padding:"14px 16px",borderRadius:4,textAlign:"left",fontSize:13.5,lineHeight:1.5}}>
+                        <span style={{width:25,height:25,borderRadius:"6px",background:iconBg,color:iconTx,display:"flex",alignItems:"center",justifyContent:"center",fontSize:11,fontWeight:700,flexShrink:0,marginTop:2,transition:"all .2s"}}>{icon}</span>
                         <div>
-                          <div style={{color:answered&&idx===q.a?"#1a7a4a":"#333",fontWeight:answered&&idx===q.a?700:400}}>{ch}</div>
-                          {t?.c?.[idx]&&lang!=="fr"&&<div style={{fontSize:11.5,color:answered&&idx===q.a?"#2e8a5a":"#999",fontStyle:"italic",marginTop:2,direction:isRTL?"rtl":"ltr"}}>{t.c[idx]}</div>}
+                          <div style={{color:answered&&idx===q.a?"#2D6A4F":"#1C1917",fontWeight:answered&&idx===q.a?700:400}}>{ch}</div>
+                          {t?.c?.[idx]&&lang!=="fr"&&<div style={{fontSize:11.5,color:answered&&idx===q.a?"#2e8a5a":"#8A8480",fontStyle:"italic",marginTop:2,direction:isRTL?"rtl":"ltr"}}>{t.c[idx]}</div>}
                         </div>
                       </button>
                     );
                   })}
                 </div>
                 {answered&&(
-                  <div className="fade" style={{marginTop:14,padding:"12px 14px",background:selected===q.a?"#e6f7ee":"#fdf6ec",borderRadius:10,borderLeft:`4px solid ${selected===q.a?"#1a7a4a":"#e67e22"}`}}>
-                    <div style={{fontWeight:700,color:selected===q.a?"#1a7a4a":"#e67e22",fontSize:13,marginBottom:4}}>{selected===q.a?"✓ Bonne réponse !":"✗ Réponse incorrecte"}</div>
-                    <div style={{fontSize:12.5,color:"#555",lineHeight:1.8}}>{q.e}</div>
+                  <div className="fade" style={{marginTop:14,padding:"12px 14px",background:selected===q.a?"#D8F0E5":"#fdf6ec",borderRadius:4,borderLeft:`4px solid ${selected===q.a?"#2D6A4F":"#B8720A"}`}}>
+                    <div style={{fontWeight:700,color:selected===q.a?"#2D6A4F":"#B8720A",fontSize:13,marginBottom:4}}>{selected===q.a?"✓ Bonne réponse !":"✗ Réponse incorrecte"}</div>
+                    <div style={{fontSize:12.5,color:"#4A4540",lineHeight:1.8}}>{q.e}</div>
                     {t?.e&&lang!=="fr"&&<div style={{marginTop:7,fontSize:12.5,color:"#4a6fa0",fontStyle:"italic",lineHeight:1.8,direction:isRTL?"rtl":"ltr",borderTop:"1px solid rgba(0,0,0,.07)",paddingTop:7}}>{t.e}</div>}
                   </div>
                 )}
@@ -1526,10 +1526,10 @@ export default function App() {
               {answered&&(
                 <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
                   {!isPremium&&qIdx===quizQs.length-2&&(
-                    <a href="#" onClick={e=>{e.preventDefault();setScreen("pricing");}} style={{fontSize:12,color:"#3b1f7a",fontWeight:700,textDecoration:"none"}}>🔓 Débloquer les {ALL_QUESTIONS.filter(q=>q.theme===(currentQuizTheme||q.theme)).length} questions →</a>
+                    <a href="#" onClick={e=>{e.preventDefault();setScreen("pricing");}} style={{fontSize:12,color:"#6B21A8",fontWeight:700,textDecoration:"none"}}>🔓 Débloquer les {ALL_QUESTIONS.filter(q=>q.theme===(currentQuizTheme||q.theme)).length} questions →</a>
                   )}
                   <div style={{marginLeft:"auto"}}>
-                    <button onClick={nextQ} style={{background:"linear-gradient(135deg,#0d1b4b,#2d4faa)",color:"white",border:"none",borderRadius:14,padding:"12px 26px",cursor:"pointer",fontSize:14,fontWeight:700,boxShadow:"0 4px 16px rgba(45,79,170,.3)",fontFamily:"'Inter',sans-serif"}}>{qIdx+1>=quizQs.length?"Voir les résultats →":"Suivant →"}</button>
+                    <button onClick={nextQ} style={{background:"linear-gradient(135deg,#1C1917,#C41E3A)",color:"white",border:"none",borderRadius:4,padding:"12px 26px",cursor:"pointer",fontSize:14,fontWeight:700,boxShadow:"0 4px 16px rgba(196,30,58,.2)",fontFamily:"'DM Sans',sans-serif"}}>{qIdx+1>=quizQs.length?"Voir les résultats →":"Suivant →"}</button>
                   </div>
                 </div>
               )}
@@ -1540,18 +1540,18 @@ export default function App() {
         {/* RESULTS */}
         {screen==="results"&&(
           <div className="fade">
-            <div style={{background:passed?"linear-gradient(145deg,#083d1a,#0f6b30,#1a9a48)":"linear-gradient(145deg,#3d0808,#8b1a1a,#c0392b)",color:"white",textAlign:"center",padding:"40px 24px",borderRadius:24,marginBottom:16,boxShadow:passed?"0 12px 48px rgba(15,107,48,.4)":"0 12px 48px rgba(139,26,26,.4)"}}>
+            <div style={{background:passed?"linear-gradient(145deg,#1B4332,#2D6A4F,#40916C)":"linear-gradient(145deg,#3D0000,#8b1a1a,#c0392b)",color:"white",textAlign:"center",padding:"40px 24px",borderRadius:8,marginBottom:16,boxShadow:passed?"0 8px 32px rgba(45,106,79,.25)":"0 8px 32px rgba(196,30,58,.25)"}}>
               <div style={{fontSize:50,marginBottom:8}}>{passed?"🎉":"📚"}</div>
-              <div style={{fontSize:64,fontWeight:800,lineHeight:1,fontFamily:"'Sora',sans-serif",letterSpacing:-2}}>{totalScore}<span style={{fontSize:26,opacity:.6,fontWeight:600}}> / {quizQs.length}</span></div>
-              <div style={{fontSize:30,fontWeight:800,marginTop:8,fontFamily:"'Sora',sans-serif"}}>{Math.round((totalScore/quizQs.length)*100)}%</div>
-              <div style={{marginTop:14,fontSize:12.5,fontWeight:600,background:"rgba(255,255,255,.15)",border:"1px solid rgba(255,255,255,.2)",display:"inline-flex",padding:"7px 18px",borderRadius:20}}>{passed?`✓ Seuil atteint (${passMark}/${quizQs.length})`:`Il manque ${passMark-totalScore} point(s) pour 80 %`}</div>
+              <div style={{fontSize:64,fontWeight:800,lineHeight:1,fontFamily:"'Playfair Display',serif",letterSpacing:-2}}>{totalScore}<span style={{fontSize:26,opacity:.6,fontWeight:600}}> / {quizQs.length}</span></div>
+              <div style={{fontSize:30,fontWeight:800,marginTop:8,fontFamily:"'Playfair Display',serif"}}>{Math.round((totalScore/quizQs.length)*100)}%</div>
+              <div style={{marginTop:14,fontSize:12.5,fontWeight:600,background:"rgba(255,255,255,.15)",border:"1px solid rgba(255,255,255,.2)",display:"inline-flex",padding:"7px 18px",borderRadius:6}}>{passed?`✓ Seuil atteint (${passMark}/${quizQs.length})`:`Il manque ${passMark-totalScore} point(s) pour 80 %`}</div>
             </div>
 
             {!isPremium&&(()=>{
               const th = THEMES.find(t=>t.id===currentQuizTheme);
               const themeTotal = currentQuizTheme ? ALL_QUESTIONS.filter(q=>q.theme===currentQuizTheme).length : ALL_QUESTIONS.length;
               return (
-                <div style={{background:"linear-gradient(145deg,#130e30,#251860,#1e3480)",color:"white",textAlign:"center",padding:"28px",borderRadius:22,marginBottom:16,boxShadow:"0 8px 36px rgba(19,14,48,.35)"}}>
+                <div style={{background:"linear-gradient(145deg,#1C1917,#1C1917,#1e3480)",color:"white",textAlign:"center",padding:"28px",borderRadius:6,marginBottom:16,boxShadow:"0 8px 32px rgba(28,25,23,.2)"}}>
                   <div style={{fontSize:28,marginBottom:8}}>🚀</div>
                   <div style={{fontWeight:800,fontSize:16,marginBottom:6}}>
                     {currentQuizTheme?`Continuez avec les ${themeTotal} questions ${th?.label||""}`:`Débloquez les ${ALL_QUESTIONS.length} questions officielles`}
@@ -1559,7 +1559,7 @@ export default function App() {
                   <div style={{fontSize:13,opacity:.8,marginBottom:16}}>
                     Vous avez complété l'essai de {currentQuizTheme?`ce thème (${TRIAL_PER_THEME}/${themeTotal})`:`chaque thème (${TRIAL_PER_THEME} questions sur ${themeTotal} au total)`}.
                   </div>
-                  <a href={STRIPE_LINK} target="_blank" rel="noopener noreferrer" style={{display:"inline-block",background:"#ffd700",color:"#1a0a3a",borderRadius:12,padding:"11px 24px",fontWeight:800,fontSize:14,textDecoration:"none"}}>
+                  <a href={STRIPE_LINK} target="_blank" rel="noopener noreferrer" style={{display:"inline-block",background:"#D4A012",color:"#1C1917",borderRadius:4,padding:"11px 24px",fontWeight:800,fontSize:14,textDecoration:"none"}}>
                     💳 Accès complet — 5,00 €
                   </a>
                 </div>
@@ -1569,24 +1569,24 @@ export default function App() {
             {wrongAnswers.length>0&&(
               <div style={{...card}}>
                 <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}}>
-                  <div style={{fontWeight:700,fontSize:13,color:"#e03131"}}>🔁 À revoir — {wrongAnswers.length} Q</div>
-                  {isPremium&&<button className="lift" onClick={()=>{const pool=wrongAnswers.map(q=>({...q,origIdx:ALL_QUESTIONS.findIndex(x=>x.q===q.q)}));setListenQs(pool);setListenIdx(0);listenRef.current={playing:true,idx:0,questions:pool};setListenPlaying(true);setScreen("listen");setTimeout(()=>runListenFrom(0,pool,listenBilingual),200);}} style={{background:"#3b1f7a",color:"white",border:"none",borderRadius:10,padding:"6px 12px",cursor:"pointer",fontSize:11,fontWeight:700}}>🎧 Écouter les erreurs</button>}
+                  <div style={{fontWeight:700,fontSize:13,color:"#C41E3A"}}>🔁 À revoir — {wrongAnswers.length} Q</div>
+                  {isPremium&&<button className="lift" onClick={()=>{const pool=wrongAnswers.map(q=>({...q,origIdx:ALL_QUESTIONS.findIndex(x=>x.q===q.q)}));setListenQs(pool);setListenIdx(0);listenRef.current={playing:true,idx:0,questions:pool};setListenPlaying(true);setScreen("listen");setTimeout(()=>runListenFrom(0,pool,listenBilingual),200);}} style={{background:"#6B21A8",color:"white",border:"none",borderRadius:4,padding:"6px 12px",cursor:"pointer",fontSize:11,fontWeight:700}}>🎧 Écouter les erreurs</button>}
                 </div>
                 {wrongAnswers.map((wq,i)=>(
-                  <div key={i} style={{marginBottom:10,padding:"11px 13px",background:"#fdf6ec",borderRadius:10,borderLeft:"4px solid #e67e22"}}>
+                  <div key={i} style={{marginBottom:10,padding:"11px 13px",background:"#FEF8EE",borderRadius:4,borderLeft:"4px solid #B8720A"}}>
                     <div style={{fontWeight:700,fontSize:12.5}}>{wq.q}</div>
-                    <div style={{fontSize:12.5,color:"#1a7a4a",fontWeight:600,marginTop:4}}>✓ {wq.c[wq.a]}</div>
-                    <div style={{fontSize:11.5,color:"#666",marginTop:4,fontStyle:"italic"}}>{wq.e}</div>
+                    <div style={{fontSize:12.5,color:"#2D6A4F",fontWeight:600,marginTop:4}}>✓ {wq.c[wq.a]}</div>
+                    <div style={{fontSize:11.5,color:"#4A4540",marginTop:4,fontStyle:"italic"}}>{wq.e}</div>
                   </div>
                 ))}
               </div>
             )}
 
             {isPremium&&allWrongAnswers.length>0&&(
-              <div style={{background:"linear-gradient(135deg,#fff8e1,#fff3cd)",border:"2px solid #f39c12",borderRadius:14,padding:"18px 20px",textAlign:"center",marginBottom:8}}>
+              <div style={{background:"linear-gradient(135deg,#FEF8EE,#FDF5DC)",border:"2px solid #D4A012",borderRadius:4,padding:"18px 20px",textAlign:"center",marginBottom:8}}>
                 <div style={{fontSize:28,marginBottom:6}}>🎯</div>
-                <div style={{fontWeight:800,fontSize:15,color:"#7a4a00",marginBottom:6}}>Examen personnalisé disponible !</div>
-                <div style={{fontSize:13,color:"#8a5a00",marginBottom:14}}>Vous avez {allWrongAnswers.length} question(s) ratée(s) au total. Voulez-vous un examen blanc basé sur vos erreurs ?</div>
+                <div style={{fontWeight:800,fontSize:15,color:"#7A5500",marginBottom:6}}>Examen personnalisé disponible !</div>
+                <div style={{fontSize:13,color:"#8A6000",marginBottom:14}}>Vous avez {allWrongAnswers.length} question(s) ratée(s) au total. Voulez-vous un examen blanc basé sur vos erreurs ?</div>
                 <button onClick={()=>{
                   const pool=[...allWrongAnswers].sort(()=>Math.random()-0.5).slice(0,40);
                   setQuizQs(pool);
@@ -1596,25 +1596,25 @@ export default function App() {
                   setScores({});
                   setWrongAnswers([]);
                   setScreen("quiz");
-                }} style={{background:"linear-gradient(135deg,#f39c12,#e67e22)",color:"white",border:"none",borderRadius:12,padding:"11px 24px",cursor:"pointer",fontSize:14,fontWeight:800,marginRight:8}}>
+                }} style={{background:"linear-gradient(135deg,#D4A012,#C08C00)",color:"white",border:"none",borderRadius:4,padding:"11px 24px",cursor:"pointer",fontSize:14,fontWeight:800,marginRight:8}}>
                   🎯 Lancer l'examen personnalisé
                 </button>
-                <button onClick={()=>setAllWrongAnswers([])} style={{background:"white",color:"#e67e22",border:"1px solid #e67e22",borderRadius:12,padding:"11px 16px",cursor:"pointer",fontSize:13,fontWeight:700}}>
+                <button onClick={()=>setAllWrongAnswers([])} style={{background:"white",color:"#B8720A",border:"1px solid #B8720A",borderRadius:4,padding:"11px 16px",cursor:"pointer",fontSize:13,fontWeight:700}}>
                   🗑 Effacer
                 </button>
               </div>
             )}
             <div style={{display:"flex",gap:10,justifyContent:"center",flexWrap:"wrap"}}>
-              <button className="lift" onClick={()=>startQuiz(null)} style={{background:"linear-gradient(135deg,#0d1b4b,#2d4faa)",color:"white",border:"none",borderRadius:14,padding:"12px 24px",cursor:"pointer",fontSize:13,fontWeight:700,boxShadow:"0 4px 16px rgba(45,79,170,.28)"}}>🔄 Recommencer</button>
-              {isPremium&&<button className="lift" onClick={()=>startListen("all")} style={{background:"linear-gradient(145deg,#130e30,#251860)",color:"white",border:"none",borderRadius:14,padding:"12px 24px",cursor:"pointer",fontSize:13,fontWeight:700,boxShadow:"0 4px 16px rgba(19,14,48,.3)"}}>🎧 Tout écouter</button>}
-              <button className="lift" onClick={()=>{stopAll();setScreen("home");}} style={{background:"white",color:"#0d1b4b",border:"1.5px solid #e2e6f3",borderRadius:14,padding:"12px 24px",cursor:"pointer",fontSize:13,fontWeight:700,boxShadow:"0 2px 8px rgba(0,0,0,.05)"}}>🏠 Accueil</button>
+              <button className="lift" onClick={()=>startQuiz(null)} style={{background:"linear-gradient(135deg,#1C1917,#C41E3A)",color:"white",border:"none",borderRadius:4,padding:"12px 24px",cursor:"pointer",fontSize:13,fontWeight:700,boxShadow:"0 4px 16px rgba(196,30,58,.2)"}}>🔄 Recommencer</button>
+              {isPremium&&<button className="lift" onClick={()=>startListen("all")} style={{background:"linear-gradient(145deg,#1C1917,#6B21A8)",color:"white",border:"none",borderRadius:4,padding:"12px 24px",cursor:"pointer",fontSize:13,fontWeight:700,boxShadow:"0 4px 16px rgba(28,25,23,.3)"}}>🎧 Tout écouter</button>}
+              <button className="lift" onClick={()=>{stopAll();setScreen("home");}} style={{background:"white",color:"#1C1917",border:"1.5px solid #e2e6f3",borderRadius:4,padding:"12px 24px",cursor:"pointer",fontSize:13,fontWeight:700,boxShadow:"0 2px 8px rgba(0,0,0,.05)"}}>🏠 Accueil</button>
             </div>
           </div>
         )}
 
       </div>
 
-      <div style={{textAlign:"center",padding:"12px",fontSize:10,color:"#bbb",borderTop:"1px solid #e0ddd6",marginTop:8}}>
+      <div style={{textAlign:"center",padding:"12px",fontSize:10,color:"#B0A898",borderTop:"1px solid #EDE8DF",marginTop:8}}>
         Programme officiel 2026 · {ALL_QUESTIONS.length} questions · Paiement sécurisé par Stripe
       </div>
     </div>
