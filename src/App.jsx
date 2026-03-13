@@ -889,7 +889,12 @@ export default function App() {
       if(!listenRef.current.playing||i>=questions.length){setListenPlaying(false);setListenPhase("");return;}
       listenRef.current.idx=i; setListenIdx(i);
       const q=questions[i];
-        {text:`La bonne réponse est : ${q.c[q.a]}`,phase:"answer",ci:q.a},        ...(listenIncludeExpl?[{text:q.e,phase:"explanation"},      ];
+      const segs=[
+        {text:`Question ${i+1} sur ${questions.length}.`,phase:"question"},
+        {text:q.q,phase:"question"},
+        {text:`La bonne réponse est : ${q.c[q.a]}`,phase:"answer",ci:q.a},
+        ...(listenIncludeExpl?[{text:q.e,phase:"explanation"}]:[]),
+      ];
       let si=0;
       const next=()=>{
         if(!listenRef.current.playing)return;
