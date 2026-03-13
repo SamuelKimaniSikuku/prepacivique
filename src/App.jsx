@@ -1046,6 +1046,7 @@ export default function App() {
 
   const handleAnswer=(idx)=>{
     if(answered)return;
+    quizSpeakAbortRef.current=true;
     setSelected(idx); setAnswered(true);
     const correct=idx===quizQs[qIdx].a;
     setScores(p=>({...p,[qIdx]:correct}));
@@ -1059,6 +1060,7 @@ export default function App() {
   };
 
   const nextQ=()=>{
+    quizSpeakAbortRef.current=true;
     stopAll();
     if(qIdx+1>=quizQs.length){
       setAllWrongAnswers(prev=>{
@@ -1071,16 +1073,31 @@ export default function App() {
     setQIdx(c=>c+1); setSelected(null); setAnswered(false);
   };
 
+  const quizSpeakAbortRef = useRef(false);
   const readCurrentQuiz=()=>{
-    if(isSpeakingQuiz){ stopAll(); setIsSpeakingQuiz(false); return; }
-    stopAll();
+    if(isSpeakingQuiz){
+      quizSpeakAbortRef.current=true;
+      synthRef.current?.cancel();
+      setIsSpeakingQuiz(false);
+      setReadingChoiceIdx(null);
+      return;
+    }
+    quizSpeakAbortRef.current=false;
+    synthRef.current?.cancel();
     const q=quizQs[qIdx];
     const segs=[{text:q.q,lang:"fr"},...q.c.map((ch,i)=>({text:`${String.fromCharCode(65+i)}. ${ch}`,lang:"fr",ci:i}))];
-    listenRef.current.playing=true;
     setIsSpeakingQuiz(true);
     let si=0;
-    const next=()=>{if(!listenRef.current.playing||si>=segs.length){setReadingChoiceIdx(null);setIsSpeakingQuiz(false);return;} const seg=segs[si++]; if(seg.ci!==undefined)setReadingChoiceIdx(seg.ci);else setReadingChoiceIdx(null); speakOne(seg.text,seg.lang,next);};
-    next();
+    const next=()=>{
+      if(quizSpeakAbortRef.current||si>=segs.length){setReadingChoiceIdx(null);setIsSpeakingQuiz(false);return;}
+      const seg=segs[si++];
+      if(seg.ci!==undefined)setReadingChoiceIdx(seg.ci);else setReadingChoiceIdx(null);
+      const utt=new SpeechSynthesisUtterance(seg.text);
+      utt.lang="fr-FR"; utt.rate=speed;
+      utt.onend=next; utt.onerror=next;
+      synthRef.current?.speak(utt);
+    };
+    setTimeout(next, 50);
   };
 
   const totalScore=Object.values(scores).filter(Boolean).length;
@@ -1529,12 +1546,21 @@ export default function App() {
                     <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:4}}>
                       <div style={{fontWeight:700,color:selected===q.a?"#2D6A4F":"#B8720A",fontSize:13}}>{selected===q.a?"✓ Bonne réponse !":"✗ Réponse incorrecte"}</div>
                       <button onClick={()=>{
-                        if(isSpeakingQuiz){stopAll();return;}
-                        stopAll();
+                        if(isSpeakingQuiz){
+                          quizSpeakAbortRef.current=true;
+                          synthRef.current?.cancel();
+                          setIsSpeakingQuiz(false);
+                          return;
+                        }
+                        quizSpeakAbortRef.current=false;
+                        synthRef.current?.cancel();
                         setIsSpeakingQuiz(true);
-                        listenRef.current.playing=true;
                         const txt=`La bonne réponse est : ${q.c[q.a]}. ${q.e}`;
-                        speakOne(txt,"fr",()=>{setIsSpeakingQuiz(false);});
+                        const utt=new SpeechSynthesisUtterance(txt);
+                        utt.lang="fr-FR"; utt.rate=speed;
+                        utt.onend=()=>setIsSpeakingQuiz(false);
+                        utt.onerror=()=>setIsSpeakingQuiz(false);
+                        setTimeout(()=>synthRef.current?.speak(utt),50);
                       }} title={isSpeakingQuiz?"Arrêter":"Écouter l'explication"} style={{background:"transparent",border:"none",cursor:"pointer",color:selected===q.a?"#2D6A4F":"#B8720A",padding:4,display:"flex",alignItems:"center",gap:4,fontSize:11,fontWeight:600}}>
                         {isSpeakingQuiz
                           ? <><svg width="11" height="11" viewBox="0 0 14 14" fill="currentColor"><rect x="2" y="2" width="4" height="10" rx="1"/><rect x="8" y="2" width="4" height="10" rx="1"/></svg> Stop</>
