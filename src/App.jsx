@@ -3,7 +3,6 @@ import ALL_QUESTIONS from './data/questions';
 
 const STRIPE_LINK = "https://buy.stripe.com/9B63cxewr3QW3w2bXG0sU00";
 const TRIAL_PER_THEME = 10;
-const ANTHROPIC_KEY = (import.meta.env.VITE_ANTHROPIC_KEY || "").trim();
 const SUPABASE_URL = "https://vnctdsnfxvwvmkxqygaw.supabase.co";
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZuY3Rkc25meHZ3dm1reHF5Z2F3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzEyNDk1NjcsImV4cCI6MjA4NjgyNTU2N30.qGAMzs2doeMFo3HoIlp4ao2s-crYR2JoOL_A7xrRCm8";
 
@@ -15,33 +14,19 @@ const THEMES = [
   { id:"societe",      label:"Vie en Société",            icon:"🤝",  color:"#B8720A" },
 ];
 
-const LANGUAGES = [
-  { code:"fr", label:"Français",   flag:"🇫🇷", native:"Français",  tts:"fr-FR" },
-  { code:"en", label:"English",    flag:"🇬🇧", native:"English",   tts:"en-GB" },
-  { code:"ar", label:"Arabic",     flag:"🇹🇳", native:"العربية",  tts:"ar-SA", rtl:true },
-  { code:"es", label:"Spanish",    flag:"🇪🇸", native:"Español",   tts:"es-ES" },
-  { code:"pt", label:"Portuguese", flag:"🇵🇹", native:"Português", tts:"pt-PT" },
-  { code:"it", label:"Italian",    flag:"🇮🇹", native:"Italiano",  tts:"it-IT" },
-  { code:"de", label:"German",     flag:"🇩🇪", native:"Deutsch",   tts:"de-DE" },
-  { code:"tr", label:"Turkish",    flag:"🇹🇷", native:"Türkçe",    tts:"tr-TR" },
-  { code:"zh", label:"Chinese",    flag:"🇨🇳", native:"中文",       tts:"zh-CN" },
-  { code:"ro", label:"Romanian",   flag:"🇷🇴", native:"Română",    tts:"ro-RO" },
-  { code:"pl", label:"Polish",     flag:"🇵🇱", native:"Polski",    tts:"pl-PL" },
-];
-
 const SPEEDS = [{ label:"0.75×", v:0.75 },{ label:"1×", v:1 },{ label:"1.25×", v:1.25 },{ label:"1.5×", v:1.5 }];
 
 const PACKAGES = [
   {
     id:"trial", name:"Essai gratuit", price:"0 €", period:"",
     color:"#4A4540", bg:"white", border:"#D4CEC5",
-    features:["✓ 10 questions par thème (50 au total)","✓ Langue française uniquement","✗ Questions complètes par thème","✗ Mode écoute Play All","✗ 11 langues + traduction IA","✗ Résultats détaillés"],
+    features:["✓ 10 questions par thème (50 au total)","✓ Langue française uniquement","✗ Questions complètes par thème","✗ Mode écoute Play All","✗ Résultats détaillés"],
     cta:"Commencer l'essai", ctaBg:"#4A4540", free:true,
   },
   {
     id:"premium", name:"Accès Premium", price:"5,00 €", period:"paiement unique", badge:"⭐ Recommandé",
     color:"#1C1917", bg:"linear-gradient(135deg,#FEF3EE,#FAF7F2)", border:"#C41E3A",
-    features:["✓ 2000 questions officielles","✓ Mode écoute — Play All","✓ 11 langues + traduction IA","✓ Résultats et analyses détaillés","✓ Vitesse audio réglable","✓ Accès à vie"],
+    features:["✓ 2000 questions officielles","✓ Mode écoute — Play All","✓ Mode écoute Play All","✓ Résultats et analyses détaillés","✓ Vitesse audio réglable","✓ Accès à vie"],
     cta:"Obtenir l'accès complet", ctaBg:"linear-gradient(135deg,#1C1917,#C41E3A)", free:false,
     stripeLink: STRIPE_LINK,
   },
@@ -316,53 +301,6 @@ async function validateCode(raw) {
   } catch { return false; }
 }
 
-const BATCH_SIZE = 5;
-const TRANSLATION_ENDPOINT = "https://api.anthropic.com/v1/messages";
-
-async function translateBatch(questions, targetLangCode) {
-  if (!ANTHROPIC_KEY) throw new Error("Missing Anthropic API key (set VITE_ANTHROPIC_KEY).");
-  const langName = LANGUAGES.find(l=>l.code===targetLangCode)?.label||targetLangCode;
-  const payload = questions.map(q=>({q:q.q,c:q.c,e:q.e}));
-  const res = await fetch(TRANSLATION_ENDPOINT, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": `Bearer ${ANTHROPIC_KEY}`,
-    },
-    body: JSON.stringify({
-      model: "claude-sonnet-4-20250514",
-      max_tokens: 2000,
-      temperature: 0.2,
-      messages: [{
-        role: "user",
-        content: `Translate these French civic exam questions into ${langName}. Return ONLY a valid JSON array, no markdown. Keep numbers, dates, proper nouns unchanged. Structure: [{"q":"...","c":["...","...","...","..."],"e":"..."}]\n${JSON.stringify(payload)}`,
-      }],
-    }),
-  });
-  const text = await res.text();
-  if (!res.ok) {
-    const reason = text ? text.replace(/\s+/g," ").slice(0,180) : res.statusText;
-    throw new Error(`Translation request failed (${res.status}): ${reason}`);
-  }
-  if (!text) throw new Error("Translation response was empty.");
-  let data;
-  try { data = JSON.parse(text); } catch { throw new Error("Translation response is not valid JSON."); }
-  const merged = (data.content||[]).map(b=>b.text||"").join("").replace(/```json|```/g,"").trim();
-  if (!merged) throw new Error("Translation response payload was empty.");
-  let parsed;
-  try { parsed = JSON.parse(merged); } catch {
-    throw new Error("Unable to parse translated payload as JSON.");
-  }
-  if (!Array.isArray(parsed)) throw new Error("Translation response did not return an array.");
-  return parsed.map((translated, idx) => {
-    const original = questions[idx];
-    if (!translated || !Array.isArray(translated.c) || translated.c.length !== original.c.length) {
-      return original;
-    }
-    return translated;
-  });
-}
-
 function Waveform({ active, color="#fff", size=16 }) {
   if (!active) return null;
   return <span style={{display:"inline-flex",alignItems:"center",gap:2,height:size}}>{[.4,.9,.6,1,.7,.85,.4].map((h,i)=><span key={i} style={{display:"inline-block",width:2.5,borderRadius:2,background:color,height:size*h,animation:`wv${i%4} .8s ease-in-out ${i*0.09}s infinite`}}/>)}</span>;
@@ -372,7 +310,6 @@ function PaywallModal({ reason, onClose, codeInput, setCodeInput, codeStatus, ha
   const reasons = {
     quiz:   { icon:"🔒", title:"Essai terminé !", sub:`Vous avez exploré les ${TRIAL_PER_THEME} questions d'essai de ce thème.` },
     listen: { icon:"🎧", title:"Fonctionnalité Premium", sub:"Le mode écoute complet est réservé aux abonnés." },
-    lang:   { icon:"🌐", title:"Fonctionnalité Premium", sub:"La traduction en 11 langues est réservée aux abonnés." },
   };
   const r = reasons[reason]||reasons.quiz;
   const statusColor = codeStatus==="ok"?"#2D6A4F":codeStatus==="error"?"#C41E3A":"#C41E3A";
@@ -386,7 +323,7 @@ function PaywallModal({ reason, onClose, codeInput, setCodeInput, codeStatus, ha
         <p style={{margin:"0 0 18px",color:"#4A4540",fontSize:13,lineHeight:1.7}}>{r.sub}<br/>Débloquez les {ALL_QUESTIONS.length} questions pour réussir votre examen.</p>
         <div style={{background:"linear-gradient(135deg,#FEF3EE,#FAF7F2)",borderRadius:4,padding:"14px",marginBottom:14,border:"2px solid #C41E3A",textAlign:"left"}}>
           <div style={{fontWeight:800,fontSize:12,color:"#C41E3A",marginBottom:8,textAlign:"center"}}>ÉTAPE 1 — PAYER</div>
-          {["✓ "+ALL_QUESTIONS.length+" questions","✓ Mode écoute Play All","✓ 11 langues","✓ Accès à vie"].map(f=>(
+          {["✓ "+ALL_QUESTIONS.length+" questions","✓ Mode écoute Play All","✓ Accès à vie"].map(f=>(
             <div key={f} style={{fontSize:12.5,color:"#1C1917",fontWeight:600,marginBottom:4}}>{f}</div>
           ))}
           <div style={{marginTop:8,fontSize:20,fontWeight:800,color:"#1C1917",textAlign:"center"}}>5,00 € <span style={{fontSize:12,fontWeight:400,color:"#4A4540"}}>paiement unique</span></div>
@@ -803,15 +740,9 @@ export default function App() {
   const [codeInput,setCodeInput]       = useState("");
   const [codeStatus,setCodeStatus]     = useState(null);
   const [paywallReason,setPaywallReason] = useState(null);
-  const [lang,setLang]                 = useState(()=>{ try{ const s=localStorage.getItem("prepacivique_lang"); return s||"fr"; }catch{return "fr";} });
-  const [showLangMenu,setShowLangMenu] = useState(false);
   const [showSettings,setShowSettings] = useState(false);
-  const [translations,setTranslations] = useState({});
-  const [xlateProgress,setXlateProgress] = useState(0);
-  const [xlateError,setXlateError]     = useState(null);
   const [speed,setSpeed]               = useState(1);
   const [listenIncludeExpl,setListenIncludeExpl] = useState(true);
-  const [listenBilingual,setListenBilingual] = useState(true);
   const [quizQs,setQuizQs]             = useState([]);
   const [qIdx,setQIdx]                 = useState(0);
   const [selected,setSelected]         = useState(null);
@@ -836,13 +767,11 @@ export default function App() {
   const [assignedCode,setAssignedCode] = useState("");
 
   const synthRef = useRef(null);
-  const translatingRef = useRef(false);
   const listenRef = useRef({playing:false,idx:0,questions:[]});
 
   useEffect(()=>{synthRef.current=window.speechSynthesis; return()=>synthRef.current?.cancel();},[]);
   useEffect(()=>{ try { localStorage.setItem("prepacivique_premium", isPremium?"true":"false"); } catch {} },[isPremium]);
   useEffect(()=>{ try { localStorage.setItem("prepacivique_trial_v2", JSON.stringify(trialUsed)); } catch {} },[trialUsed]);
-  useEffect(()=>{ try { localStorage.setItem("prepacivique_lang",lang); } catch {} },[lang]);
 
   useEffect(()=>{
     const params=new URLSearchParams(window.location.search);
@@ -898,37 +827,9 @@ export default function App() {
     }
   };
 
-  const currentLang = LANGUAGES.find(l=>l.code===lang)||LANGUAGES[0];
-  const isRTL = !!currentLang.rtl;
   const getThemeTrialRemaining = (themeId) => Math.max(0, TRIAL_PER_THEME - (trialUsed[themeId]||0));
   const totalTrialUsed = Object.values(trialUsed).reduce((a,b)=>a+b,0);
   const totalTrialMax = THEMES.length * TRIAL_PER_THEME;
-  const getT=useCallback((idx)=>(lang==="fr"||!translations[lang]||!isPremium)?null:translations[lang][idx]||null,[lang,translations,isPremium]);
-
-  useEffect(()=>{
-    if(!isPremium||lang==="fr"||translations[lang]) return;
-    if(translatingRef.current) return;
-    translatingRef.current=true;
-    setXlateProgress(0); setXlateError(null);
-    (async()=>{
-      const result=[];
-      for(let i=0;i<ALL_QUESTIONS.length;i+=BATCH_SIZE){
-        try {
-          const tr = await translateBatch(ALL_QUESTIONS.slice(i,i+BATCH_SIZE),lang);
-          result.push(...tr);
-          setXlateProgress(result.length);
-        } catch (err) {
-          console.error("Translation batch failed:", err);
-          setXlateError(err instanceof Error ? err.message : "Erreur de traduction.");
-          translatingRef.current=false;
-          return;
-        }
-      }
-      setTranslations(prev=>({...prev,[lang]:result}));
-      setXlateProgress(ALL_QUESTIONS.length);
-      translatingRef.current=false;
-    })();
-  },[lang,isPremium]);
 
   // Auto-read question when autoReadQuiz is enabled
   useEffect(()=>{
@@ -952,9 +853,6 @@ export default function App() {
     setTimeout(next,100);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   },[autoReadQuiz,qIdx,screen]);
-  const isLoading=isPremium&&lang!=="fr"&&!translations[lang];
-  const loadPct=Math.round((xlateProgress/ALL_QUESTIONS.length)*100);
-  const getLangTTS=(c)=>LANGUAGES.find(l=>l.code===c)?.tts||"fr-FR";
   const requirePremium=(r)=>{setPaywallReason(r);};
   const checkPremium=(r)=>{if(isPremium)return true; requirePremium(r); return false;};
 
@@ -991,27 +889,19 @@ export default function App() {
       if(!listenRef.current.playing||i>=questions.length){setListenPlaying(false);setListenPhase("");return;}
       listenRef.current.idx=i; setListenIdx(i);
       const q=questions[i];
-      const t=bilingual?getT(q.origIdx??ALL_QUESTIONS.findIndex(x=>x.q===q.q)):null;
-      const segs=[
-        {text:`Question ${i+1} sur ${questions.length}.`,lang:"fr",phase:"question"},
-        {text:q.q,lang:"fr",phase:"question"},
-        ...(t&&lang!=="fr"?[{text:t.q,lang,phase:"question"}]:[]),
-        {text:`La bonne réponse est : ${q.c[q.a]}`,lang:"fr",phase:"answer",ci:q.a},
-        ...(t&&lang!=="fr"?[{text:t.c[q.a],lang,phase:"answer",ci:q.a}]:[]),
-        ...(listenIncludeExpl?[{text:q.e,lang:"fr",phase:"explanation"},...(t&&lang!=="fr"?[{text:t.e,lang,phase:"explanation"}]:[])]:[] ),
-      ];
+        {text:`La bonne réponse est : ${q.c[q.a]}`,phase:"answer",ci:q.a},        ...(listenIncludeExpl?[{text:q.e,phase:"explanation"},      ];
       let si=0;
       const next=()=>{
         if(!listenRef.current.playing)return;
         if(si>=segs.length){setListenPhase("pause");setTimeout(()=>{if(listenRef.current.playing)playQ(i+1);},800);return;}
         const seg=segs[si++]; setListenPhase(seg.phase);
         if(seg.ci!==undefined)setReadingChoiceIdx(seg.ci);else setReadingChoiceIdx(null);
-        speakOne(seg.text,seg.lang,next);
+        speakOne(seg.text,"fr",next);
       };
       next();
     };
     playQ(idx);
-  },[lang,listenIncludeExpl,getT,speakOne]);
+  },[listenIncludeExpl,speakOne]);
 
   const startListen=(themeFilter="all")=>{
     if(!checkPremium("listen"))return;
@@ -1023,17 +913,17 @@ export default function App() {
     setListenQs(pool); setListenIdx(0);
     listenRef.current={playing:true,idx:0,questions:pool};
     setListenPlaying(true); setScreen("listen");
-    setTimeout(()=>runListenFrom(0,pool,listenBilingual),200);
+    setTimeout(()=>runListenFrom(0,pool,false),200);
   };
 
   const toggleListenPause=()=>{
     if(listenPlaying){synthRef.current?.cancel();listenRef.current.playing=false;setListenPlaying(false);}
-    else{listenRef.current.playing=true;setListenPlaying(true);runListenFrom(listenIdx,listenRef.current.questions,listenBilingual);}
+    else{listenRef.current.playing=true;setListenPlaying(true);runListenFrom(listenIdx,listenRef.current.questions,false);}
   };
 
   const skipTo=(i)=>{
     synthRef.current?.cancel(); setListenIdx(i); listenRef.current.idx=i;
-    if(listenPlaying)setTimeout(()=>runListenFrom(i,listenRef.current.questions,listenBilingual),150);
+    if(listenPlaying)setTimeout(()=>runListenFrom(i,listenRef.current.questions,false),150);
   };
 
   const shuffleChoices=(q)=>{
@@ -1114,7 +1004,7 @@ export default function App() {
     quizSpeakAbortRef.current=false;
     synthRef.current?.cancel();
     const q=quizQs[qIdx];
-    const segs=[{text:q.q,lang:"fr"},...q.c.map((ch,i)=>({text:`${String.fromCharCode(65+i)}. ${ch}`,lang:"fr",ci:i}))];
+    const segs=[{text:q.q},...q.c.map((ch,i)=>({text:`${String.fromCharCode(65+i)}. ${ch}`,ci:i}))];
     setIsSpeakingQuiz(true);
     let si=0;
     const next=()=>{
@@ -1138,7 +1028,7 @@ export default function App() {
   const card={background:"white",borderRadius:6,boxShadow:"0 2px 16px rgba(0,0,0,.05)",border:"1px solid #eef0f8",padding:"20px",marginBottom:14};
 
   return (
-    <div style={{fontFamily:"'DM Sans',sans-serif",minHeight:"100vh",background:"#FAF7F2",color:"#1C1917",direction:isRTL?"rtl":"ltr"}}>
+    <div style={{fontFamily:"'DM Sans',sans-serif",minHeight:"100vh",background:"#FAF7F2",color:"#1C1917"}}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800;900&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap');
         *{box-sizing:border-box;}
@@ -1200,123 +1090,8 @@ export default function App() {
                   <div style={{display:"flex",gap:5,marginBottom:14}}>
                     {SPEEDS.map(s=><button key={s.v} onClick={()=>setSpeed(s.v)} style={{flex:1,padding:"5px 0",borderRadius:7,border:speed===s.v?"2px solid #C41E3A":"2px solid #ddd",background:speed===s.v?"#eef1fb":"white",color:speed===s.v?"#C41E3A":"#4A4540",fontSize:12,fontWeight:700,cursor:"pointer"}}>{s.label}</button>)}
                   </div>
-                  <label style={{display:"flex",alignItems:"center",gap:8,cursor:"pointer",marginBottom:8}}>
-                    <input type="checkbox" checked={listenIncludeExpl} onChange={e=>setListenIncludeExpl(e.target.checked)} style={{width:15,height:15}}/>
-                    <span style={{fontSize:13,color:"#444"}}>Inclure les explications</span>
-                  </label>
-                  <label style={{display:"flex",alignItems:"center",gap:8,cursor:"pointer"}}>
-                    <input type="checkbox" checked={listenBilingual} onChange={e=>setListenBilingual(e.target.checked)} style={{width:15,height:15}}/>
-                    <span style={{fontSize:13,color:"#444"}}>Lecture bilingue</span>
-                  </label>
                 </div>
               )}
-            </div>
-            <div style={{position:"relative"}}>
-              <button onClick={()=>{if(!isPremium&&lang==="fr"){requirePremium("lang");return;}setShowLangMenu(v=>!v);setShowSettings(false);}} style={{display:"flex",alignItems:"center",gap:5,background:"rgba(255,255,255,.15)",border:"1px solid rgba(255,255,255,.3)",borderRadius:6,padding:"5px 11px",cursor:"pointer",color:"white",fontSize:12}}>
-                <span>{currentLang.flag}</span>
-                <span style={{fontWeight:700}}>{lang==="fr"?"Français":currentLang.native}</span>
-                {!isPremium&&<span style={{fontSize:10,opacity:.7}}>🔒</span>}
-                {isLoading&&<span className="shimmer" style={{width:6,height:6,borderRadius:"6px",background:"#D4A012",display:"inline-block"}}/>}
-              </button>
-              {showLangMenu&&isPremium&&(
-                <div style={{position:"absolute",top:"calc(100% + 8px)",right:0,background:"white",borderRadius:4,boxShadow:"0 8px 32px rgba(0,0,0,.18)",overflow:"hidden",minWidth:185,zIndex:120,maxHeight:340,overflowY:"auto"}}>
-                  {LANGUAGES.map(l=>(
-                    <button key={l.code} onClick={()=>{setLang(l.code);setShowLangMenu(false);}} style={{display:"flex",alignItems:"center",gap:9,padding:"9px 14px",border:"none",borderBottom:"1px solid #f0f0f0",background:lang===l.code?"#eef1fb":"white",cursor:"pointer",width:"100%",textAlign:"left"}}>
-                      <span style={{fontSize:17}}>{l.flag}</span>
-                      <div><div style={{fontWeight:700,fontSize:12,color:"#1C1917"}}>{l.native}</div><div style={{fontSize:10,color:"#8A8480"}}>{l.label}</div></div>
-                      {lang===l.code&&<span style={{marginLeft:"auto",color:"#C41E3A"}}>✓</span>}
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-        {isLoading&&<div style={{background:"rgba(0,0,0,.3)",height:3}}><div className="shimmer" style={{height:"100%",background:"#C41E3A",width:`${loadPct}%`,transition:"width .4s"}}/></div>}
-      </div>
-
-      {!isPremium&&screen!=="pricing"&&(
-        <div style={{background:"linear-gradient(90deg,#1C1917,#6B21A8)",color:"white",padding:"7px 18px",display:"flex",alignItems:"center",justifyContent:"space-between",gap:12,flexWrap:"wrap"}}>
-          <div style={{fontSize:12,display:"flex",alignItems:"center",gap:10,flexWrap:"wrap"}}>
-            <span>🆓 Essai gratuit — <strong>10 questions par thème</strong></span>
-            <div style={{display:"flex",gap:5,alignItems:"center"}}>
-              {THEMES.map(t=>{
-                const used = trialUsed[t.id]||0;
-                return (
-                  <div key={t.id} title={`${t.label}: ${used}/${TRIAL_PER_THEME}`} style={{display:"flex",flexDirection:"column",alignItems:"center",gap:2}}>
-                    <span style={{fontSize:11}}>{t.icon}</span>
-                    <div style={{display:"flex",gap:1}}>
-                      {Array.from({length:TRIAL_PER_THEME}).map((_,i)=>(
-                        <div key={i} style={{width:4,height:4,borderRadius:"6px",background:i<used?"white":"rgba(255,255,255,.2)"}}/>
-                      ))}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-          <button onClick={()=>setScreen("pricing")} style={{background:"#D4A012",color:"#1C1917",border:"none",borderRadius:4,padding:"4px 14px",cursor:"pointer",fontSize:12,fontWeight:800,whiteSpace:"nowrap"}}>Tout débloquer →</button>
-        </div>
-      )}
-      {xlateError&&<div style={{background:"#fdecea",padding:"7px 18px",textAlign:"center",fontSize:12,color:"#C41E3A"}}>⚠️ {xlateError}</div>}
-
-      <div style={{maxWidth:920,margin:"0 auto",padding:"18px 14px"}} onClick={()=>{showLangMenu&&setShowLangMenu(false);showSettings&&setShowSettings(false);}}>
-
-        {/* PAYMENT SUCCESS */}
-        {screen==="payment-success"&&(
-          <div className="fade" style={{textAlign:"center",padding:"40px 20px"}}>
-            <div style={{fontSize:60,marginBottom:16}}>{codeLoading?"⏳":"🎉"}</div>
-            <h2 style={{color:"#1C1917",fontSize:22,fontWeight:800,marginBottom:8}}>
-              {codeLoading?"Récupération de votre code…":"Paiement confirmé !"}
-            </h2>
-            {codeLoading?(
-              <p style={{color:"#4A4540",fontSize:14}}>Merci pour votre achat. Nous récupérons votre code d'activation, veuillez patienter…</p>
-            ):(
-              <>
-                <p style={{color:"#4A4540",fontSize:14,marginBottom:20}}><strong>📋 Copiez et sauvegardez ce code</strong> — il vous sera demandé à l'étape suivante.</p>
-                {assignedCode&&(
-                  <div style={{background:"#FEF3EE",border:"2px solid #C41E3A",borderRadius:4,padding:"20px",marginBottom:20,display:"inline-block"}}>
-                    <div style={{fontSize:12,color:"#4A4540",marginBottom:6}}>Votre code :</div>
-                    <div style={{fontFamily:"monospace",fontSize:22,fontWeight:800,color:"#1C1917",letterSpacing:2,marginBottom:12}}>{assignedCode}</div>
-                    <button onClick={()=>{navigator.clipboard.writeText(assignedCode);alert("Code copié !");}} style={{background:"white",border:"1px solid #C41E3A",borderRadius:8,padding:"6px 16px",cursor:"pointer",fontSize:13,color:"#C41E3A",fontWeight:700}}>
-                      📋 Copier le code
-                    </button>
-                  </div>
-                )}
-                <p style={{color:"#cc0000",fontSize:12,marginBottom:16}}>⚠️ Notez ce code — il ne sera affiché qu'une seule fois.</p>
-                <div style={{marginTop:8}}>
-                  <button onClick={()=>{setCodeInput(assignedCode);setScreen("pricing");}} style={{background:"linear-gradient(135deg,#1C1917,#C41E3A)",color:"white",border:"none",borderRadius:4,padding:"12px 28px",cursor:"pointer",fontSize:14,fontWeight:800}}>
-                    Utiliser ce code pour accéder au Premium →
-                  </button>
-                </div>
-              </>
-            )}
-          </div>
-        )}
-
-        {/* PRICING */}
-        {screen==="pricing"&&<PricingPage isPremium={isPremium} onActivateTrial={()=>{setTrialUsed({valeurs:0,institutions:0,droits:0,histoire:0,societe:0});setScreen("home");}} codeInput={codeInput} setCodeInput={setCodeInput} codeStatus={codeStatus} handleCodeSubmit={handleCodeSubmit}/>}
-
-        {/* HOME */}
-        {screen==="home"&&(
-          <div className="fade">
-            {/* ── Hero banner ── */}
-            <div style={{background:"linear-gradient(160deg,#1C1917 0%,#2A0A10 50%,#C41E3A 100%)",color:"white",padding:"30px 26px",borderRadius:8,position:"relative",overflow:"hidden",marginBottom:16,boxShadow:"0 8px 32px rgba(28,25,23,.2)"}}>
-              <div style={{position:"absolute",top:-50,right:-50,width:220,height:220,borderRadius:"6px",background:"rgba(196,30,58,.06)",pointerEvents:"none"}}/>
-              <div style={{position:"absolute",bottom:-40,left:20,width:160,height:160,borderRadius:"6px",background:"rgba(212,160,18,.08)",pointerEvents:"none"}}/>
-              <div style={{marginBottom:20}}>
-                <div style={{display:"inline-flex",alignItems:"center",gap:6,background:"rgba(255,255,255,.13)",border:"1px solid rgba(255,255,255,.2)",borderRadius:6,padding:"4px 12px",fontSize:10,fontWeight:700,letterSpacing:1.5,textTransform:"uppercase",marginBottom:14}}>🇫🇷 Programme officiel 2026</div>
-                <h1 style={{margin:"0 0 8px",fontSize:26,fontWeight:800,lineHeight:1.2,fontFamily:"'Playfair Display',serif",letterSpacing:-.5}}>Préparez votre<br/>Examen Civique</h1>
-                <p style={{margin:0,opacity:.72,fontSize:13,lineHeight:1.6}}>Obligatoire depuis le <strong style={{opacity:1,fontWeight:700}}>1er janvier 2026</strong></p>
-              </div>
-              <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:8}}>
-                {[[`${ALL_QUESTIONS.length}`,"Questions"],["🎧","Écoute"],["11","Langues"],["80%","Seuil"]].map(([v,l])=>(
-                  <div key={l} style={{background:"rgba(255,255,255,.12)",backdropFilter:"blur(8px)",border:"1px solid rgba(255,255,255,.18)",borderRadius:4,padding:"13px 6px",textAlign:"center"}}>
-                    <div style={{fontSize:17,fontWeight:800,fontFamily:"'Playfair Display',serif"}}>{v}</div>
-                    <div style={{fontSize:9,opacity:.75,marginTop:3,fontWeight:600,textTransform:"uppercase",letterSpacing:.8}}>{l}</div>
-                  </div>
-                ))}
-              </div>
             </div>
 
             {/* ── Premium upsell ── */}
@@ -1325,7 +1100,7 @@ export default function App() {
                 <div style={{fontSize:36}}>⭐</div>
                 <div style={{flex:1}}>
                   <div style={{color:"#D4A012",fontWeight:800,fontSize:15}}>Accès Premium — 5,00 € une seule fois</div>
-                  <div style={{color:"rgba(255,255,255,.8)",fontSize:12,marginTop:3}}>{ALL_QUESTIONS.length} questions · Mode écoute · 11 langues · Accès à vie</div>
+                  <div style={{color:"rgba(255,255,255,.8)",fontSize:12,marginTop:3}}>{ALL_QUESTIONS.length} questions · Mode écoute  · Accès à vie</div>
                 </div>
                 <div style={{color:"#D4A012",fontSize:20}}>→</div>
               </div>
@@ -1377,7 +1152,7 @@ export default function App() {
             {!isPremium&&(
               <button className="lift" onClick={()=>setScreen("pricing")} style={{background:"linear-gradient(135deg,#D4A012,#C08C00)",color:"#3A2800",border:"none",borderRadius:4,padding:"14px 12px",cursor:"pointer",textAlign:"center",width:"100%",marginBottom:16,boxShadow:"0 4px 18px rgba(212,160,18,.3)"}}>
                 <div style={{fontWeight:800,fontSize:14}}>💳 Débloquer l'accès complet — 5,00 €</div>
-                <div style={{fontSize:11,opacity:.8,marginTop:2}}>{ALL_QUESTIONS.length} questions · Mode écoute · 11 langues · Accès à vie</div>
+                <div style={{fontSize:11,opacity:.8,marginTop:2}}>{ALL_QUESTIONS.length} questions · Mode écoute  · Accès à vie</div>
               </button>
             )}
 
@@ -1506,7 +1281,6 @@ export default function App() {
         {/* QUIZ */}
         {screen==="quiz"&&quizQs.length>0&&(()=>{
           const q=quizQs[qIdx];
-          const t=getT(q.origIdx??ALL_QUESTIONS.findIndex(x=>x.q===q.q));
           const th=THEMES.find(x=>x.id===q.theme);
           return (
             <div className="fade">
@@ -1561,7 +1335,6 @@ export default function App() {
                 <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",gap:10,marginBottom:t?5:18}}>
                   <div style={{fontSize:18,fontWeight:700,lineHeight:1.6,flex:1,fontFamily:"'Playfair Display',serif",color:"#1C1917",letterSpacing:-.2}}>{q.q}</div>
                 </div>
-                {t&&<div style={{fontSize:13,color:"#4a6fa0",fontStyle:"italic",marginBottom:16,lineHeight:1.65,direction:isRTL?"rtl":"ltr",borderLeft:isRTL?"none":"3px solid #c0d0e8",paddingLeft:isRTL?0:10}}>{t.q}</div>}
                 <div style={{display:"flex",flexDirection:"column",gap:8}}>
                   {q.c.map((ch,idx)=>{
                     let cls="cBtn";
@@ -1575,7 +1348,6 @@ export default function App() {
                         <span style={{width:25,height:25,borderRadius:"6px",background:iconBg,color:iconTx,display:"flex",alignItems:"center",justifyContent:"center",fontSize:11,fontWeight:700,flexShrink:0,marginTop:2,transition:"all .2s"}}>{icon}</span>
                         <div>
                           <div style={{color:answered&&idx===q.a?"#2D6A4F":"#1C1917",fontWeight:answered&&idx===q.a?700:400}}>{ch}</div>
-                          {t?.c?.[idx]&&lang!=="fr"&&<div style={{fontSize:11.5,color:answered&&idx===q.a?"#2e8a5a":"#8A8480",fontStyle:"italic",marginTop:2,direction:isRTL?"rtl":"ltr"}}>{t.c[idx]}</div>}
                         </div>
                       </button>
                     );
@@ -1587,7 +1359,6 @@ export default function App() {
                       <div style={{fontWeight:700,color:selected===q.a?"#2D6A4F":"#B8720A",fontSize:13}}>{selected===q.a?"✓ Bonne réponse !":"✗ Réponse incorrecte"}</div>
                     </div>
                     <div style={{fontSize:12.5,color:"#4A4540",lineHeight:1.8}}>{q.e}</div>
-                    {t?.e&&lang!=="fr"&&<div style={{marginTop:7,fontSize:12.5,color:"#4a6fa0",fontStyle:"italic",lineHeight:1.8,direction:isRTL?"rtl":"ltr",borderTop:"1px solid rgba(0,0,0,.07)",paddingTop:7}}>{t.e}</div>}
                   </div>
                 )}
               </div>
@@ -1638,7 +1409,7 @@ export default function App() {
               <div style={{...card}}>
                 <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}}>
                   <div style={{fontWeight:700,fontSize:13,color:"#C41E3A"}}>🔁 À revoir — {wrongAnswers.length} Q</div>
-                  {isPremium&&<button className="lift" onClick={()=>{const pool=wrongAnswers.map(q=>({...q,origIdx:ALL_QUESTIONS.findIndex(x=>x.q===q.q)}));setListenQs(pool);setListenIdx(0);listenRef.current={playing:true,idx:0,questions:pool};setListenPlaying(true);setScreen("listen");setTimeout(()=>runListenFrom(0,pool,listenBilingual),200);}} style={{background:"#6B21A8",color:"white",border:"none",borderRadius:4,padding:"6px 12px",cursor:"pointer",fontSize:11,fontWeight:700}}>🎧 Écouter les erreurs</button>}
+                  {isPremium&&<button className="lift" onClick={()=>{const pool=wrongAnswers.map(q=>({...q,origIdx:ALL_QUESTIONS.findIndex(x=>x.q===q.q)}));setListenQs(pool);setListenIdx(0);listenRef.current={playing:true,idx:0,questions:pool};setListenPlaying(true);setScreen("listen");setTimeout(()=>runListenFrom(0,pool,false),200);}} style={{background:"#6B21A8",color:"white",border:"none",borderRadius:4,padding:"6px 12px",cursor:"pointer",fontSize:11,fontWeight:700}}>🎧 Écouter les erreurs</button>}
                 </div>
                 {wrongAnswers.map((wq,i)=>(
                   <div key={i} style={{marginBottom:10,padding:"11px 13px",background:"#FEF8EE",borderRadius:4,borderLeft:"4px solid #B8720A"}}>
