@@ -512,7 +512,7 @@ export default function App() {
   const [codeInput,setCodeInput]       = useState("");
   const [codeStatus,setCodeStatus]     = useState(null);
   const [paywallReason,setPaywallReason] = useState(null);
-  const [lang,setLang]                 = useState("fr");
+  const [lang,setLang]                 = useState(()=>{ try{ const s=localStorage.getItem("prepacivique_lang"); return s||"fr"; }catch{return "fr";} });
   const [showLangMenu,setShowLangMenu] = useState(false);
   const [showSettings,setShowSettings] = useState(false);
   const [translations,setTranslations] = useState({});
@@ -548,6 +548,7 @@ export default function App() {
   useEffect(()=>{synthRef.current=window.speechSynthesis; return()=>synthRef.current?.cancel();},[]);
   useEffect(()=>{ try { localStorage.setItem("prepacivique_premium", isPremium?"true":"false"); } catch {} },[isPremium]);
   useEffect(()=>{ try { localStorage.setItem("prepacivique_trial_v2", JSON.stringify(trialUsed)); } catch {} },[trialUsed]);
+  useEffect(()=>{ try { localStorage.setItem("prepacivique_lang",lang); } catch {} },[lang]);
 
   // ─── DETECT PAYMENT SUCCESS FROM URL ───
   useEffect(()=>{
@@ -651,10 +652,14 @@ export default function App() {
   // Mock exam timer
   useEffect(()=>{
     if(!isMockExam||mockTimeLeft===null) return;
-    if(mockTimeLeft<=0){ setScreen("results"); setIsMockExam(false); return; }
-    mockTimerRef.current=setTimeout(()=>setMockTimeLeft(t=>t-1),1000);
-    return()=>clearTimeout(mockTimerRef.current);
-  },[isMockExam,mockTimeLeft]);
+    const interval=setInterval(()=>{
+      setMockTimeLeft(t=>{
+        if(t===null||t<=1){ clearInterval(interval); setScreen("results"); setIsMockExam(false); return 0; }
+        return t-1;
+      });
+    },1000);
+    return()=>clearInterval(interval);
+  },[isMockExam]);
 
   const speakOne=useCallback((text,langCode,onEnd)=>{
     if(!synthRef.current){onEnd?.(); return;}
