@@ -829,6 +829,7 @@ export default function App() {
   const [readingChoiceIdx,setReadingChoiceIdx] = useState(null);
   const [isSpeakingQuiz,setIsSpeakingQuiz] = useState(false);
   const [autoReadQuiz,setAutoReadQuiz]     = useState(false);
+  const quizSpeakAbortRef = useRef(false);
   const [payEmail,setPayEmail]         = useState("");
   const [paymentSuccess,setPaymentSuccess] = useState(false);
   const [codeLoading,setCodeLoading]   = useState(false);
@@ -902,6 +903,7 @@ export default function App() {
   const getThemeTrialRemaining = (themeId) => Math.max(0, TRIAL_PER_THEME - (trialUsed[themeId]||0));
   const totalTrialUsed = Object.values(trialUsed).reduce((a,b)=>a+b,0);
   const totalTrialMax = THEMES.length * TRIAL_PER_THEME;
+  const getT=useCallback((idx)=>(lang==="fr"||!translations[lang]||!isPremium)?null:translations[lang][idx]||null,[lang,translations,isPremium]);
 
   useEffect(()=>{
     if(!isPremium||lang==="fr"||translations[lang]) return;
@@ -949,7 +951,7 @@ export default function App() {
     };
     setTimeout(next,100);
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  },[autoReadQuiz,qIdx,screen]);((idx)=>(lang==="fr"||!translations[lang]||!isPremium)?null:translations[lang][idx]||null,[lang,translations,isPremium]);
+  },[autoReadQuiz,qIdx,screen]);
   const isLoading=isPremium&&lang!=="fr"&&!translations[lang];
   const loadPct=Math.round((xlateProgress/ALL_QUESTIONS.length)*100);
   const getLangTTS=(c)=>LANGUAGES.find(l=>l.code===c)?.tts||"fr-FR";
@@ -1096,7 +1098,6 @@ export default function App() {
     setQIdx(c=>c+1); setSelected(null); setAnswered(false);
   };
 
-  const quizSpeakAbortRef = useRef(false);
   const readCurrentQuiz=()=>{
     if(isSpeakingQuiz){
       quizSpeakAbortRef.current=true;
