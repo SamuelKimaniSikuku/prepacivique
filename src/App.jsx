@@ -774,7 +774,7 @@ export default function App() {
   const phaseLabel={question:"🗣️ Question",answer:"✅ Réponse correcte",explanation:"💡 Explication",pause:"⏸ Pause"};
   const card={background:"white",borderRadius:16,boxShadow:"0 2px 20px rgba(0,0,0,.07)",padding:"20px",marginBottom:14};
   return (
-    <div style={{fontFamily:"'Georgia',serif",minHeight:"100vh",background:"#f4f2ed",color:"#1a1a28",direction:isRTL?"rtl":"ltr"}}>
+    <div style={{fontFamily:"'Georgia',serif",minHeight:"100vh",background:"#f0f2f7",color:"#1a1a28",direction:isRTL?"rtl":"ltr"}}>
       <style>{`
         @keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
         @keyframes shimmer{0%,100%{opacity:.35}50%{opacity:.85}}
@@ -783,17 +783,20 @@ export default function App() {
         @keyframes wv2{0%,100%{transform:scaleY(.5)}50%{transform:scaleY(1)}}
         @keyframes wv3{0%,100%{transform:scaleY(1)}50%{transform:scaleY(.4)}}
         @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(26,58,143,.35)}60%{box-shadow:0 0 0 10px rgba(26,58,143,0)}}
-        .fade{animation:fadeUp .3s ease forwards}
-        .lift{transition:transform .18s,box-shadow .18s;cursor:pointer}
-        .lift:hover{transform:translateY(-3px);box-shadow:0 8px 26px rgba(0,0,0,.12)!important}
-        .cBtn{transition:all .15s;border:2px solid #ddd;background:white;width:100%;cursor:pointer;font-family:inherit}
-        .cBtn:not(:disabled):hover{border-color:#1a3a8f;background:#eef1fb}
-        .cReveal{border-color:#1a7a4a!important;background:#e6f7ee!important}
-        .cWrong{border-color:#c0392b!important;background:#fdecea!important}
+        .fade{animation:fadeUp .35s cubic-bezier(.16,1,.3,1) forwards}
+        .lift{transition:transform .2s cubic-bezier(.16,1,.3,1),box-shadow .2s;cursor:pointer}
+        .lift:hover{transform:translateY(-4px);box-shadow:0 12px 32px rgba(0,0,0,.14)!important}
+        .cBtn{transition:all .18s cubic-bezier(.16,1,.3,1);border:2px solid #e0e4f0;background:white;width:100%;cursor:pointer;font-family:inherit;border-radius:12px}
+        .cBtn:not(:disabled):hover{border-color:#1a3a8f;background:#f0f4ff;transform:translateX(3px)}
+        .cReveal{border-color:#1a7a4a!important;background:linear-gradient(135deg,#e6f7ee,#d0f0e0)!important;transform:none!important}
+        .cWrong{border-color:#c0392b!important;background:linear-gradient(135deg,#fdecea,#fdd)!important;transform:none!important}
         .cSpeaking{border-color:#1a3a8f!important;background:#e8f0ff!important}
         .shimmer{animation:shimmer 1.2s ease infinite}
         .pulse{animation:pulse 1.8s infinite}
+        .themeCard{transition:all .2s cubic-bezier(.16,1,.3,1)}
+        .themeCard:hover{transform:translateY(-4px);box-shadow:0 16px 40px rgba(0,0,0,.12)!important}
         ::-webkit-scrollbar{width:5px}::-webkit-scrollbar-thumb{background:#ccc;border-radius:4px}
+        @media(max-width:600px){.hide-mobile{display:none!important}}
       `}</style>
 
       {paywallReason&&<PaywallModal reason={paywallReason} onClose={()=>setPaywallReason(null)} codeInput={codeInput} setCodeInput={setCodeInput} codeStatus={codeStatus} handleCodeSubmit={handleCodeSubmit}/>}
@@ -926,17 +929,21 @@ export default function App() {
         {/* HOME */}
         {screen==="home"&&(
           <div className="fade">
-            <div style={{...card,background:"linear-gradient(135deg,#0d2060,#1a3a8f)",color:"white",padding:"26px"}}>
-              <h1 style={{margin:"0 0 6px",fontSize:20,fontWeight:800}}>Préparez votre Examen Civique</h1>
-              <p style={{margin:"0 0 18px",opacity:.85,fontSize:13,lineHeight:1.8}}>
-                Obligatoire depuis le <strong>1er janvier 2026</strong>. {ALL_QUESTIONS.length} questions officielles.
-                {isPremium&&<span style={{marginLeft:8,background:"rgba(255,215,0,.25)",padding:"2px 10px",borderRadius:10,fontSize:11,fontWeight:700}}>⭐ ACCÈS COMPLET</span>}
-              </p>
-              <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(90px,1fr))",gap:8}}>
-                {[[`${ALL_QUESTIONS.length} QCM`,"programme officiel"],["🎧 Écoute","play all mode"],["11 langues","traduction IA"],["80 %","seuil requis"]].map(([v,l])=>(
-                  <div key={v} style={{background:"rgba(255,255,255,.15)",borderRadius:9,padding:"10px 8px",textAlign:"center"}}>
-                    <div style={{fontSize:15,fontWeight:800}}>{v}</div>
-                    <div style={{fontSize:10,opacity:.8,marginTop:2}}>{l}</div>
+            <div style={{...card,background:"linear-gradient(135deg,#0a1a4a,#1a3a8f,#2a5298)",color:"white",padding:"28px 26px",borderRadius:20,position:"relative",overflow:"hidden"}}>
+              <div style={{position:"absolute",top:-30,right:-30,width:160,height:160,borderRadius:"50%",background:"rgba(255,255,255,.05)",pointerEvents:"none"}}/>
+              <div style={{position:"absolute",bottom:-20,left:-20,width:100,height:100,borderRadius:"50%",background:"rgba(255,215,0,.08)",pointerEvents:"none"}}/>
+              <div style={{display:"flex",alignItems:"flex-start",justifyContent:"space-between",marginBottom:16}}>
+                <div>
+                  <h1 style={{margin:"0 0 6px",fontSize:22,fontWeight:800,lineHeight:1.3}}>Préparez votre<br/>Examen Civique 🇫🇷</h1>
+                  <p style={{margin:0,opacity:.8,fontSize:13,lineHeight:1.7}}>Obligatoire depuis le <strong>1er janv. 2026</strong></p>
+                </div>
+                {isPremium&&<div style={{background:"linear-gradient(135deg,#ffd700,#ffb300)",color:"#5a3a00",borderRadius:12,padding:"6px 12px",fontSize:11,fontWeight:800,flexShrink:0}}>⭐ PREMIUM</div>}
+              </div>
+              <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:8}}>
+                {[[`${ALL_QUESTIONS.length}`,"Questions"],["🎧","Écoute"],["11","Langues"],["80%","Seuil"]].map(([v,l])=>(
+                  <div key={l} style={{background:"rgba(255,255,255,.12)",borderRadius:12,padding:"12px 8px",textAlign:"center",backdropFilter:"blur(4px)"}}>
+                    <div style={{fontSize:18,fontWeight:800}}>{v}</div>
+                    <div style={{fontSize:10,opacity:.75,marginTop:2}}>{l}</div>
                   </div>
                 ))}
               </div>
@@ -1117,7 +1124,7 @@ export default function App() {
                     const iconTx=(answered&&(idx===q.a||(idx===selected&&idx!==q.a)))||readingChoiceIdx===idx?"white":"#1a3a8f";
                     const icon=answered&&idx===q.a?"✓":answered&&idx===selected&&idx!==q.a?"✗":readingChoiceIdx===idx?<Waveform active={true} color="white" size={11}/>:String.fromCharCode(65+idx);
                     return (
-                      <button key={idx} className={cls} onClick={()=>handleAnswer(idx)} disabled={answered} style={{display:"flex",alignItems:"flex-start",gap:11,padding:"11px 14px",borderRadius:10,textAlign:"left",fontSize:13}}>
+                      <button key={idx} className={cls} onClick={()=>handleAnswer(idx)} disabled={answered} style={{display:"flex",alignItems:"flex-start",gap:12,padding:"14px 16px",borderRadius:12,textAlign:"left",fontSize:13.5,lineHeight:1.5}}>
                         <span style={{width:25,height:25,borderRadius:"50%",background:iconBg,color:iconTx,display:"flex",alignItems:"center",justifyContent:"center",fontSize:11,fontWeight:700,flexShrink:0,marginTop:2,transition:"all .2s"}}>{icon}</span>
                         <div>
                           <div style={{color:answered&&idx===q.a?"#1a7a4a":"#333",fontWeight:answered&&idx===q.a?700:400}}>{ch}</div>
@@ -1154,8 +1161,8 @@ export default function App() {
           <div className="fade">
             <div style={{...card,background:passed?"linear-gradient(135deg,#0a4020,#1a7a4a)":"linear-gradient(135deg,#5a0f0f,#c0392b)",color:"white",textAlign:"center",padding:"30px 22px"}}>
               <div style={{fontSize:50,marginBottom:8}}>{passed?"🎉":"📚"}</div>
-              <div style={{fontSize:48,fontWeight:800}}>{totalScore}<span style={{fontSize:20,opacity:.75}}> / {quizQs.length}</span></div>
-              <div style={{fontSize:20,fontWeight:700,marginTop:4}}>{Math.round((totalScore/quizQs.length)*100)}%</div>
+              <div style={{fontSize:56,fontWeight:800,lineHeight:1}}>{totalScore}<span style={{fontSize:22,opacity:.75}}> / {quizQs.length}</span></div>
+              <div style={{fontSize:22,fontWeight:700,marginTop:6,opacity:.95}}>{Math.round((totalScore/quizQs.length)*100)}%</div>
               <div style={{marginTop:10,fontSize:13,opacity:.9}}>{passed?`✓ Seuil atteint (${passMark}/${quizQs.length})`:`Il manque ${passMark-totalScore} point(s) pour 80 %`}</div>
             </div>
 
