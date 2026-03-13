@@ -843,7 +843,7 @@ export default function App() {
             <div style={{position:"relative"}}>
               <button onClick={()=>{if(!isPremium&&lang==="fr"){requirePremium("lang");return;}setShowLangMenu(v=>!v);setShowSettings(false);}} style={{display:"flex",alignItems:"center",gap:5,background:"rgba(255,255,255,.15)",border:"1px solid rgba(255,255,255,.3)",borderRadius:20,padding:"5px 11px",cursor:"pointer",color:"white",fontSize:12}}>
                 <span>{currentLang.flag}</span>
-                <span style={{fontWeight:700}}>{currentLang.native}</span>
+                <span style={{fontWeight:700}}>{lang==="fr"?"Français":currentLang.native}</span>
                 {!isPremium&&<span style={{fontSize:10,opacity:.7}}>🔒</span>}
                 {isLoading&&<span className="shimmer" style={{width:6,height:6,borderRadius:"50%",background:"#ffd700",display:"inline-block"}}/>}
               </button>
@@ -940,10 +940,10 @@ export default function App() {
                 {isPremium&&<div style={{background:"linear-gradient(135deg,#ffd700,#ffb300)",color:"#5a3a00",borderRadius:12,padding:"6px 12px",fontSize:11,fontWeight:800,flexShrink:0}}>⭐ PREMIUM</div>}
               </div>
               <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:8}}>
-                {[[`${ALL_QUESTIONS.length}`,"Questions"],["🎧","Écoute"],["11","Langues"],["80%","Seuil"]].map(([v,l])=>(
-                  <div key={l} style={{background:"rgba(255,255,255,.12)",borderRadius:12,padding:"12px 8px",textAlign:"center",backdropFilter:"blur(4px)"}}>
-                    <div style={{fontSize:18,fontWeight:800}}>{v}</div>
-                    <div style={{fontSize:10,opacity:.75,marginTop:2}}>{l}</div>
+                {[[`${ALL_QUESTIONS.length}`,"Questions","🗂️"],["🎧","Écoute",""],["11","Langues","🌍"],["80%","Seuil requis","🎯"]].map(([v,l,icon])=>(
+                  <div key={l} style={{background:"rgba(255,255,255,.18)",borderRadius:12,padding:"12px 6px",textAlign:"center",border:"1px solid rgba(255,255,255,.25)"}}>
+                    <div style={{fontSize:16,fontWeight:800,letterSpacing:.5}}>{v}</div>
+                    <div style={{fontSize:9.5,opacity:.85,marginTop:3,fontWeight:600,textTransform:"uppercase",letterSpacing:.5}}>{l}</div>
                   </div>
                 ))}
               </div>
@@ -985,12 +985,23 @@ export default function App() {
                 <div style={{fontWeight:700,fontSize:14}}>Quiz complet</div>
                 <div style={{fontSize:11,opacity:.8,marginTop:2}}>{isPremium?`${ALL_QUESTIONS.length} questions`:`${TRIAL_PER_THEME} par thème (essai)`}</div>
               </button>
-              <button className="lift" onClick={()=>setScreen("pricing")} style={{background:isPremium?"white":"linear-gradient(135deg,#ffd700,#ffb300)",color:isPremium?"#0d2060":"#3a2000",border:isPremium?"2px solid #1a3a8f":"none",borderRadius:14,padding:"18px 12px",cursor:"pointer",textAlign:"center"}}>
-                <div style={{fontSize:26,marginBottom:4}}>{isPremium?"✅":"💳"}</div>
-                <div style={{fontWeight:700,fontSize:14}}>{isPremium?"Accès complet actif":"Voir les offres"}</div>
-                <div style={{fontSize:11,opacity:.8,marginTop:2}}>{isPremium?"Toutes fonctionnalités":"à partir de 5,00 €"}</div>
+              <button className="lift" onClick={()=>{
+                if(!checkPremium("quiz")) return;
+                const pool=[...ALL_QUESTIONS].map((q,i)=>({...q,origIdx:i})).sort(()=>Math.random()-.5).slice(0,40);
+                setQuizQs(pool);setQIdx(0);setSelected(null);setAnswered(false);setScores({});setWrongAnswers([]);
+                setCurrentQuizTheme(null);setScreen("quiz");
+              }} style={{background:"linear-gradient(135deg,#0a4020,#1a7a4a)",color:"white",border:"none",borderRadius:14,padding:"18px 12px",cursor:"pointer",textAlign:"center",boxShadow:"0 4px 18px rgba(10,64,32,.28)"}}>
+                <div style={{fontSize:26,marginBottom:4}}>📝</div>
+                <div style={{fontWeight:700,fontSize:14}}>Examen blanc</div>
+                <div style={{fontSize:11,opacity:.8,marginTop:2}}>{isPremium?"40 questions · 45 min":"🔒 Premium"}</div>
               </button>
             </div>
+            {!isPremium&&(
+              <button className="lift" onClick={()=>setScreen("pricing")} style={{background:"linear-gradient(135deg,#ffd700,#ffb300)",color:"#3a2000",border:"none",borderRadius:14,padding:"14px 12px",cursor:"pointer",textAlign:"center",width:"100%",marginBottom:16,boxShadow:"0 4px 18px rgba(255,180,0,.35)"}}>
+                <div style={{fontWeight:800,fontSize:14}}>💳 Débloquer l'accès complet — 5,00 €</div>
+                <div style={{fontSize:11,opacity:.8,marginTop:2}}>{ALL_QUESTIONS.length} questions · Mode écoute · 11 langues · Accès à vie</div>
+              </button>
+            )}
 
             <div style={{fontWeight:700,fontSize:13,color:"#555",marginBottom:10}}>Thèmes ({THEMES.length})</div>
             <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(190px,1fr))",gap:10}}>
