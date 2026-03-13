@@ -527,6 +527,7 @@ export default function App() {
   const [answered,setAnswered]         = useState(false);
   const [scores,setScores]             = useState({});
   const [wrongAnswers,setWrongAnswers] = useState([]);
+  const [allWrongAnswers,setAllWrongAnswers] = useState([]);
   const [listenQs,setListenQs]         = useState([]);
   const [listenIdx,setListenIdx]       = useState(0);
   const [listenPlaying,setListenPlaying] = useState(false);
@@ -744,7 +745,14 @@ export default function App() {
 
   const nextQ=()=>{
     stopAll();
-    if(qIdx+1>=quizQs.length){setScreen("results");return;}
+    if(qIdx+1>=quizQs.length){
+      setAllWrongAnswers(prev=>{
+        const prevQs=prev.map(q=>q.q);
+        const newOnes=wrongAnswers.filter(q=>!prevQs.includes(q.q));
+        return [...prev,...newOnes];
+      });
+      setScreen("results");return;
+    }
     setQIdx(c=>c+1); setSelected(null); setAnswered(false);
   };
 
@@ -1186,6 +1194,28 @@ export default function App() {
               </div>
             )}
 
+            {isPremium&&allWrongAnswers.length>0&&(
+              <div style={{background:"linear-gradient(135deg,#fff8e1,#fff3cd)",border:"2px solid #f39c12",borderRadius:14,padding:"18px 20px",textAlign:"center",marginBottom:8}}>
+                <div style={{fontSize:28,marginBottom:6}}>🎯</div>
+                <div style={{fontWeight:800,fontSize:15,color:"#7a4a00",marginBottom:6}}>Examen personnalisé disponible !</div>
+                <div style={{fontSize:13,color:"#8a5a00",marginBottom:14}}>Vous avez {allWrongAnswers.length} question(s) ratée(s) au total. Voulez-vous un examen blanc basé sur vos erreurs ?</div>
+                <button onClick={()=>{
+                  const pool=[...allWrongAnswers].sort(()=>Math.random()-0.5).slice(0,40);
+                  setQuizQs(pool);
+                  setQIdx(0);
+                  setSelected(null);
+                  setAnswered(false);
+                  setScores({});
+                  setWrongAnswers([]);
+                  setScreen("quiz");
+                }} style={{background:"linear-gradient(135deg,#f39c12,#e67e22)",color:"white",border:"none",borderRadius:12,padding:"11px 24px",cursor:"pointer",fontSize:14,fontWeight:800,marginRight:8}}>
+                  🎯 Lancer l'examen personnalisé
+                </button>
+                <button onClick={()=>setAllWrongAnswers([])} style={{background:"white",color:"#e67e22",border:"1px solid #e67e22",borderRadius:12,padding:"11px 16px",cursor:"pointer",fontSize:13,fontWeight:700}}>
+                  🗑 Effacer
+                </button>
+              </div>
+            )}
             <div style={{display:"flex",gap:10,justifyContent:"center",flexWrap:"wrap"}}>
               <button onClick={()=>startQuiz(null)} style={{background:"linear-gradient(135deg,#0d2060,#1a3a8f)",color:"white",border:"none",borderRadius:10,padding:"10px 22px",cursor:"pointer",fontSize:13,fontWeight:700}}>🔄 Recommencer</button>
               {isPremium&&<button onClick={()=>startListen("all")} style={{background:"linear-gradient(135deg,#1a0a3a,#3b1f7a)",color:"white",border:"none",borderRadius:10,padding:"10px 22px",cursor:"pointer",fontSize:13,fontWeight:700}}>🎧 Tout écouter</button>}
