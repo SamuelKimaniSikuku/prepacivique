@@ -1131,6 +1131,22 @@ export default function App() {
                 <div style={{background:"#e4e4e4",borderRadius:5,height:6}}>
                   <div style={{width:`${(qIdx/quizQs.length)*100}%`,height:"100%",background:`linear-gradient(90deg,${th?.color||"#1a3a8f"},#1a3a8f)`,borderRadius:5,transition:"width .5s ease"}}/>
                 </div>
+                {isMockExam&&mockTimeLeft!==null&&(()=>{
+                  const m=Math.floor(mockTimeLeft/60);
+                  const s=mockTimeLeft%60;
+                  const urgent=mockTimeLeft<300;
+                  return(
+                    <div style={{display:"flex",alignItems:"center",justifyContent:"center",gap:6,marginTop:10,background:urgent?"#fdecea":"#eef2ff",borderRadius:10,padding:"8px 14px",border:`1px solid ${urgent?"#c0392b":"#1a3a8f"}`}}>
+                      <span style={{fontSize:16}}>{urgent?"⚠️":"⏱️"}</span>
+                      <span style={{fontWeight:800,fontSize:16,color:urgent?"#c0392b":"#1a3a8f",fontFamily:"monospace",letterSpacing:2}}>
+                        {String(m).padStart(2,"0")}:{String(s).padStart(2,"0")}
+                      </span>
+                      <span style={{fontSize:11,color:urgent?"#c0392b":"#666",fontWeight:600}}>
+                        {urgent?"Dépêchez-vous !":"restant"}
+                      </span>
+                    </div>
+                  );
+                })()}
               </div>
               <div key={qIdx} className="fade" style={{...card}}>
                 <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",gap:10,marginBottom:t?5:18}}>
