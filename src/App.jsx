@@ -1036,6 +1036,11 @@ export default function App() {
     if(listenPlaying)setTimeout(()=>runListenFrom(i,listenRef.current.questions,listenBilingual),150);
   };
 
+  const shuffleChoices=(q)=>{
+    const order=[0,1,2,3].sort(()=>Math.random()-.5);
+    return {...q, c:order.map(i=>q.c[i]), a:order.indexOf(q.a)};
+  };
+
   const startQuiz=(themeId=null)=>{
     stopAll();
     let pool=(themeId
@@ -1043,6 +1048,7 @@ export default function App() {
       :ALL_QUESTIONS.map((q,i)=>({...q,origIdx:i}))
     ).slice();
     for(let i=pool.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[pool[i],pool[j]]=[pool[j],pool[i]];}
+    pool=pool.map(shuffleChoices);
     if(!isPremium){
       if(themeId){
         pool = pool.slice(0, TRIAL_PER_THEME);
@@ -1064,7 +1070,7 @@ export default function App() {
 
   const startMockExam=()=>{
     if(!checkPremium("quiz")) return;
-    const pool=[...ALL_QUESTIONS].map((q,i)=>({...q,origIdx:i})).sort(()=>Math.random()-.5).slice(0,40);
+    const pool=[...ALL_QUESTIONS].map((q,i)=>({...q,origIdx:i})).sort(()=>Math.random()-.5).slice(0,40).map(shuffleChoices);
     setQuizQs(pool);setQIdx(0);setSelected(null);setAnswered(false);setScores({});setWrongAnswers([]);
     setCurrentQuizTheme(null);setIsMockExam(true);setMockTimeLeft(45*60);setScreen("quiz");
   };
@@ -1650,7 +1656,7 @@ export default function App() {
                 <div style={{fontWeight:800,fontSize:15,color:"#7A5500",marginBottom:6}}>Examen personnalisé disponible !</div>
                 <div style={{fontSize:13,color:"#8A6000",marginBottom:14}}>Vous avez {allWrongAnswers.length} question(s) ratée(s) au total. Voulez-vous un examen blanc basé sur vos erreurs ?</div>
                 <button onClick={()=>{
-                  const pool=[...allWrongAnswers].sort(()=>Math.random()-0.5).slice(0,40);
+                  const pool=[...allWrongAnswers].sort(()=>Math.random()-0.5).slice(0,40).map(shuffleChoices);
                   setQuizQs(pool);
                   setQIdx(0);
                   setSelected(null);
