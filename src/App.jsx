@@ -508,7 +508,7 @@ function LandingModules({ onStartQuiz, onStartMockExam, isPremium, checkPremium 
       icon:"🎓", color:"#2D6A4F", borderColor:"#B7DFD0", bg:"linear-gradient(145deg,#EDF7F2,#e6f7ee)",
       title:"Titre de séjour pluriannuel (CSP)",
       desc:"Maîtrisez les bases essentielles de la vie en France pour une première installation réussie.",
-      count:193, countDesc:"Questions officielles sur la vie quotidienne et les valeurs fondamentales",
+      count:140, countDesc:"Questions officielles sur la vie quotidienne et les valeurs fondamentales",
       audience:"Candidats au CSP",
       cta:"Accéder au module", ctaBg:"#2D6A4F",
     },
@@ -517,7 +517,7 @@ function LandingModules({ onStartQuiz, onStartMockExam, isPremium, checkPremium 
       icon:"🏅", color:"#C41E3A", borderColor:"#EBCAC4", bg:"linear-gradient(145deg,#f0f4ff,#FEF3EE)",
       title:"Carte de résident (CR)",
       desc:"Un parcours avancé pour ceux qui visent une résidence longue durée (10 ans).",
-      count:209, countDesc:"Questions couvrant l'histoire, les institutions et le système politique",
+      count:186, countDesc:"Questions couvrant l'histoire, les institutions et le système politique",
       audience:"Candidats à la carte de résident",
       cta:"Accéder au module", ctaBg:"#C41E3A",
     },
@@ -526,7 +526,7 @@ function LandingModules({ onStartQuiz, onStartMockExam, isPremium, checkPremium 
       icon:"👑", color:"#6B21A8", borderColor:"#c8a0f0", bg:"linear-gradient(145deg,#FEF3EE,#ede0ff)",
       title:"Naturalisation française",
       desc:"La préparation la plus exigeante pour devenir citoyen français, par décret ou mariage.",
-      count:240, countDesc:"Questions complexes sur les connaissances générales, le patrimoine et les nuances républicaines",
+      count:441, countDesc:"Questions complexes sur les connaissances générales, le patrimoine et les nuances républicaines",
       audience:"Préparation intensive à l'entretien de naturalisation",
       cta:"Accéder au module", ctaBg:"#6B21A8",
     },
@@ -1395,12 +1395,6 @@ export default function App() {
               </button>
             )}
 
-            {/* ── NEW: How it works ── */}
-            <LandingHowItWorks />
-
-            {/* ── NEW: Who must take it ── */}
-            <LandingWhoMustTake />
-
             {/* ── Themes grid ── */}
             <div style={{fontWeight:700,fontSize:13,color:"#4A4540",marginBottom:10}}>Thèmes ({THEMES.length})</div>
             <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(190px,1fr))",gap:10,marginBottom:16}}>
@@ -1434,6 +1428,12 @@ export default function App() {
                 );
               })}
             </div>
+
+            {/* ── NEW: How it works ── */}
+            <LandingHowItWorks />
+
+            {/* ── NEW: Who must take it ── */}
+            <LandingWhoMustTake />
 
             {/* ── NEW: Level-Based Training Modules ── */}
             <LandingModules
