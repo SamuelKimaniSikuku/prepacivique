@@ -827,6 +827,7 @@ export default function App() {
   const [listenPlaying,setListenPlaying] = useState(false);
   const [listenPhase,setListenPhase]   = useState("");
   const [readingChoiceIdx,setReadingChoiceIdx] = useState(null);
+  const [isSpeakingQuiz,setIsSpeakingQuiz] = useState(false);
   const [payEmail,setPayEmail]         = useState("");
   const [paymentSuccess,setPaymentSuccess] = useState(false);
   const [codeLoading,setCodeLoading]   = useState(false);
@@ -937,6 +938,7 @@ export default function App() {
     synthRef.current?.cancel();
     listenRef.current.playing=false;
     setListenPlaying(false); setListenPhase(""); setReadingChoiceIdx(null);
+    setIsSpeakingQuiz(false);
   },[]);
 
   useEffect(()=>{
@@ -1070,12 +1072,14 @@ export default function App() {
   };
 
   const readCurrentQuiz=()=>{
+    if(isSpeakingQuiz){ stopAll(); setIsSpeakingQuiz(false); return; }
     stopAll();
     const q=quizQs[qIdx];
     const segs=[{text:q.q,lang:"fr"},...q.c.map((ch,i)=>({text:`${String.fromCharCode(65+i)}. ${ch}`,lang:"fr",ci:i}))];
     listenRef.current.playing=true;
+    setIsSpeakingQuiz(true);
     let si=0;
-    const next=()=>{if(!listenRef.current.playing||si>=segs.length){setReadingChoiceIdx(null);return;} const seg=segs[si++]; if(seg.ci!==undefined)setReadingChoiceIdx(seg.ci);else setReadingChoiceIdx(null); speakOne(seg.text,seg.lang,next);};
+    const next=()=>{if(!listenRef.current.playing||si>=segs.length){setReadingChoiceIdx(null);setIsSpeakingQuiz(false);return;} const seg=segs[si++]; if(seg.ci!==undefined)setReadingChoiceIdx(seg.ci);else setReadingChoiceIdx(null); speakOne(seg.text,seg.lang,next);};
     next();
   };
 
@@ -1493,7 +1497,7 @@ export default function App() {
               <div key={qIdx} className="fade" style={{...card}}>
                 <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",gap:10,marginBottom:t?5:18}}>
                   <div style={{fontSize:18,fontWeight:700,lineHeight:1.6,flex:1,fontFamily:"'Playfair Display',serif",color:"#1C1917",letterSpacing:-.2}}>{q.q}</div>
-                  <button onClick={readCurrentQuiz} style={{background:"#FEF3EE",border:"none",color:"#C41E3A",borderRadius:"6px",width:36,height:36,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",flexShrink:0,fontSize:15}}>🔊</button>
+                  <button onClick={readCurrentQuiz} title={isSpeakingQuiz?"Arrêter la lecture":"Lire la question à voix haute"} style={{background:isSpeakingQuiz?"#C41E3A":"#FEF3EE",border:isSpeakingQuiz?"none":"1.5px solid #EBCAC4",color:isSpeakingQuiz?"white":"#C41E3A",borderRadius:"6px",width:36,height:36,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",flexShrink:0,fontSize:isSpeakingQuiz?13:15,transition:"all .2s",boxShadow:isSpeakingQuiz?"0 2px 8px rgba(196,30,58,.3)":"none"}}>{isSpeakingQuiz?"■":"🔊"}</button>
                 </div>
                 {t&&<div style={{fontSize:13,color:"#4a6fa0",fontStyle:"italic",marginBottom:16,lineHeight:1.65,direction:isRTL?"rtl":"ltr",borderLeft:isRTL?"none":"3px solid #c0d0e8",paddingLeft:isRTL?0:10}}>{t.q}</div>}
                 <div style={{display:"flex",flexDirection:"column",gap:8}}>
