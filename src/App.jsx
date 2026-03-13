@@ -1304,7 +1304,19 @@ export default function App() {
                 <h1 style={{margin:"0 0 8px",fontSize:26,fontWeight:800,lineHeight:1.2,fontFamily:"'Playfair Display',serif",letterSpacing:-.5}}>Préparez votre<br/>Examen Civique</h1>
                 <p style={{margin:0,opacity:.72,fontSize:13,lineHeight:1.6}}>Obligatoire depuis le <strong style={{opacity:1,fontWeight:700}}>1er janvier 2026</strong></p>
               </div>
-              <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:8}}>
+              
+              {/* ── French Practice Banner ── */}
+              <div onClick={()=>{stopAll();setScreen("french");}} style={{marginTop:14,background:"rgba(107,33,168,.25)",border:"1px solid rgba(167,100,255,.4)",borderRadius:6,padding:"12px 16px",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"space-between",gap:12}}>
+                <div style={{display:"flex",alignItems:"center",gap:10}}>
+                  <span style={{fontSize:22}}>🇫🇷</span>
+                  <div>
+                    <div style={{fontWeight:700,fontSize:13,color:"white"}}>Pratiquez aussi le français</div>
+                    <div style={{fontSize:11,opacity:.75,color:"white",marginTop:1}}>DILF · DELF · DALF · TCF · TEF — 275 questions · A1.1 → C2</div>
+                  </div>
+                </div>
+                <div style={{background:"rgba(255,255,255,.2)",borderRadius:4,padding:"5px 12px",fontSize:12,fontWeight:700,color:"white",whiteSpace:"nowrap",flexShrink:0}}>Commencer →</div>
+              </div>
+<div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:8}}>
                 {[[`${ALL_QUESTIONS.length}`,"Questions"],["🎧","Écoute"],["11","Langues"],["80%","Seuil"]].map(([v,l])=>(
                   <div key={l} style={{background:"rgba(255,255,255,.12)",backdropFilter:"blur(8px)",border:"1px solid rgba(255,255,255,.18)",borderRadius:4,padding:"13px 6px",textAlign:"center"}}>
                     <div style={{fontSize:17,fontWeight:800,fontFamily:"'Playfair Display',serif"}}>{v}</div>
