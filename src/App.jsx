@@ -527,6 +527,9 @@ export default function App() {
   const [answered,setAnswered]         = useState(false);
   const [scores,setScores]             = useState({});
   const [wrongAnswers,setWrongAnswers] = useState([]);
+  const [mockTimeLeft,setMockTimeLeft]   = useState(null); // seconds remaining
+  const [isMockExam,setIsMockExam]       = useState(false);
+  const mockTimerRef = useRef(null);
   const [allWrongAnswers,setAllWrongAnswers] = useState([]);
   const [listenQs,setListenQs]         = useState([]);
   const [listenIdx,setListenIdx]       = useState(0);
@@ -645,6 +648,14 @@ export default function App() {
     setListenPlaying(false); setListenPhase(""); setReadingChoiceIdx(null);
   },[]);
 
+  // Mock exam timer
+  useEffect(()=>{
+    if(!isMockExam||mockTimeLeft===null) return;
+    if(mockTimeLeft<=0){ setScreen("results"); setIsMockExam(false); return; }
+    mockTimerRef.current=setTimeout(()=>setMockTimeLeft(t=>t-1),1000);
+    return()=>clearTimeout(mockTimerRef.current);
+  },[isMockExam,mockTimeLeft]);
+
   const speakOne=useCallback((text,langCode,onEnd)=>{
     if(!synthRef.current){onEnd?.(); return;}
     const utt=new SpeechSynthesisUtterance(text);
@@ -726,6 +737,7 @@ export default function App() {
     }
     setCurrentQuizTheme(themeId);
     setQuizQs(pool); setQIdx(0); setSelected(null); setAnswered(false); setScores({}); setWrongAnswers([]);
+    setIsMockExam(false); setMockTimeLeft(null); clearTimeout(mockTimerRef.current);
     setScreen("quiz");
   };
 
@@ -989,7 +1001,7 @@ export default function App() {
                 if(!checkPremium("quiz")) return;
                 const pool=[...ALL_QUESTIONS].map((q,i)=>({...q,origIdx:i})).sort(()=>Math.random()-.5).slice(0,40);
                 setQuizQs(pool);setQIdx(0);setSelected(null);setAnswered(false);setScores({});setWrongAnswers([]);
-                setCurrentQuizTheme(null);setScreen("quiz");
+                setCurrentQuizTheme(null);setIsMockExam(true);setMockTimeLeft(45*60);setScreen("quiz");
               }} style={{background:"linear-gradient(135deg,#0a4020,#1a7a4a)",color:"white",border:"none",borderRadius:14,padding:"18px 12px",cursor:"pointer",textAlign:"center",boxShadow:"0 4px 18px rgba(10,64,32,.28)"}}>
                 <div style={{fontSize:26,marginBottom:4}}>📝</div>
                 <div style={{fontWeight:700,fontSize:14}}>Examen blanc</div>
