@@ -1497,7 +1497,12 @@ export default function App() {
               <div key={qIdx} className="fade" style={{...card}}>
                 <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",gap:10,marginBottom:t?5:18}}>
                   <div style={{fontSize:18,fontWeight:700,lineHeight:1.6,flex:1,fontFamily:"'Playfair Display',serif",color:"#1C1917",letterSpacing:-.2}}>{q.q}</div>
-                  <button onClick={readCurrentQuiz} title={isSpeakingQuiz?"Arrêter la lecture":"Lire la question à voix haute"} style={{background:isSpeakingQuiz?"#C41E3A":"#FEF3EE",border:isSpeakingQuiz?"none":"1.5px solid #EBCAC4",color:isSpeakingQuiz?"white":"#C41E3A",borderRadius:"6px",width:36,height:36,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",flexShrink:0,fontSize:isSpeakingQuiz?13:15,transition:"all .2s",boxShadow:isSpeakingQuiz?"0 2px 8px rgba(196,30,58,.3)":"none"}}>{isSpeakingQuiz?"■":"🔊"}</button>
+                  <button onClick={readCurrentQuiz} title={isSpeakingQuiz?"Arrêter la lecture":"Lire à voix haute"} style={{background:isSpeakingQuiz?"#C41E3A":"#FEF3EE",border:isSpeakingQuiz?"2px solid #C41E3A":"1.5px solid #EBCAC4",color:isSpeakingQuiz?"white":"#C41E3A",borderRadius:6,width:38,height:38,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",flexShrink:0,transition:"all .2s",boxShadow:isSpeakingQuiz?"0 2px 8px rgba(196,30,58,.35)":"none",padding:0}}>
+                    {isSpeakingQuiz
+                      ? <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor"><rect x="2" y="2" width="4" height="10" rx="1"/><rect x="8" y="2" width="4" height="10" rx="1"/></svg>
+                      : <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor"><path d="M10 1a4 4 0 0 1 4 4v5a4 4 0 0 1-8 0V5a4 4 0 0 1 4-4zm-6 9a6 6 0 0 0 12 0h-2a4 4 0 0 1-8 0H4zm6 7v-2h-1v2H7v1h6v-1h-2z"/></svg>
+                    }
+                  </button>
                 </div>
                 {t&&<div style={{fontSize:13,color:"#4a6fa0",fontStyle:"italic",marginBottom:16,lineHeight:1.65,direction:isRTL?"rtl":"ltr",borderLeft:isRTL?"none":"3px solid #c0d0e8",paddingLeft:isRTL?0:10}}>{t.q}</div>}
                 <div style={{display:"flex",flexDirection:"column",gap:8}}>
@@ -1521,7 +1526,22 @@ export default function App() {
                 </div>
                 {answered&&(
                   <div className="fade" style={{marginTop:14,padding:"12px 14px",background:selected===q.a?"#D8F0E5":"#fdf6ec",borderRadius:4,borderLeft:`4px solid ${selected===q.a?"#2D6A4F":"#B8720A"}`}}>
-                    <div style={{fontWeight:700,color:selected===q.a?"#2D6A4F":"#B8720A",fontSize:13,marginBottom:4}}>{selected===q.a?"✓ Bonne réponse !":"✗ Réponse incorrecte"}</div>
+                    <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:4}}>
+                      <div style={{fontWeight:700,color:selected===q.a?"#2D6A4F":"#B8720A",fontSize:13}}>{selected===q.a?"✓ Bonne réponse !":"✗ Réponse incorrecte"}</div>
+                      <button onClick={()=>{
+                        if(isSpeakingQuiz){stopAll();return;}
+                        stopAll();
+                        setIsSpeakingQuiz(true);
+                        listenRef.current.playing=true;
+                        const txt=`La bonne réponse est : ${q.c[q.a]}. ${q.e}`;
+                        speakOne(txt,"fr",()=>{setIsSpeakingQuiz(false);});
+                      }} title={isSpeakingQuiz?"Arrêter":"Écouter l'explication"} style={{background:"transparent",border:"none",cursor:"pointer",color:selected===q.a?"#2D6A4F":"#B8720A",padding:4,display:"flex",alignItems:"center",gap:4,fontSize:11,fontWeight:600}}>
+                        {isSpeakingQuiz
+                          ? <><svg width="11" height="11" viewBox="0 0 14 14" fill="currentColor"><rect x="2" y="2" width="4" height="10" rx="1"/><rect x="8" y="2" width="4" height="10" rx="1"/></svg> Stop</>
+                          : <><svg width="12" height="12" viewBox="0 0 20 20" fill="currentColor"><path d="M10 1a4 4 0 0 1 4 4v5a4 4 0 0 1-8 0V5a4 4 0 0 1 4-4zm-6 9a6 6 0 0 0 12 0h-2a4 4 0 0 1-8 0H4zm6 7v-2h-1v2H7v1h6v-1h-2z"/></svg> Écouter</>
+                        }
+                      </button>
+                    </div>
                     <div style={{fontSize:12.5,color:"#4A4540",lineHeight:1.8}}>{q.e}</div>
                     {t?.e&&lang!=="fr"&&<div style={{marginTop:7,fontSize:12.5,color:"#4a6fa0",fontStyle:"italic",lineHeight:1.8,direction:isRTL?"rtl":"ltr",borderTop:"1px solid rgba(0,0,0,.07)",paddingTop:7}}>{t.e}</div>}
                   </div>
