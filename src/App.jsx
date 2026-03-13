@@ -791,28 +791,35 @@ export default function App() {
   const phaseLabel={question:"🗣️ Question",answer:"✅ Réponse correcte",explanation:"💡 Explication",pause:"⏸ Pause"};
   const card={background:"white",borderRadius:16,boxShadow:"0 2px 20px rgba(0,0,0,.07)",padding:"20px",marginBottom:14};
   return (
-    <div style={{fontFamily:"'Georgia',serif",minHeight:"100vh",background:"#f0f2f7",color:"#1a1a28",direction:isRTL?"rtl":"ltr"}}>
+    <div style={{fontFamily:"'Inter',sans-serif",minHeight:"100vh",background:"#f3f5fb",color:"#1a1a28",direction:isRTL?"rtl":"ltr"}}>
       <style>{`
-        @keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+        @import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Inter:wght@400;500;600;700&display=swap');
+        *{box-sizing:border-box;}
+        @keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
         @keyframes shimmer{0%,100%{opacity:.35}50%{opacity:.85}}
         @keyframes wv0{0%,100%{transform:scaleY(.3)}50%{transform:scaleY(1)}}
         @keyframes wv1{0%,100%{transform:scaleY(.8)}50%{transform:scaleY(.3)}}
         @keyframes wv2{0%,100%{transform:scaleY(.5)}50%{transform:scaleY(1)}}
         @keyframes wv3{0%,100%{transform:scaleY(1)}50%{transform:scaleY(.4)}}
-        @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(26,58,143,.35)}60%{box-shadow:0 0 0 10px rgba(26,58,143,0)}}
-        .fade{animation:fadeUp .35s cubic-bezier(.16,1,.3,1) forwards}
-        .lift{transition:transform .2s cubic-bezier(.16,1,.3,1),box-shadow .2s;cursor:pointer}
-        .lift:hover{transform:translateY(-4px);box-shadow:0 12px 32px rgba(0,0,0,.14)!important}
-        .cBtn{transition:all .18s cubic-bezier(.16,1,.3,1);border:2px solid #e0e4f0;background:white;width:100%;cursor:pointer;font-family:inherit;border-radius:12px}
-        .cBtn:not(:disabled):hover{border-color:#1a3a8f;background:#f0f4ff;transform:translateX(3px)}
-        .cReveal{border-color:#1a7a4a!important;background:linear-gradient(135deg,#e6f7ee,#d0f0e0)!important;transform:none!important}
-        .cWrong{border-color:#c0392b!important;background:linear-gradient(135deg,#fdecea,#fdd)!important;transform:none!important}
-        .cSpeaking{border-color:#1a3a8f!important;background:#e8f0ff!important}
+        @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(45,79,170,.4)}70%{box-shadow:0 0 0 12px rgba(45,79,170,0)}}
+        @keyframes timerBlink{0%,100%{opacity:1}50%{opacity:.5}}
+        .fade{animation:fadeUp .4s cubic-bezier(.16,1,.3,1) forwards}
+        .lift{transition:transform .22s cubic-bezier(.16,1,.3,1),box-shadow .22s;cursor:pointer}
+        .lift:hover{transform:translateY(-5px);box-shadow:0 20px 48px rgba(0,0,0,.12)!important}
+        .lift:active{transform:translateY(-2px)}
+        .cBtn{transition:all .2s cubic-bezier(.16,1,.3,1);border:1.5px solid #e8ebf5;background:white;width:100%;cursor:pointer;font-family:'Inter',sans-serif;border-radius:14px;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+        .cBtn:not(:disabled):hover{border-color:#2d4faa;background:#f4f7ff;transform:translateX(4px);box-shadow:0 4px 16px rgba(45,79,170,.1)}
+        .cReveal{border-color:#2f9e44!important;background:linear-gradient(135deg,#ebfbee,#d3f9d8)!important;transform:none!important;box-shadow:0 4px 16px rgba(47,158,68,.12)!important}
+        .cWrong{border-color:#e03131!important;background:linear-gradient(135deg,#fff5f5,#ffe3e3)!important;transform:none!important}
+        .cSpeaking{border-color:#2d4faa!important;background:#eef2ff!important;box-shadow:0 4px 16px rgba(45,79,170,.12)!important}
         .shimmer{animation:shimmer 1.2s ease infinite}
-        .pulse{animation:pulse 1.8s infinite}
-        .themeCard{transition:all .2s cubic-bezier(.16,1,.3,1)}
-        .themeCard:hover{transform:translateY(-4px);box-shadow:0 16px 40px rgba(0,0,0,.12)!important}
-        ::-webkit-scrollbar{width:5px}::-webkit-scrollbar-thumb{background:#ccc;border-radius:4px}
+        .pulse{animation:pulse 2s infinite}
+        .timerBlink{animation:timerBlink 1s ease infinite}
+        .themeCard{transition:all .22s cubic-bezier(.16,1,.3,1);cursor:pointer}
+        .themeCard:hover{transform:translateY(-6px);box-shadow:0 24px 48px rgba(0,0,0,.09)!important}
+        .navBtn{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:22px;color:white;cursor:pointer;font-family:'Inter',sans-serif;font-size:12px;font-weight:600;padding:6px 13px;transition:all .18s;display:inline-flex;align-items:center;gap:5px}
+        .navBtn:hover{background:rgba(255,255,255,.2);border-color:rgba(255,255,255,.35)}
+        ::-webkit-scrollbar{width:4px}::-webkit-scrollbar-thumb{background:#d0d5e8;border-radius:4px}
         @media(max-width:600px){.hide-mobile{display:none!important}}
       `}</style>
 
