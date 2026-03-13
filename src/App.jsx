@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import ALL_QUESTIONS from './data/questions';
+import FrenchPractice from './FrenchPractice';
 
 const STRIPE_LINK = "https://buy.stripe.com/9B63cxewr3QW3w2bXG0sU00";
 const TRIAL_PER_THEME = 10;
@@ -1368,6 +1369,13 @@ export default function App() {
               </button>
             </div>
 
+            {/* ── French Language Practice ── */}
+            <button className="lift" onClick={()=>{stopAll();setScreen("french");}} style={{background:"linear-gradient(135deg,#2D1832,#6B21A8)",color:"white",border:"none",borderRadius:4,padding:"18px 12px",cursor:"pointer",textAlign:"center",width:"100%",marginBottom:16,boxShadow:"0 4px 16px rgba(107,33,168,.25)"}}>
+              <div style={{fontSize:26,marginBottom:4}}>🇫🇷</div>
+              <div style={{fontWeight:700,fontSize:14}}>Pratique du Français</div>
+              <div style={{fontSize:11,opacity:.8,marginTop:2}}>DILF · DELF · DALF · TCF · TEF — A1.1 → C2</div>
+            </button>
+
             {!isPremium&&(
               <button className="lift" onClick={()=>setScreen("pricing")} style={{background:"linear-gradient(135deg,#D4A012,#C08C00)",color:"#3A2800",border:"none",borderRadius:4,padding:"14px 12px",cursor:"pointer",textAlign:"center",width:"100%",marginBottom:16,boxShadow:"0 4px 18px rgba(212,160,18,.3)"}}>
                 <div style={{fontWeight:800,fontSize:14}}>💳 Débloquer l'accès complet — 5,00 €</div>
@@ -1626,6 +1634,14 @@ export default function App() {
             </div>
           );
         })()}
+
+        {/* FRENCH PRACTICE */}
+        {screen==="french"&&(
+          <FrenchPractice
+            isPremium={isPremium}
+            onBack={()=>{stopAll();setScreen("home");}}
+          />
+        )}
 
         {/* RESULTS */}
         {screen==="results"&&(
