@@ -789,7 +789,7 @@ export default function App() {
   const passed=totalScore>=passMark;
   const listenCurQ=listenQs[listenIdx];
   const phaseLabel={question:"🗣️ Question",answer:"✅ Réponse correcte",explanation:"💡 Explication",pause:"⏸ Pause"};
-  const card={background:"white",borderRadius:16,boxShadow:"0 2px 20px rgba(0,0,0,.07)",padding:"20px",marginBottom:14};
+  const card={background:"white",borderRadius:20,boxShadow:"0 2px 16px rgba(0,0,0,.05)",border:"1px solid #eef0f8",padding:"20px",marginBottom:14};
   return (
     <div style={{fontFamily:"'Inter',sans-serif",minHeight:"100vh",background:"#f3f5fb",color:"#1a1a28",direction:isRTL?"rtl":"ltr"}}>
       <style>{`
@@ -953,21 +953,19 @@ export default function App() {
         {/* HOME */}
         {screen==="home"&&(
           <div className="fade">
-            <div style={{...card,background:"linear-gradient(135deg,#0a1a4a,#1a3a8f,#2a5298)",color:"white",padding:"28px 26px",borderRadius:20,position:"relative",overflow:"hidden"}}>
-              <div style={{position:"absolute",top:-30,right:-30,width:160,height:160,borderRadius:"50%",background:"rgba(255,255,255,.05)",pointerEvents:"none"}}/>
-              <div style={{position:"absolute",bottom:-20,left:-20,width:100,height:100,borderRadius:"50%",background:"rgba(255,215,0,.08)",pointerEvents:"none"}}/>
-              <div style={{display:"flex",alignItems:"flex-start",justifyContent:"space-between",marginBottom:16}}>
-                <div>
-                  <h1 style={{margin:"0 0 6px",fontSize:22,fontWeight:800,lineHeight:1.3}}>Préparez votre<br/>Examen Civique 🇫🇷</h1>
-                  <p style={{margin:0,opacity:.8,fontSize:13,lineHeight:1.7}}>Obligatoire depuis le <strong>1er janv. 2026</strong></p>
-                </div>
-                {isPremium&&<div style={{background:"linear-gradient(135deg,#ffd700,#ffb300)",color:"#5a3a00",borderRadius:12,padding:"6px 12px",fontSize:11,fontWeight:800,flexShrink:0}}>⭐ PREMIUM</div>}
+            <div style={{background:"linear-gradient(145deg,#0d1b4b,#1a3480,#1e5ca0)",color:"white",padding:"30px 26px",borderRadius:24,position:"relative",overflow:"hidden",marginBottom:16,boxShadow:"0 12px 48px rgba(13,27,75,.4)"}}>
+              <div style={{position:"absolute",top:-50,right:-50,width:220,height:220,borderRadius:"50%",background:"rgba(255,255,255,.04)",pointerEvents:"none"}}/>
+              <div style={{position:"absolute",bottom:-40,left:20,width:160,height:160,borderRadius:"50%",background:"rgba(245,196,0,.06)",pointerEvents:"none"}}/>
+              <div style={{marginBottom:20}}>
+                <div style={{display:"inline-flex",alignItems:"center",gap:6,background:"rgba(255,255,255,.13)",border:"1px solid rgba(255,255,255,.2)",borderRadius:20,padding:"4px 12px",fontSize:10,fontWeight:700,letterSpacing:1.5,textTransform:"uppercase",marginBottom:14}}>🇫🇷 Programme officiel 2026</div>
+                <h1 style={{margin:"0 0 8px",fontSize:26,fontWeight:800,lineHeight:1.2,fontFamily:"'Sora',sans-serif",letterSpacing:-.5}}>Préparez votre<br/>Examen Civique</h1>
+                <p style={{margin:0,opacity:.72,fontSize:13,lineHeight:1.6}}>Obligatoire depuis le <strong style={{opacity:1,fontWeight:700}}>1er janvier 2026</strong></p>
               </div>
               <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:8}}>
-                {[[`${ALL_QUESTIONS.length}`,"Questions","🗂️"],["🎧","Écoute",""],["11","Langues","🌍"],["80%","Seuil requis","🎯"]].map(([v,l,icon])=>(
-                  <div key={l} style={{background:"rgba(255,255,255,.18)",borderRadius:12,padding:"12px 6px",textAlign:"center",border:"1px solid rgba(255,255,255,.25)"}}>
-                    <div style={{fontSize:16,fontWeight:800,letterSpacing:.5}}>{v}</div>
-                    <div style={{fontSize:9.5,opacity:.85,marginTop:3,fontWeight:600,textTransform:"uppercase",letterSpacing:.5}}>{l}</div>
+                {[[`${ALL_QUESTIONS.length}`,"Questions"],["🎧","Écoute"],["11","Langues"],["80%","Seuil"]].map(([v,l])=>(
+                  <div key={l} style={{background:"rgba(255,255,255,.12)",backdropFilter:"blur(8px)",border:"1px solid rgba(255,255,255,.18)",borderRadius:14,padding:"13px 6px",textAlign:"center"}}>
+                    <div style={{fontSize:17,fontWeight:800,fontFamily:"'Sora',sans-serif"}}>{v}</div>
+                    <div style={{fontSize:9,opacity:.75,marginTop:3,fontWeight:600,textTransform:"uppercase",letterSpacing:.8}}>{l}</div>
                   </div>
                 ))}
               </div>
@@ -984,7 +982,7 @@ export default function App() {
               </div>
             )}
 
-            <div style={{...card,background:"linear-gradient(135deg,#1a0a3a,#3b1f7a)",color:"white",padding:"22px"}}>
+            <div style={{...card,background:"linear-gradient(145deg,#130e30,#251860,#1a2f6e)",color:"white",padding:"24px",borderRadius:22,boxShadow:"0 8px 36px rgba(19,14,48,.32)"}}>
               <div style={{display:"flex",alignItems:"center",gap:12,marginBottom:14}}>
                 <div style={{width:48,height:48,borderRadius:"50%",background:"rgba(255,255,255,.15)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:22,flexShrink:0}}>🎧</div>
                 <div>
@@ -1034,7 +1032,7 @@ export default function App() {
                 const used = trialUsed[t.id]||0;
                 const trialDone = !isPremium && used >= TRIAL_PER_THEME;
                 return (
-                  <div key={t.id} style={{...card,borderTop:`4px solid ${t.color}`,padding:"14px 16px",marginBottom:0}}>
+                  <div key={t.id} style={{background:"white",borderRadius:18,border:"1px solid #eef0f8",borderTop:`3px solid ${t.color}`,boxShadow:"0 2px 12px rgba(0,0,0,.05)",padding:"18px 16px",marginBottom:0,transition:"all .22s cubic-bezier(.16,1,.3,1)",cursor:"pointer"}}>
                     <div style={{fontSize:22,marginBottom:6}}>{t.icon}</div>
                     <div style={{fontWeight:700,fontSize:13,marginBottom:2}}>{t.label}</div>
                     <div style={{fontSize:11,color:"#999",marginBottom:isPremium?8:4}}>{cnt} questions</div>
@@ -1130,7 +1128,7 @@ export default function App() {
           const th=THEMES.find(x=>x.id===q.theme);
           return (
             <div className="fade">
-              <div style={{...card,padding:"12px 16px",marginBottom:11}}>
+              <div style={{background:"white",borderRadius:18,border:"1px solid #eef0f8",boxShadow:"0 2px 12px rgba(0,0,0,.05)",padding:"14px 18px",marginBottom:12}}>
                 <div style={{display:"flex",justifyContent:"space-between",fontSize:12,marginBottom:6}}>
                   <span style={{fontWeight:600,color:th?.color}}>{th?.icon} {th?.label}</span>
                   <span style={{fontWeight:700,color:"#1a3a8f"}}>
@@ -1148,7 +1146,7 @@ export default function App() {
                   const s=mockTimeLeft%60;
                   const urgent=mockTimeLeft<300;
                   return(
-                    <div style={{display:"flex",alignItems:"center",justifyContent:"center",gap:6,marginTop:10,background:urgent?"#fdecea":"#eef2ff",borderRadius:10,padding:"8px 14px",border:`1px solid ${urgent?"#c0392b":"#1a3a8f"}`}}>
+                    <div style={{display:"flex",alignItems:"center",justifyContent:"center",gap:6,marginTop:10,background:urgent?"linear-gradient(135deg,#fff5f5,#ffe3e3)":"linear-gradient(135deg,#eef2ff,#e8efff)",borderRadius:12,padding:"10px 16px",border:`1.5px solid ${urgent?"#e03131":"#3b5bdb"}`,boxShadow:`0 4px 12px ${urgent?"rgba(224,49,49,.12)":"rgba(59,91,219,.1)"}`,marginTop:10}}>
                       <span style={{fontSize:16}}>{urgent?"⚠️":"⏱️"}</span>
                       <span style={{fontWeight:800,fontSize:16,color:urgent?"#c0392b":"#1a3a8f",fontFamily:"monospace",letterSpacing:2}}>
                         {String(m).padStart(2,"0")}:{String(s).padStart(2,"0")}
@@ -1162,7 +1160,7 @@ export default function App() {
               </div>
               <div key={qIdx} className="fade" style={{...card}}>
                 <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",gap:10,marginBottom:t?5:18}}>
-                  <div style={{fontSize:17,fontWeight:700,lineHeight:1.65,flex:1}}>{q.q}</div>
+                  <div style={{fontSize:18,fontWeight:700,lineHeight:1.6,flex:1,fontFamily:"'Sora',sans-serif",color:"#0d1a3a",letterSpacing:-.2}}>{q.q}</div>
                   <button onClick={readCurrentQuiz} style={{background:"#f0f4ff",border:"none",color:"#1a3a8f",borderRadius:"50%",width:36,height:36,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",flexShrink:0,fontSize:15}}>🔊</button>
                 </div>
                 {t&&<div style={{fontSize:13,color:"#4a6fa0",fontStyle:"italic",marginBottom:16,lineHeight:1.65,direction:isRTL?"rtl":"ltr",borderLeft:isRTL?"none":"3px solid #c0d0e8",paddingLeft:isRTL?0:10}}>{t.q}</div>}
@@ -1199,7 +1197,7 @@ export default function App() {
                     <a href="#" onClick={e=>{e.preventDefault();setScreen("pricing");}} style={{fontSize:12,color:"#3b1f7a",fontWeight:700,textDecoration:"none"}}>🔓 Débloquer les {ALL_QUESTIONS.filter(q=>q.theme===(currentQuizTheme||q.theme)).length} questions →</a>
                   )}
                   <div style={{marginLeft:"auto"}}>
-                    <button onClick={nextQ} style={{background:"linear-gradient(135deg,#0d2060,#1a3a8f)",color:"white",border:"none",borderRadius:10,padding:"11px 24px",cursor:"pointer",fontSize:14,fontWeight:700}}>{qIdx+1>=quizQs.length?"Voir les résultats →":"Suivant →"}</button>
+                    <button onClick={nextQ} style={{background:"linear-gradient(135deg,#0d1b4b,#2d4faa)",color:"white",border:"none",borderRadius:14,padding:"12px 26px",cursor:"pointer",fontSize:14,fontWeight:700,boxShadow:"0 4px 16px rgba(45,79,170,.3)",fontFamily:"'Inter',sans-serif"}}>{qIdx+1>=quizQs.length?"Voir les résultats →":"Suivant →"}</button>
                   </div>
                 </div>
               )}
@@ -1210,18 +1208,18 @@ export default function App() {
         {/* RESULTS */}
         {screen==="results"&&(
           <div className="fade">
-            <div style={{...card,background:passed?"linear-gradient(135deg,#0a4020,#1a7a4a)":"linear-gradient(135deg,#5a0f0f,#c0392b)",color:"white",textAlign:"center",padding:"30px 22px"}}>
+            <div style={{background:passed?"linear-gradient(145deg,#083d1a,#0f6b30,#1a9a48)":"linear-gradient(145deg,#3d0808,#8b1a1a,#c0392b)",color:"white",textAlign:"center",padding:"40px 24px",borderRadius:24,marginBottom:16,boxShadow:passed?"0 12px 48px rgba(15,107,48,.4)":"0 12px 48px rgba(139,26,26,.4)"}}>
               <div style={{fontSize:50,marginBottom:8}}>{passed?"🎉":"📚"}</div>
-              <div style={{fontSize:56,fontWeight:800,lineHeight:1}}>{totalScore}<span style={{fontSize:22,opacity:.75}}> / {quizQs.length}</span></div>
-              <div style={{fontSize:22,fontWeight:700,marginTop:6,opacity:.95}}>{Math.round((totalScore/quizQs.length)*100)}%</div>
-              <div style={{marginTop:10,fontSize:13,opacity:.9}}>{passed?`✓ Seuil atteint (${passMark}/${quizQs.length})`:`Il manque ${passMark-totalScore} point(s) pour 80 %`}</div>
+              <div style={{fontSize:64,fontWeight:800,lineHeight:1,fontFamily:"'Sora',sans-serif",letterSpacing:-2}}>{totalScore}<span style={{fontSize:26,opacity:.6,fontWeight:600}}> / {quizQs.length}</span></div>
+              <div style={{fontSize:30,fontWeight:800,marginTop:8,fontFamily:"'Sora',sans-serif"}}>{Math.round((totalScore/quizQs.length)*100)}%</div>
+              <div style={{marginTop:14,fontSize:12.5,fontWeight:600,background:"rgba(255,255,255,.15)",border:"1px solid rgba(255,255,255,.2)",display:"inline-flex",padding:"7px 18px",borderRadius:20}}>{passed?`✓ Seuil atteint (${passMark}/${quizQs.length})`:`Il manque ${passMark-totalScore} point(s) pour 80 %`}</div>
             </div>
 
             {!isPremium&&(()=>{
               const th = THEMES.find(t=>t.id===currentQuizTheme);
               const themeTotal = currentQuizTheme ? ALL_QUESTIONS.filter(q=>q.theme===currentQuizTheme).length : ALL_QUESTIONS.length;
               return (
-                <div style={{...card,background:"linear-gradient(135deg,#1a0a3a,#3b1f7a)",color:"white",textAlign:"center",padding:"24px"}}>
+                <div style={{background:"linear-gradient(145deg,#130e30,#251860,#1e3480)",color:"white",textAlign:"center",padding:"28px",borderRadius:22,marginBottom:16,boxShadow:"0 8px 36px rgba(19,14,48,.35)"}}>
                   <div style={{fontSize:28,marginBottom:8}}>🚀</div>
                   <div style={{fontWeight:800,fontSize:16,marginBottom:6}}>
                     {currentQuizTheme?`Continuez avec les ${themeTotal} questions ${th?.label||""}`:`Débloquez les ${ALL_QUESTIONS.length} questions officielles`}
@@ -1239,7 +1237,7 @@ export default function App() {
             {wrongAnswers.length>0&&(
               <div style={{...card}}>
                 <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}}>
-                  <div style={{fontWeight:700,fontSize:13,color:"#c0392b"}}>🔁 À revoir — {wrongAnswers.length} Q</div>
+                  <div style={{fontWeight:700,fontSize:13,color:"#e03131"}}>🔁 À revoir — {wrongAnswers.length} Q</div>
                   {isPremium&&<button className="lift" onClick={()=>{const pool=wrongAnswers.map(q=>({...q,origIdx:ALL_QUESTIONS.findIndex(x=>x.q===q.q)}));setListenQs(pool);setListenIdx(0);listenRef.current={playing:true,idx:0,questions:pool};setListenPlaying(true);setScreen("listen");setTimeout(()=>runListenFrom(0,pool,listenBilingual),200);}} style={{background:"#3b1f7a",color:"white",border:"none",borderRadius:10,padding:"6px 12px",cursor:"pointer",fontSize:11,fontWeight:700}}>🎧 Écouter les erreurs</button>}
                 </div>
                 {wrongAnswers.map((wq,i)=>(
@@ -1275,9 +1273,9 @@ export default function App() {
               </div>
             )}
             <div style={{display:"flex",gap:10,justifyContent:"center",flexWrap:"wrap"}}>
-              <button onClick={()=>startQuiz(null)} style={{background:"linear-gradient(135deg,#0d2060,#1a3a8f)",color:"white",border:"none",borderRadius:10,padding:"10px 22px",cursor:"pointer",fontSize:13,fontWeight:700}}>🔄 Recommencer</button>
-              {isPremium&&<button onClick={()=>startListen("all")} style={{background:"linear-gradient(135deg,#1a0a3a,#3b1f7a)",color:"white",border:"none",borderRadius:10,padding:"10px 22px",cursor:"pointer",fontSize:13,fontWeight:700}}>🎧 Tout écouter</button>}
-              <button onClick={()=>{stopAll();setScreen("home");}} style={{background:"white",color:"#1a3a8f",border:"2px solid #1a3a8f",borderRadius:10,padding:"10px 22px",cursor:"pointer",fontSize:13,fontWeight:700}}>🏠 Accueil</button>
+              <button className="lift" onClick={()=>startQuiz(null)} style={{background:"linear-gradient(135deg,#0d1b4b,#2d4faa)",color:"white",border:"none",borderRadius:14,padding:"12px 24px",cursor:"pointer",fontSize:13,fontWeight:700,boxShadow:"0 4px 16px rgba(45,79,170,.28)"}}>🔄 Recommencer</button>
+              {isPremium&&<button className="lift" onClick={()=>startListen("all")} style={{background:"linear-gradient(145deg,#130e30,#251860)",color:"white",border:"none",borderRadius:14,padding:"12px 24px",cursor:"pointer",fontSize:13,fontWeight:700,boxShadow:"0 4px 16px rgba(19,14,48,.3)"}}>🎧 Tout écouter</button>}
+              <button className="lift" onClick={()=>{stopAll();setScreen("home");}} style={{background:"white",color:"#0d1b4b",border:"1.5px solid #e2e6f3",borderRadius:14,padding:"12px 24px",cursor:"pointer",fontSize:13,fontWeight:700,boxShadow:"0 2px 8px rgba(0,0,0,.05)"}}>🏠 Accueil</button>
             </div>
           </div>
         )}
