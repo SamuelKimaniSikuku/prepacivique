@@ -1044,6 +1044,13 @@ export default function App() {
       :ALL_QUESTIONS.map((q,i)=>({...q,origIdx:i}))
     ).slice();
     for(let i=pool.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[pool[i],pool[j]]=[pool[j],pool[i]];}
+pool = pool.map(q => {
+  const indices = [0,1,2,3];
+  for(let i=3;i>0;i--){const j=Math.floor(Math.random()*(i+1));[indices[i],indices[j]]=[indices[j],indices[i]];}
+  const newC = indices.map(i => q.c[i]);
+  const newA = indices.indexOf(q.a);
+  return {...q, c: newC, a: newA};
+});
     if(!isPremium){
       if(themeId){
         pool = pool.slice(0, TRIAL_PER_THEME);
@@ -1065,7 +1072,14 @@ export default function App() {
 
   const startMockExam=()=>{
     if(!checkPremium("quiz")) return;
-    const pool=[...ALL_QUESTIONS].map((q,i)=>({...q,origIdx:i})).sort(()=>Math.random()-.5).slice(0,40);
+    let pool=[...ALL_QUESTIONS].map((q,i)=>({...q,origIdx:i})).sort(()=>Math.random()-.5).slice(0,40)
+pool = pool.map(q => {
+  const indices = [0,1,2,3];
+  for(let i=3;i>0;i--){const j=Math.floor(Math.random()*(i+1));[indices[i],indices[j]]=[indices[j],indices[i]];}
+  const newC = indices.map(i => q.c[i]);
+  const newA = indices.indexOf(q.a);
+  return {...q, c: newC, a: newA};
+});;
     setQuizQs(pool);setQIdx(0);setSelected(null);setAnswered(false);setScores({});setWrongAnswers([]);
     setCurrentQuizTheme(null);setIsMockExam(true);setMockTimeLeft(45*60);setScreen("quiz");
   };
