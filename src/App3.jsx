@@ -24,8 +24,8 @@ const LEVELS = [
     fullLabel: "Préparation CSP",
     sub: "Carte de séjour pluriannuelle",
     icon: "🎓",
-    color: "#2563EB",
-    bg: "#EFF6FF",
+    color: "#1A3A5C",
+    bg: "#F0F4F8",
     themes: ["valeurs","societe","droits"],
     desc: "Multi-year residence permit",
   },
@@ -35,8 +35,8 @@ const LEVELS = [
     fullLabel: "Préparation CR",
     sub: "Carte de résident",
     icon: "🏅",
-    color: "#059669",
-    bg: "#ECFDF5",
+    color: "#2E7D52",
+    bg: "#EDF7F2",
     themes: ["valeurs","institutions","droits","histoire","societe"],
     desc: "Resident card",
   },
@@ -373,25 +373,25 @@ function PaywallModal({ reason, onClose, codeInput, setCodeInput, codeStatus, ha
     lang:   { icon:"🌐", title:"Fonctionnalité Premium", sub:"La traduction en 11 langues est réservée aux abonnés." },
   };
   const r = reasons[reason]||reasons.quiz;
-  const statusColor = codeStatus==="ok"?"#059669":codeStatus==="error"?"#DC2626":"#DC2626";
+  const statusColor = codeStatus==="ok"?"#2E7D52":codeStatus==="error"?"#C0392B":"#C0392B";
   const statusMsg = codeStatus==="checking"?"⏳ Vérification…":codeStatus==="ok"?"✅ Code valide !":codeStatus==="error"?"❌ Code invalide.":null;
   return (
     <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.55)",zIndex:200,display:"flex",alignItems:"center",justifyContent:"center",padding:16}} onClick={onClose}>
       <div onClick={e=>e.stopPropagation()} style={{background:"white",borderRadius:12,padding:"32px 28px",maxWidth:420,width:"100%",textAlign:"center",boxShadow:"0 24px 64px rgba(0,0,0,.18)",position:"relative"}}>
         <button onClick={onClose} style={{position:"absolute",top:14,right:16,background:"none",border:"none",fontSize:20,cursor:"pointer",color:"#9CA3AF"}}>✕</button>
         <div style={{fontSize:44,marginBottom:10}}>{r.icon}</div>
-        <h2 style={{margin:"0 0 8px",fontSize:18,fontWeight:700,color:"#111827"}}>{r.title}</h2>
+        <h2 style={{margin:"0 0 8px",fontSize:18,fontWeight:700,color:"#0F1923"}}>{r.title}</h2>
         <p style={{margin:"0 0 20px",color:"#6B7280",fontSize:13,lineHeight:1.7}}>{r.sub}</p>
-        <a href={STRIPE_LINK} target="_blank" rel="noopener noreferrer" style={{display:"block",background:"#111827",color:"white",borderRadius:8,padding:"13px",fontWeight:700,fontSize:14,textDecoration:"none",marginBottom:16}}>
+        <a href={STRIPE_LINK} target="_blank" rel="noopener noreferrer" style={{display:"block",background:"#0F1923",color:"white",borderRadius:8,padding:"13px",fontWeight:700,fontSize:14,textDecoration:"none",marginBottom:16}}>
           💳 Accès complet — 5,00 € →
         </a>
-        <div style={{background:"#F9FAFB",borderRadius:8,padding:"14px",border:"1px solid #E5E7EB"}}>
+        <div style={{background:"#F5F6F8",borderRadius:8,padding:"14px",border:"1px solid #E5E7EB"}}>
           <div style={{fontSize:12,color:"#6B7280",marginBottom:8}}>Code d'activation</div>
           <div style={{display:"flex",gap:7}}>
             <input value={codeInput} onChange={e=>setCodeInput(e.target.value)} onKeyDown={e=>e.key==="Enter"&&handleCodeSubmit()} placeholder="CIVIC-XXXX-XXXX-XXXX"
-              style={{flex:1,padding:"9px 11px",borderRadius:6,border:`1.5px solid ${codeStatus==="error"?"#DC2626":codeStatus==="ok"?"#059669":"#D1D5DB"}`,fontSize:12,fontFamily:"monospace",outline:"none"}}/>
+              style={{flex:1,padding:"9px 11px",borderRadius:6,border:`1.5px solid ${codeStatus==="error"?"#C0392B":codeStatus==="ok"?"#2E7D52":"#D1D5DB"}`,fontSize:12,fontFamily:"monospace",outline:"none"}}/>
             <button onClick={handleCodeSubmit} disabled={codeStatus==="checking"||codeStatus==="ok"}
-              style={{background:"#111827",color:"white",border:"none",borderRadius:6,padding:"9px 14px",cursor:"pointer",fontWeight:700,fontSize:12}}>
+              style={{background:"#0F1923",color:"white",border:"none",borderRadius:6,padding:"9px 14px",cursor:"pointer",fontWeight:700,fontSize:12}}>
               {codeStatus==="checking"?"…":"OK"}
             </button>
           </div>
@@ -406,9 +406,9 @@ function PaywallModal({ reason, onClose, codeInput, setCodeInput, codeStatus, ha
 // ── STATS CARD ────────────────────────────────────────────────────────────────
 function StatsCard({ label, value }) {
   return (
-    <div style={{background:"white",borderRadius:10,border:"1px solid #E5E7EB",padding:"20px 16px",textAlign:"center",flex:1,minWidth:100}}>
+    <div style={{background:"white",borderRadius:10,border:"1px solid #EAECEF",borderTop:"3px solid #1A3A5C",padding:"20px 16px",textAlign:"center",flex:1,minWidth:100}}>
       <div style={{fontSize:13,color:"#6B7280",marginBottom:8}}>{label}</div>
-      <div style={{fontSize:22,fontWeight:700,color:"#111827"}}>{value}</div>
+      <div style={{fontSize:22,fontWeight:700,color:"#0F1923"}}>{value}</div>
     </div>
   );
 }
@@ -423,17 +423,17 @@ function Sidebar({ activeLevel, setActiveLevel, screen, setScreen, isPremium, st
   ];
 
   return (
-    <div style={{width:220,flexShrink:0,background:"white",borderRight:"1px solid #E5E7EB",minHeight:"100vh",display:"flex",flexDirection:"column"}}>
+    <div style={{width:220,flexShrink:0,background:"#0F1923",borderRight:"none",minHeight:"100vh",display:"flex",flexDirection:"column"}}>
       {/* Logo */}
-      <div style={{padding:"20px 20px 16px",borderBottom:"1px solid #F3F4F6"}}>
+      <div style={{padding:"20px 20px 16px",borderBottom:"1px solid rgba(255,255,255,.08)"}}>
         <div style={{display:"flex",alignItems:"center",gap:8}}>
           <span style={{fontSize:20}}>📖</span>
           <div>
-            <span style={{fontWeight:800,fontSize:14,color:"#2563EB"}}>prépa</span>
-            <span style={{fontWeight:800,fontSize:14,color:"#111827"}}>civique</span>
+            <span style={{fontWeight:800,fontSize:14,color:"#1A3A5C"}}>prépa</span>
+            <span style={{fontWeight:800,fontSize:14,color:"#0F1923"}}>civique</span>
           </div>
         </div>
-        {isPremium && <div style={{marginTop:6,background:"#FEF9C3",color:"#854D0E",borderRadius:4,padding:"2px 8px",fontSize:10,fontWeight:700,display:"inline-block"}}>⭐ PREMIUM</div>}
+        {isPremium && <div style={{marginTop:6,background:"rgba(232,184,75,.2)",color:"#E8B84B",borderRadius:4,padding:"2px 8px",fontSize:10,fontWeight:700,display:"inline-block"}}>⭐ PREMIUM</div>}
       </div>
 
       {/* Nav */}
@@ -451,8 +451,8 @@ function Sidebar({ activeLevel, setActiveLevel, screen, setScreen, isPremium, st
             }} style={{
               display:"flex",alignItems:"center",gap:10,width:"100%",padding:"9px 12px",
               borderRadius:8,border:"none",cursor:"pointer",textAlign:"left",marginBottom:2,
-              background:isActive?"#EFF6FF":"transparent",
-              color:isActive?"#2563EB":"#4B5563",fontWeight:isActive?600:400,fontSize:13,
+              background:isActive?"rgba(232,184,75,.15)":"transparent",
+              color:isActive?"#E8B84B":"rgba(255,255,255,.7)",fontWeight:isActive?600:400,fontSize:13,
             }}>
               <span style={{fontSize:15}}>{item.icon}</span>
               {item.label}
@@ -463,10 +463,10 @@ function Sidebar({ activeLevel, setActiveLevel, screen, setScreen, isPremium, st
 
       {/* Unlock banner */}
       {!isPremium && (
-        <div style={{margin:"10px",background:"#111827",borderRadius:8,padding:"14px 12px",color:"white",cursor:"pointer"}} onClick={() => setScreen("pricing")}>
+        <div style={{margin:"10px",background:"#0F1923",borderRadius:8,padding:"14px 12px",color:"white",cursor:"pointer"}} onClick={() => setScreen("pricing")}>
           <div style={{fontWeight:700,fontSize:12,marginBottom:4}}>🔓 Débloquer l'accès</div>
           <div style={{fontSize:11,opacity:.7,marginBottom:8}}>{ALL_QUESTIONS.length} questions · 11 langues · Audio</div>
-          <div style={{background:"#2563EB",borderRadius:6,padding:"6px",textAlign:"center",fontWeight:700,fontSize:12}}>5,00 € →</div>
+          <div style={{background:"#1A3A5C",borderRadius:6,padding:"6px",textAlign:"center",fontWeight:700,fontSize:12}}>5,00 € →</div>
         </div>
       )}
     </div>
@@ -474,7 +474,7 @@ function Sidebar({ activeLevel, setActiveLevel, screen, setScreen, isPremium, st
 }
 
 // ── LEVEL DASHBOARD ───────────────────────────────────────────────────────────
-function LevelDashboard({ level, stats, onStartQuiz, onStartMockExam, onStartListen, isPremium, checkPremium }) {
+function LevelDashboard({ level, stats, onStartQuiz, onPromptQuiz, onStartMockExam, onStartListen, isPremium, checkPremium }) {
   const lv = LEVELS.find(l => l.id === level);
   const levelQuestions = ALL_QUESTIONS.filter(q => lv.themes.includes(q.theme));
   const levelStats = stats[level] || { answered:0, correct:0, exams:0, scores:[] };
@@ -486,7 +486,7 @@ function LevelDashboard({ level, stats, onStartQuiz, onStartMockExam, onStartLis
       <div style={{marginBottom:6,fontSize:13,color:"#6B7280",cursor:"pointer",display:"inline-flex",alignItems:"center",gap:4}}>
         ← Retour au tableau de bord
       </div>
-      <h1 style={{margin:"0 0 4px",fontSize:22,fontWeight:700,color:"#111827"}}>{lv.fullLabel}</h1>
+      <h1 style={{margin:"0 0 4px",fontSize:22,fontWeight:700,color:"#0F1923"}}>{lv.fullLabel}</h1>
       <div style={{color:"#6B7280",fontSize:14,marginBottom:20}}>{lv.sub}</div>
 
       {/* Stats row */}
@@ -501,15 +501,15 @@ function LevelDashboard({ level, stats, onStartQuiz, onStartMockExam, onStartLis
       {/* Action cards */}
       <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(220px,1fr))",gap:14,marginBottom:24}}>
         {/* Practice */}
-        <div onClick={() => onStartQuiz(lv.themes[0])}
-          style={{background:"white",borderRadius:10,border:"2px solid #111827",padding:"22px",cursor:"pointer",transition:"all .2s"}}
+        <div onClick={() => onPromptQuiz(null, lv.themes)}
+          style={{background:"white",borderRadius:10,border:"2px solid #0F1923",padding:"22px",cursor:"pointer",transition:"all .2s"}}
           onMouseEnter={e=>e.currentTarget.style.boxShadow="0 4px 16px rgba(0,0,0,.1)"}
           onMouseLeave={e=>e.currentTarget.style.boxShadow="none"}>
           <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:12}}>
             <div style={{width:40,height:40,background:"#F3F4F6",borderRadius:8,display:"flex",alignItems:"center",justifyContent:"center",fontSize:18}}>📖</div>
             <span style={{background:"#DCFCE7",color:"#166534",borderRadius:4,padding:"2px 8px",fontSize:11,fontWeight:600}}>1 test gratuit</span>
           </div>
-          <div style={{fontWeight:700,fontSize:15,color:"#111827",marginBottom:4}}>Pratiquer par sections</div>
+          <div style={{fontWeight:700,fontSize:15,color:"#0F1923",marginBottom:4}}>Pratiquer par sections</div>
           <div style={{fontSize:12,color:"#6B7280"}}>Entraînez-vous sur les 5 thèmes de l'examen</div>
         </div>
 
@@ -525,7 +525,7 @@ function LevelDashboard({ level, stats, onStartQuiz, onStartMockExam, onStartLis
               {!isPremium && <span style={{fontSize:12}}>🔒</span>}
             </div>
           </div>
-          <div style={{fontWeight:700,fontSize:15,color:"#111827",marginBottom:4}}>Passer un examen blanc</div>
+          <div style={{fontWeight:700,fontSize:15,color:"#0F1923",marginBottom:4}}>Passer un examen blanc</div>
           <div style={{fontSize:12,color:"#6B7280"}}>Simulez l'examen officiel (40 questions, 45 min)</div>
         </div>
 
@@ -538,14 +538,40 @@ function LevelDashboard({ level, stats, onStartQuiz, onStartMockExam, onStartLis
             <div style={{width:40,height:40,background:"#F3F4F6",borderRadius:8,display:"flex",alignItems:"center",justifyContent:"center",fontSize:18}}>🎧</div>
             {!isPremium && <span style={{fontSize:12}}>🔒</span>}
           </div>
-          <div style={{fontWeight:700,fontSize:15,color:"#111827",marginBottom:4}}>Réviser mes erreurs</div>
+          <div style={{fontWeight:700,fontSize:15,color:"#0F1923",marginBottom:4}}>Réviser mes erreurs</div>
           <div style={{fontSize:12,color:"#6B7280"}}>Mode écoute · Questions + réponses + explications</div>
+        </div>
+
+        {/* Play All */}
+        <div onClick={() => { if(!checkPremium("listen")) return; onStartListen(null, lv.themes); }}
+          style={{background:"linear-gradient(135deg,#1a0a3a,#3b1f7a)",borderRadius:10,border:"1px solid #3b1f7a",padding:"22px",cursor:"pointer",color:"white"}}
+          onMouseEnter={e=>e.currentTarget.style.boxShadow="0 4px 20px rgba(107,33,168,.35)"}
+          onMouseLeave={e=>e.currentTarget.style.boxShadow="none"}>
+          <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:12}}>
+            <div style={{width:40,height:40,background:"rgba(255,255,255,.15)",borderRadius:8,display:"flex",alignItems:"center",justifyContent:"center",fontSize:18}}>▶</div>
+            <span style={{background:"rgba(255,255,255,.15)",color:"white",borderRadius:4,padding:"2px 8px",fontSize:11,fontWeight:600}}>{levelQuestions.length} questions</span>
+          </div>
+          <div style={{fontWeight:700,fontSize:15,marginBottom:4}}>Tout écouter</div>
+          <div style={{fontSize:12,opacity:.8}}>Écouter toutes les questions · réponses · explications en audio</div>
+        </div>
+
+        {/* Quiz All */}
+        <div onClick={() => onPromptQuiz(null, lv.themes)}
+          style={{background:"linear-gradient(135deg,#1C1917,#C41E3A)",borderRadius:10,border:"none",padding:"22px",cursor:"pointer",color:"white"}}
+          onMouseEnter={e=>e.currentTarget.style.boxShadow="0 4px 20px rgba(196,30,58,.35)"}
+          onMouseLeave={e=>e.currentTarget.style.boxShadow="none"}>
+          <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:12}}>
+            <div style={{width:40,height:40,background:"rgba(255,255,255,.15)",borderRadius:8,display:"flex",alignItems:"center",justifyContent:"center",fontSize:18}}>🎯</div>
+            <span style={{background:"rgba(255,255,255,.15)",color:"white",borderRadius:4,padding:"2px 8px",fontSize:11,fontWeight:600}}>{levelQuestions.length} questions</span>
+          </div>
+          <div style={{fontWeight:700,fontSize:15,marginBottom:4}}>Quiz complet</div>
+          <div style={{fontSize:12,opacity:.8}}>Toutes les questions de ce niveau en mode quiz</div>
         </div>
       </div>
 
       {/* Progression by section */}
       <div style={{background:"white",borderRadius:10,border:"1px solid #E5E7EB",padding:"24px"}}>
-        <div style={{fontWeight:700,fontSize:15,marginBottom:20,color:"#111827"}}>Progression par section</div>
+        <div style={{fontWeight:700,fontSize:15,marginBottom:20,color:"#0F1923"}}>Progression par section</div>
         <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(120px,1fr))",gap:20}}>
           {THEMES.map(t => {
             const themeProgress = (stats[level]?.byTheme?.[t.id] || 0);
@@ -556,12 +582,12 @@ function LevelDashboard({ level, stats, onStartQuiz, onStartMockExam, onStartLis
                 <div style={{position:"relative",width:72,height:72,margin:"0 auto 10px"}}>
                   <svg viewBox="0 0 72 72" style={{width:72,height:72,transform:"rotate(-90deg)"}}>
                     <circle cx="36" cy="36" r="28" fill="none" stroke="#F3F4F6" strokeWidth="6"/>
-                    <circle cx="36" cy="36" r="28" fill="none" stroke={t.color} strokeWidth="6"
+                    <circle cx="36" cy="36" r="28" fill="none" stroke="#E8B84B" strokeWidth="6"
                       strokeDasharray={`${2*Math.PI*28}`}
                       strokeDashoffset={`${2*Math.PI*28*(1-pct/100)}`}
                       strokeLinecap="round" style={{transition:"stroke-dashoffset .6s ease"}}/>
                   </svg>
-                  <div style={{position:"absolute",inset:0,display:"flex",alignItems:"center",justifyContent:"center",fontSize:13,fontWeight:700,color:"#111827"}}>{pct}%</div>
+                  <div style={{position:"absolute",inset:0,display:"flex",alignItems:"center",justifyContent:"center",fontSize:13,fontWeight:700,color:"#0F1923"}}>{pct}%</div>
                 </div>
                 <div style={{fontSize:11,color:"#6B7280",lineHeight:1.4}}>{t.label}</div>
               </div>
@@ -586,7 +612,7 @@ function HomeDashboard({ stats, onSelectLevel, setScreen }) {
 
   return (
     <div>
-      <h1 style={{margin:"0 0 4px",fontSize:22,fontWeight:700,color:"#111827"}}>{greeting} !</h1>
+      <h1 style={{margin:"0 0 4px",fontSize:22,fontWeight:700,color:"#0F1923"}}>{greeting} !</h1>
       <p style={{margin:"0 0 24px",color:"#6B7280",fontSize:14}}>Choisissez votre niveau de préparation pour l'examen civique français.</p>
 
       {/* Global stats */}
@@ -599,17 +625,17 @@ function HomeDashboard({ stats, onSelectLevel, setScreen }) {
       </div>
 
       {/* Continue preparation */}
-      <div style={{fontWeight:700,fontSize:15,marginBottom:14,color:"#111827"}}>Continuer votre préparation</div>
+      <div style={{fontWeight:700,fontSize:15,marginBottom:14,color:"#0F1923"}}>Continuer votre préparation</div>
       <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(200px,1fr))",gap:12,marginBottom:28}}>
         {LEVELS.map(lv => (
           <div key={lv.id} onClick={() => onSelectLevel(lv.id)}
             style={{background:"white",borderRadius:10,border:"1px solid #E5E7EB",padding:"18px 16px",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"space-between",transition:"all .2s"}}
-            onMouseEnter={e=>{e.currentTarget.style.borderColor="#2563EB";e.currentTarget.style.boxShadow="0 2px 12px rgba(37,99,235,.1)";}}
+            onMouseEnter={e=>{e.currentTarget.style.borderColor="#1A3A5C";e.currentTarget.style.boxShadow="0 2px 12px rgba(37,99,235,.1)";}}
             onMouseLeave={e=>{e.currentTarget.style.borderColor="#E5E7EB";e.currentTarget.style.boxShadow="none";}}>
             <div style={{display:"flex",alignItems:"center",gap:12}}>
               <div style={{width:38,height:38,borderRadius:8,background:lv.bg,display:"flex",alignItems:"center",justifyContent:"center",fontSize:18}}>{lv.icon}</div>
               <div>
-                <div style={{fontWeight:600,fontSize:14,color:"#111827"}}>{lv.label}</div>
+                <div style={{fontWeight:600,fontSize:14,color:"#0F1923"}}>{lv.label}</div>
                 <div style={{fontSize:11,color:"#9CA3AF"}}>{lv.sub}</div>
               </div>
             </div>
@@ -624,7 +650,7 @@ function HomeDashboard({ stats, onSelectLevel, setScreen }) {
           <div style={{display:"flex",alignItems:"center",gap:12}}>
             <div style={{width:38,height:38,borderRadius:8,background:"#F5F3FF",display:"flex",alignItems:"center",justifyContent:"center",fontSize:18}}>🇫🇷</div>
             <div>
-              <div style={{fontWeight:600,fontSize:14,color:"#111827"}}>Pratique Français</div>
+              <div style={{fontWeight:600,fontSize:14,color:"#0F1923"}}>Pratique Français</div>
               <div style={{fontSize:11,color:"#9CA3AF"}}>DILF · DELF · DALF · TCF · TEF</div>
             </div>
           </div>
@@ -667,6 +693,8 @@ export default function App() {
   const [feedbackMode, setFeedbackMode] = useState("immediate"); // "immediate" | "end"
   const [showFeedbackPicker, setShowFeedbackPicker] = useState(false);
   const [pendingQuizTheme, setPendingQuizTheme] = useState(null);
+  const [pendingQuizThemes, setPendingQuizThemes] = useState(null);
+  const [quizLimit, setQuizLimit] = useState(null); // null = all
   const [listenQs, setListenQs]     = useState([]);
   const [listenIdx, setListenIdx]   = useState(0);
   const [listenPlaying, setListenPlaying] = useState(false);
@@ -816,12 +844,14 @@ export default function App() {
     playQ(idx);
   }, [lang, listenIncludeExpl, getT, speakOne]);
 
-  const startListen = (themeFilter) => {
+  const startListen = (themeFilter, themes=null) => {
     if (!checkPremium("listen")) return;
     stopAll();
     const pool = (themeFilter
       ? ALL_QUESTIONS.map((q,i)=>({...q,origIdx:i})).filter(q=>q.theme===themeFilter)
-      : ALL_QUESTIONS.map((q,i)=>({...q,origIdx:i}))
+      : themes
+        ? ALL_QUESTIONS.map((q,i)=>({...q,origIdx:i})).filter(q=>themes.includes(q.theme))
+        : ALL_QUESTIONS.map((q,i)=>({...q,origIdx:i}))
     );
     setListenQs(pool); setListenIdx(0);
     listenRef.current = {playing:true,idx:0,questions:pool};
@@ -840,17 +870,21 @@ export default function App() {
   };
 
   // Show feedback mode picker before starting quiz
-  const promptQuizStart = (themeId) => {
+  const promptQuizStart = (themeId, themes=null) => {
     setPendingQuizTheme(themeId);
+    setPendingQuizThemes(themes);
+    setQuizLimit(null);
     setShowFeedbackPicker(true);
   };
 
-  const startQuiz = (themeId=null) => {
+  const startQuiz = (themeId=null, themes=null, limit=null) => {
     stopAll();
     setShowFeedbackPicker(false);
     let pool = (themeId
       ? ALL_QUESTIONS.map((q,i)=>({...q,origIdx:i})).filter(q=>q.theme===themeId)
-      : ALL_QUESTIONS.map((q,i)=>({...q,origIdx:i}))
+      : themes
+        ? ALL_QUESTIONS.map((q,i)=>({...q,origIdx:i})).filter(q=>themes.includes(q.theme))
+        : ALL_QUESTIONS.map((q,i)=>({...q,origIdx:i}))
     ).slice();
     for (let i=pool.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[pool[i],pool[j]]=[pool[j],pool[i]];}
     // Shuffle choices within each question
@@ -861,6 +895,7 @@ export default function App() {
       const newA = indices.indexOf(q.a);
       return {...q, c: newC, a: newA};
     });
+    if (isPremium && limit) { pool = pool.slice(0, limit); }
     if (!isPremium) {
       if (themeId) { pool = pool.slice(0, TRIAL_PER_THEME); }
       else {
@@ -945,8 +980,9 @@ export default function App() {
   const phaseLabel   = {question:"🗣️ Question",answer:"✅ Réponse",explanation:"💡 Explication",pause:"⏸ Pause"};
 
   return (
-    <div style={{display:"flex",minHeight:"100vh",background:"#F9FAFB",fontFamily:"-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif",direction:isRTL?"rtl":"ltr"}}>
+    <div style={{display:"flex",minHeight:"100vh",background:"#F5F6F8",fontFamily:"'DM Sans','Outfit',system-ui,sans-serif",direction:isRTL?"rtl":"ltr"}}>
       <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=DM+Sans:wght@400;500;600;700&display=swap');
         @keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
         @keyframes wv0{0%,100%{transform:scaleY(.3)}50%{transform:scaleY(1)}}
         @keyframes wv1{0%,100%{transform:scaleY(.8)}50%{transform:scaleY(.3)}}
@@ -956,9 +992,9 @@ export default function App() {
         @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(37,99,235,.3)}70%{box-shadow:0 0 0 10px rgba(37,99,235,0)}}
         .fade{animation:fadeUp .35s ease forwards}
         .choice-btn{transition:all .15s ease;border:1.5px solid #E5E7EB;background:white;width:100%;cursor:pointer;border-radius:8px;font-family:inherit}
-        .choice-btn:not(:disabled):hover{border-color:#2563EB;background:#EFF6FF}
-        .choice-correct{border-color:#059669!important;background:#ECFDF5!important}
-        .choice-wrong{border-color:#DC2626!important;background:#FEF2F2!important}
+        .choice-btn:not(:disabled):hover{border-color:#1A3A5C;background:#F0F4F8}
+        .choice-correct{border-color:#2E7D52!important;background:#EDF7F2!important}
+        .choice-wrong{border-color:#C0392B!important;background:#FDF0EF!important}
         .shimmer{animation:shimmer 1.2s ease infinite}
         ::-webkit-scrollbar{width:4px}::-webkit-scrollbar-thumb{background:#D1D5DB;border-radius:4px}
         @media(max-width:640px){.sidebar{display:none!important}.mobile-header{display:flex!important}}
@@ -969,33 +1005,62 @@ export default function App() {
       {paywallReason && <PaywallModal reason={paywallReason} onClose={() => setPaywallReason(null)} codeInput={codeInput} setCodeInput={setCodeInput} codeStatus={codeStatus} handleCodeSubmit={handleCodeSubmit}/>}
 
       {/* Feedback mode picker modal */}
-      {showFeedbackPicker && (
+      {showFeedbackPicker && (() => {
+        const totalQs = pendingQuizThemes
+          ? ALL_QUESTIONS.filter(q => pendingQuizThemes.includes(q.theme)).length
+          : pendingQuizTheme
+            ? ALL_QUESTIONS.filter(q => q.theme === pendingQuizTheme).length
+            : ALL_QUESTIONS.length;
+        const limitOptions = [
+          { label:"40 Q", val:40, desc:"Format examen blanc" },
+          { label:"100 Q", val:100, desc:"Session rapide" },
+          { label:"200 Q", val:200, desc:"Entraînement intensif" },
+          { label:`${totalQs} Q`, val:null, desc:"Toutes les questions" },
+        ].filter(o => o.val === null || o.val < totalQs);
+        return (
         <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.45)",zIndex:200,display:"flex",alignItems:"center",justifyContent:"center",padding:16}}>
-          <div style={{background:"white",borderRadius:12,padding:"32px 28px",maxWidth:460,width:"100%",boxShadow:"0 24px 64px rgba(0,0,0,.15)"}}>
-            <h2 style={{margin:"0 0 6px",fontSize:17,fontWeight:700,color:"#111827"}}>
-              {THEMES.find(t=>t.id===pendingQuizTheme)?.label||"Quiz"} — {ALL_QUESTIONS.filter(q=>q.theme===pendingQuizTheme).length} questions
+          <div style={{background:"white",borderRadius:12,padding:"32px 28px",maxWidth:480,width:"100%",boxShadow:"0 24px 64px rgba(0,0,0,.15)"}}>
+            <h2 style={{margin:"0 0 6px",fontSize:17,fontWeight:700,color:"#0F1923"}}>
+              {pendingQuizThemes ? "Quiz complet" : THEMES.find(t=>t.id===pendingQuizTheme)?.label||"Quiz"} — {totalQs} questions disponibles
             </h2>
-            <p style={{margin:"0 0 20px",color:"#6B7280",fontSize:13}}>Test en {pendingQuizTheme ? ALL_QUESTIONS.filter(q=>q.theme===pendingQuizTheme).length : quizQs.length} questions</p>
-            <div style={{fontWeight:600,fontSize:14,marginBottom:12,color:"#111827"}}>Mode de feedback</div>
+            <p style={{margin:"0 0 20px",color:"#6B7280",fontSize:13}}>Personnalisez votre session d'entraînement</p>
+
+            {/* Question count selector */}
+            <div style={{fontWeight:600,fontSize:14,marginBottom:10,color:"#0F1923"}}>Nombre de questions</div>
+            <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:8,marginBottom:20}}>
+              {limitOptions.map(opt => (
+                <button key={opt.label} onClick={() => setQuizLimit(opt.val)}
+                  style={{padding:"12px 6px",borderRadius:8,border:`2px solid ${quizLimit===opt.val?"#0F1923":"#E5E7EB"}`,background:quizLimit===opt.val?"#0F1923":"white",color:quizLimit===opt.val?"white":"#374151",cursor:"pointer",textAlign:"center",transition:"all .15s"}}>
+                  <div style={{fontWeight:700,fontSize:14}}>{opt.label}</div>
+                  <div style={{fontSize:10,opacity:.7,marginTop:2}}>{opt.desc}</div>
+                </button>
+              ))}
+            </div>
+
+            {/* Feedback mode */}
+            <div style={{fontWeight:600,fontSize:14,marginBottom:10,color:"#0F1923"}}>Mode de feedback</div>
             {[
               {id:"immediate",label:"Immédiat",desc:"Voir la bonne réponse et l'explication après chaque question."},
               {id:"end",label:"À la fin",desc:"Voir toutes les réponses uniquement à la fin du test"},
             ].map(opt => (
-              <label key={opt.id} style={{display:"flex",alignItems:"flex-start",gap:12,padding:"14px 16px",borderRadius:8,border:`1.5px solid ${feedbackMode===opt.id?"#2563EB":"#E5E7EB"}`,background:feedbackMode===opt.id?"#EFF6FF":"white",cursor:"pointer",marginBottom:10}}>
-                <input type="radio" checked={feedbackMode===opt.id} onChange={() => setFeedbackMode(opt.id)} style={{marginTop:2,accentColor:"#2563EB"}}/>
+              <label key={opt.id} style={{display:"flex",alignItems:"flex-start",gap:12,padding:"14px 16px",borderRadius:8,border:`1.5px solid ${feedbackMode===opt.id?"#1A3A5C":"#E5E7EB"}`,background:feedbackMode===opt.id?"#F0F4F8":"white",cursor:"pointer",marginBottom:10}}>
+                <input type="radio" checked={feedbackMode===opt.id} onChange={() => setFeedbackMode(opt.id)} style={{marginTop:2,accentColor:"#1A3A5C"}}/>
                 <div>
-                  <div style={{fontWeight:600,fontSize:13,color:"#111827"}}>{opt.label}</div>
+                  <div style={{fontWeight:600,fontSize:13,color:"#0F1923"}}>{opt.label}</div>
                   <div style={{fontSize:12,color:"#6B7280",marginTop:2}}>{opt.desc}</div>
                 </div>
               </label>
             ))}
             <div style={{display:"flex",gap:10,marginTop:20}}>
               <button onClick={() => setShowFeedbackPicker(false)} style={{flex:1,padding:"12px",borderRadius:8,border:"1.5px solid #E5E7EB",background:"white",cursor:"pointer",fontWeight:600,fontSize:14,color:"#374151"}}>Annuler</button>
-              <button onClick={() => startQuiz(pendingQuizTheme)} style={{flex:2,padding:"12px",borderRadius:8,border:"none",background:"#111827",color:"white",cursor:"pointer",fontWeight:700,fontSize:14}}>Commencer le test</button>
+              <button onClick={() => startQuiz(pendingQuizTheme, pendingQuizThemes, quizLimit)} style={{flex:2,padding:"12px",borderRadius:8,border:"none",background:"#0F1923",color:"white",cursor:"pointer",fontWeight:700,fontSize:14}}>
+                Commencer {quizLimit ? `(${quizLimit} Q)` : `(${totalQs} Q)`} →
+              </button>
             </div>
           </div>
         </div>
-      )}
+        );
+      })()}
 
       {/* Sidebar */}
       <div className="sidebar">
@@ -1005,7 +1070,7 @@ export default function App() {
       {/* Main content */}
       <div style={{flex:1,overflowY:"auto"}}>
         {/* Top bar */}
-        <div style={{background:"white",borderBottom:"1px solid #E5E7EB",padding:"0 24px",height:56,display:"flex",alignItems:"center",justifyContent:"space-between",position:"sticky",top:0,zIndex:50}}>
+        <div style={{background:"white",borderBottom:"1px solid #EAECEF",padding:"0 24px",height:56,display:"flex",alignItems:"center",justifyContent:"space-between",position:"sticky",top:0,zIndex:50}}>
           <div style={{display:"flex",alignItems:"center",gap:8}}>
             {(screen!=="home"||activeLevel) && (
               <button onClick={() => { stopAll(); if(screen==="quiz"||screen==="results"||screen==="listen"){setScreen(activeLevel?"level":"home");}else{setActiveLevel(null);setScreen("home");} }}
@@ -1015,16 +1080,16 @@ export default function App() {
             )}
           </div>
           <div style={{display:"flex",gap:8,alignItems:"center"}}>
-            {isLoading && <div style={{fontSize:11,color:"#6B7280",display:"flex",alignItems:"center",gap:6}}><span className="shimmer" style={{width:8,height:8,borderRadius:"50%",background:"#2563EB",display:"inline-block"}}/>Traduction {loadPct}%</div>}
+            {isLoading && <div style={{fontSize:11,color:"#6B7280",display:"flex",alignItems:"center",gap:6}}><span className="shimmer" style={{width:8,height:8,borderRadius:"50%",background:"#1A3A5C",display:"inline-block"}}/>Traduction {loadPct}%</div>}
             {/* Settings */}
             <div style={{position:"relative"}}>
               <button onClick={() => {setShowSettings(v=>!v);setShowLangMenu(false);}} style={{background:"none",border:"1px solid #E5E7EB",borderRadius:6,padding:"5px 10px",cursor:"pointer",color:"#374151",fontSize:13}}>⚙️</button>
               {showSettings && (
                 <div style={{position:"absolute",top:"calc(100% + 6px)",right:0,background:"white",borderRadius:8,boxShadow:"0 8px 32px rgba(0,0,0,.12)",padding:"16px",minWidth:220,zIndex:120,border:"1px solid #E5E7EB"}}>
-                  <div style={{fontWeight:600,fontSize:13,marginBottom:12,color:"#111827"}}>Paramètres audio</div>
+                  <div style={{fontWeight:600,fontSize:13,marginBottom:12,color:"#0F1923"}}>Paramètres audio</div>
                   <div style={{fontSize:11,color:"#6B7280",marginBottom:6}}>Vitesse de lecture</div>
                   <div style={{display:"flex",gap:4,marginBottom:12}}>
-                    {SPEEDS.map(s=><button key={s.v} onClick={()=>setSpeed(s.v)} style={{flex:1,padding:"5px 0",borderRadius:6,border:speed===s.v?"1.5px solid #2563EB":"1.5px solid #E5E7EB",background:speed===s.v?"#EFF6FF":"white",color:speed===s.v?"#2563EB":"#374151",fontSize:11,fontWeight:600,cursor:"pointer"}}>{s.label}</button>)}
+                    {SPEEDS.map(s=><button key={s.v} onClick={()=>setSpeed(s.v)} style={{flex:1,padding:"5px 0",borderRadius:6,border:speed===s.v?"1.5px solid #1A3A5C":"1.5px solid #E5E7EB",background:speed===s.v?"#F0F4F8":"white",color:speed===s.v?"#1A3A5C":"#374151",fontSize:11,fontWeight:600,cursor:"pointer"}}>{s.label}</button>)}
                   </div>
                   <label style={{display:"flex",alignItems:"center",gap:8,cursor:"pointer",marginBottom:8,fontSize:12,color:"#374151"}}>
                     <input type="checkbox" checked={listenIncludeExpl} onChange={e=>setListenIncludeExpl(e.target.checked)}/>Inclure les explications
@@ -1045,10 +1110,10 @@ export default function App() {
               {showLangMenu && isPremium && (
                 <div style={{position:"absolute",top:"calc(100% + 6px)",right:0,background:"white",borderRadius:8,boxShadow:"0 8px 32px rgba(0,0,0,.12)",overflow:"hidden",minWidth:180,zIndex:120,maxHeight:320,overflowY:"auto",border:"1px solid #E5E7EB"}}>
                   {LANGUAGES.map(l=>(
-                    <button key={l.code} onClick={()=>{setLang(l.code);setShowLangMenu(false);}} style={{display:"flex",alignItems:"center",gap:8,padding:"8px 12px",border:"none",borderBottom:"1px solid #F3F4F6",background:lang===l.code?"#EFF6FF":"white",cursor:"pointer",width:"100%",textAlign:"left"}}>
+                    <button key={l.code} onClick={()=>{setLang(l.code);setShowLangMenu(false);}} style={{display:"flex",alignItems:"center",gap:8,padding:"8px 12px",border:"none",borderBottom:"1px solid #F3F4F6",background:lang===l.code?"#F0F4F8":"white",cursor:"pointer",width:"100%",textAlign:"left"}}>
                       <span style={{fontSize:15}}>{l.flag}</span>
-                      <span style={{fontSize:12,fontWeight:lang===l.code?700:400,color:"#111827"}}>{l.native}</span>
-                      {lang===l.code&&<span style={{marginLeft:"auto",color:"#2563EB",fontSize:12}}>✓</span>}
+                      <span style={{fontSize:12,fontWeight:lang===l.code?700:400,color:"#0F1923"}}>{l.native}</span>
+                      {lang===l.code&&<span style={{marginLeft:"auto",color:"#1A3A5C",fontSize:12}}>✓</span>}
                     </button>
                   ))}
                 </div>
@@ -1057,7 +1122,7 @@ export default function App() {
             {/* Premium badge or unlock */}
             {isPremium
               ? <div style={{background:"#FEF9C3",color:"#854D0E",borderRadius:6,padding:"4px 10px",fontSize:11,fontWeight:700}}>⭐ Premium</div>
-              : <button onClick={()=>setScreen("pricing")} style={{background:"#111827",color:"white",border:"none",borderRadius:6,padding:"6px 12px",cursor:"pointer",fontSize:12,fontWeight:600}}>🔓 Débloquer</button>
+              : <button onClick={()=>setScreen("pricing")} style={{background:"#0F1923",color:"white",border:"none",borderRadius:6,padding:"6px 12px",cursor:"pointer",fontSize:12,fontWeight:600}}>🔓 Débloquer</button>
             }
           </div>
         </div>
@@ -1091,19 +1156,19 @@ export default function App() {
           {screen==="payment-success" && (
             <div className="fade" style={{textAlign:"center",padding:"60px 20px"}}>
               <div style={{fontSize:56,marginBottom:16}}>{codeLoading?"⏳":"🎉"}</div>
-              <h2 style={{fontSize:22,fontWeight:700,color:"#111827",marginBottom:8}}>{codeLoading?"Récupération de votre code…":"Paiement confirmé !"}</h2>
+              <h2 style={{fontSize:22,fontWeight:700,color:"#0F1923",marginBottom:8}}>{codeLoading?"Récupération de votre code…":"Paiement confirmé !"}</h2>
               {codeLoading
                 ? <p style={{color:"#6B7280"}}>Veuillez patienter…</p>
                 : <>
                     {assignedCode && (
-                      <div style={{background:"#F9FAFB",border:"2px solid #2563EB",borderRadius:10,padding:"20px",marginBottom:20,display:"inline-block"}}>
+                      <div style={{background:"#F5F6F8",border:"2px solid #1A3A5C",borderRadius:10,padding:"20px",marginBottom:20,display:"inline-block"}}>
                         <div style={{fontSize:11,color:"#6B7280",marginBottom:6}}>Votre code d'activation :</div>
-                        <div style={{fontFamily:"monospace",fontSize:20,fontWeight:700,color:"#111827",letterSpacing:2,marginBottom:12}}>{assignedCode}</div>
-                        <button onClick={() => { navigator.clipboard.writeText(assignedCode); alert("Copié !"); }} style={{background:"white",border:"1px solid #2563EB",borderRadius:6,padding:"6px 16px",cursor:"pointer",fontSize:12,color:"#2563EB",fontWeight:600}}>📋 Copier</button>
+                        <div style={{fontFamily:"monospace",fontSize:20,fontWeight:700,color:"#0F1923",letterSpacing:2,marginBottom:12}}>{assignedCode}</div>
+                        <button onClick={() => { navigator.clipboard.writeText(assignedCode); alert("Copié !"); }} style={{background:"white",border:"1px solid #1A3A5C",borderRadius:6,padding:"6px 16px",cursor:"pointer",fontSize:12,color:"#1A3A5C",fontWeight:600}}>📋 Copier</button>
                       </div>
                     )}
                     <div style={{marginTop:12}}>
-                      <button onClick={() => { setCodeInput(assignedCode); setScreen("pricing"); }} style={{background:"#111827",color:"white",border:"none",borderRadius:8,padding:"12px 28px",cursor:"pointer",fontSize:14,fontWeight:700}}>
+                      <button onClick={() => { setCodeInput(assignedCode); setScreen("pricing"); }} style={{background:"#0F1923",color:"white",border:"none",borderRadius:8,padding:"12px 28px",cursor:"pointer",fontSize:14,fontWeight:700}}>
                         Activer mon accès →
                       </button>
                     </div>
@@ -1115,30 +1180,30 @@ export default function App() {
           {/* PRICING */}
           {screen==="pricing" && (
             <div className="fade">
-              <h2 style={{margin:"0 0 6px",fontSize:22,fontWeight:700,color:"#111827"}}>Accès complet</h2>
+              <h2 style={{margin:"0 0 6px",fontSize:22,fontWeight:700,color:"#0F1923"}}>Accès complet</h2>
               <p style={{margin:"0 0 24px",color:"#6B7280"}}>{ALL_QUESTIONS.length} questions officielles · Mode écoute · 11 langues</p>
-              <div style={{background:"white",borderRadius:12,border:"2px solid #2563EB",padding:"28px",maxWidth:420,marginBottom:20}}>
-                <div style={{fontWeight:800,fontSize:28,color:"#111827",marginBottom:4}}>5,00 €</div>
+              <div style={{background:"white",borderRadius:12,border:"2px solid #1A3A5C",padding:"28px",maxWidth:420,marginBottom:20}}>
+                <div style={{fontWeight:800,fontSize:28,color:"#0F1923",marginBottom:4}}>5,00 €</div>
                 <div style={{color:"#6B7280",fontSize:13,marginBottom:20}}>Paiement unique · Accès à vie</div>
                 {["✓ "+ALL_QUESTIONS.length+" questions officielles","✓ Mode écoute Play All","✓ 11 langues + traduction IA","✓ Résultats et analyses détaillés","✓ Vitesse audio réglable","✓ Accès à vie"].map(f=>(
                   <div key={f} style={{fontSize:13,color:"#374151",marginBottom:8,fontWeight:500}}>{f}</div>
                 ))}
-                <a href={STRIPE_LINK} target="_blank" rel="noopener noreferrer" style={{display:"block",marginTop:20,background:"#111827",color:"white",borderRadius:8,padding:"13px",fontWeight:700,fontSize:14,textDecoration:"none",textAlign:"center"}}>
+                <a href={STRIPE_LINK} target="_blank" rel="noopener noreferrer" style={{display:"block",marginTop:20,background:"#0F1923",color:"white",borderRadius:8,padding:"13px",fontWeight:700,fontSize:14,textDecoration:"none",textAlign:"center"}}>
                   💳 Acheter maintenant
                 </a>
               </div>
               {!isPremium && (
                 <div style={{background:"white",borderRadius:12,border:"1px solid #E5E7EB",padding:"24px",maxWidth:420}}>
-                  <div style={{fontWeight:600,fontSize:14,marginBottom:12,color:"#111827"}}>🔑 Vous avez déjà un code ?</div>
+                  <div style={{fontWeight:600,fontSize:14,marginBottom:12,color:"#0F1923"}}>🔑 Vous avez déjà un code ?</div>
                   <div style={{display:"flex",gap:8}}>
                     <input value={codeInput} onChange={e=>setCodeInput(e.target.value)} onKeyDown={e=>e.key==="Enter"&&handleCodeSubmit()} placeholder="CIVIC-XXXX-XXXX-XXXX"
-                      style={{flex:1,padding:"10px 12px",borderRadius:8,border:`1.5px solid ${codeStatus==="error"?"#DC2626":codeStatus==="ok"?"#059669":"#D1D5DB"}`,fontSize:12,fontFamily:"monospace",outline:"none"}}/>
+                      style={{flex:1,padding:"10px 12px",borderRadius:8,border:`1.5px solid ${codeStatus==="error"?"#C0392B":codeStatus==="ok"?"#2E7D52":"#D1D5DB"}`,fontSize:12,fontFamily:"monospace",outline:"none"}}/>
                     <button onClick={handleCodeSubmit} disabled={codeStatus==="checking"||codeStatus==="ok"}
-                      style={{background:"#111827",color:"white",border:"none",borderRadius:8,padding:"10px 16px",cursor:"pointer",fontWeight:700,fontSize:13}}>
+                      style={{background:"#0F1923",color:"white",border:"none",borderRadius:8,padding:"10px 16px",cursor:"pointer",fontWeight:700,fontSize:13}}>
                       {codeStatus==="checking"?"…":"Activer"}
                     </button>
                   </div>
-                  {codeStatus&&<div style={{marginTop:8,fontSize:12,color:codeStatus==="ok"?"#059669":"#DC2626",fontWeight:600}}>
+                  {codeStatus&&<div style={{marginTop:8,fontSize:12,color:codeStatus==="ok"?"#2E7D52":"#C0392B",fontWeight:600}}>
                     {codeStatus==="ok"?"✅ Accès débloqué !":codeStatus==="error"?"❌ Code invalide.":"⏳ Vérification…"}
                   </div>}
                 </div>
@@ -1186,21 +1251,21 @@ export default function App() {
               </div>
               {/* Playlist */}
               <div style={{background:"white",borderRadius:12,border:"1px solid #E5E7EB",padding:"16px"}}>
-                <div style={{fontWeight:600,fontSize:13,marginBottom:10,color:"#111827"}}>Playlist — {listenQs.length} questions</div>
+                <div style={{fontWeight:600,fontSize:13,marginBottom:10,color:"#0F1923"}}>Playlist — {listenQs.length} questions</div>
                 <div style={{maxHeight:320,overflowY:"auto",display:"flex",flexDirection:"column",gap:4}}>
                   {listenQs.map((q,i)=>{
                     const th=THEMES.find(t=>t.id===q.theme);
                     const isCur=i===listenIdx,isPast=i<listenIdx;
                     return (
-                      <div key={i} onClick={()=>skipTo(i)} style={{display:"flex",alignItems:"center",gap:8,padding:"8px 10px",borderRadius:6,background:isCur?"#EFF6FF":isPast?"#F9FAFB":"white",border:`1px solid ${isCur?"#2563EB":"#F3F4F6"}`,cursor:"pointer"}}>
-                        <div style={{width:22,height:22,borderRadius:4,background:isCur?"#2563EB":isPast?"#D1D5DB":"#F3F4F6",color:isCur||isPast?"white":"#9CA3AF",display:"flex",alignItems:"center",justifyContent:"center",fontSize:9,fontWeight:700,flexShrink:0}}>
+                      <div key={i} onClick={()=>skipTo(i)} style={{display:"flex",alignItems:"center",gap:8,padding:"8px 10px",borderRadius:6,background:isCur?"#F0F4F8":isPast?"#F9FAFB":"white",border:`1px solid ${isCur?"#1A3A5C":"#F3F4F6"}`,cursor:"pointer"}}>
+                        <div style={{width:22,height:22,borderRadius:4,background:isCur?"#1A3A5C":isPast?"#D1D5DB":"#F3F4F6",color:isCur||isPast?"white":"#9CA3AF",display:"flex",alignItems:"center",justifyContent:"center",fontSize:9,fontWeight:700,flexShrink:0}}>
                           {isCur&&listenPlaying?<Waveform active={true} color="white" size={9}/>:i+1}
                         </div>
                         <div style={{flex:1,minWidth:0}}>
-                          <div style={{fontSize:11,fontWeight:isCur?600:400,color:isCur?"#2563EB":isPast?"#9CA3AF":"#374151",whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{q.q}</div>
+                          <div style={{fontSize:11,fontWeight:isCur?600:400,color:isCur?"#1A3A5C":isPast?"#9CA3AF":"#374151",whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{q.q}</div>
                           <div style={{fontSize:10,color:th?.color,marginTop:1}}>{th?.icon} {th?.label}</div>
                         </div>
-                        {isPast&&<span style={{color:"#059669",fontSize:12}}>✓</span>}
+                        {isPast&&<span style={{color:"#2E7D52",fontSize:12}}>✓</span>}
                       </div>
                     );
                   })}
@@ -1222,26 +1287,26 @@ export default function App() {
                     <div style={{fontSize:12,color:th?.color,fontWeight:600}}>{th?.icon} {th?.label}</div>
                     <div style={{display:"flex",alignItems:"center",gap:12}}>
                       <button onClick={() => { const n=!autoReadQuiz; setAutoReadQuiz(n); if(!n){quizSpeakAbortRef.current=true;synthRef.current?.cancel();setIsSpeakingQuiz(false);setReadingChoiceIdx(null);} }}
-                        style={{display:"flex",alignItems:"center",gap:5,background:autoReadQuiz?"#2563EB":"#F3F4F6",border:"none",color:autoReadQuiz?"white":"#6B7280",borderRadius:6,padding:"4px 10px",cursor:"pointer",fontSize:11,fontWeight:600}}>
+                        style={{display:"flex",alignItems:"center",gap:5,background:autoReadQuiz?"#1A3A5C":"#F3F4F6",border:"none",color:autoReadQuiz?"white":"#6B7280",borderRadius:6,padding:"4px 10px",cursor:"pointer",fontSize:11,fontWeight:600}}>
                         🎙 {autoReadQuiz?"Voix ON":"Voix OFF"}
                       </button>
                       <span style={{fontSize:13,fontWeight:600,color:"#374151"}}>{qIdx+1}/{quizQs.length}</span>
-                      <span style={{fontSize:13,color:"#059669",fontWeight:600}}>✓{totalScore}</span>
-                      <span style={{fontSize:13,color:"#DC2626",fontWeight:600}}>✗{totalAnswered-totalScore}</span>
+                      <span style={{fontSize:13,color:"#2E7D52",fontWeight:600}}>✓{totalScore}</span>
+                      <span style={{fontSize:13,color:"#C0392B",fontWeight:600}}>✗{totalAnswered-totalScore}</span>
                     </div>
                   </div>
                   {/* Progress bar */}
                   <div style={{background:"#F3F4F6",borderRadius:4,height:5}}>
-                    <div style={{width:`${(qIdx/quizQs.length)*100}%`,height:"100%",background:th?.color||"#2563EB",borderRadius:4,transition:"width .5s ease"}}/>
+                    <div style={{width:`${(qIdx/quizQs.length)*100}%`,height:"100%",background:th?.color||"#1A3A5C",borderRadius:4,transition:"width .5s ease"}}/>
                   </div>
                   {/* Timer */}
                   {isMockExam && mockTimeLeft!==null && (()=>{
                     const m=Math.floor(mockTimeLeft/60), s=mockTimeLeft%60, urgent=mockTimeLeft<300;
                     return (
-                      <div style={{display:"flex",alignItems:"center",justifyContent:"center",gap:8,marginTop:10,padding:"8px 14px",borderRadius:8,background:urgent?"#FEF2F2":"#F9FAFB",border:`1px solid ${urgent?"#FCA5A5":"#E5E7EB"}`}}>
+                      <div style={{display:"flex",alignItems:"center",justifyContent:"center",gap:8,marginTop:10,padding:"8px 14px",borderRadius:8,background:urgent?"#FDF0EF":"#F9FAFB",border:`1px solid ${urgent?"#FCA5A5":"#E5E7EB"}`}}>
                         <span style={{fontSize:14}}>{urgent?"⚠️":"⏱️"}</span>
-                        <span style={{fontWeight:700,fontSize:15,color:urgent?"#DC2626":"#374151",fontFamily:"monospace",letterSpacing:2}}>{String(m).padStart(2,"0")}:{String(s).padStart(2,"0")}</span>
-                        <span style={{fontSize:11,color:urgent?"#DC2626":"#6B7280"}}>{urgent?"Dépêchez-vous !":"restant"}</span>
+                        <span style={{fontWeight:700,fontSize:15,color:urgent?"#C0392B":"#374151",fontFamily:"monospace",letterSpacing:2}}>{String(m).padStart(2,"0")}:{String(s).padStart(2,"0")}</span>
+                        <span style={{fontSize:11,color:urgent?"#C0392B":"#6B7280"}}>{urgent?"Dépêchez-vous !":"restant"}</span>
                       </div>
                     );
                   })()}
@@ -1250,8 +1315,8 @@ export default function App() {
                 {/* Question card */}
                 <div key={qIdx} className="fade" style={{background:"white",borderRadius:10,border:"1px solid #E5E7EB",padding:"24px",marginBottom:14}}>
                   <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",gap:12,marginBottom:t?6:20}}>
-                    <div style={{fontSize:17,fontWeight:600,lineHeight:1.6,flex:1,color:"#111827"}}>{q.q}</div>
-                    <button onClick={readCurrentQuiz} style={{background:isSpeakingQuiz?"#2563EB":"#F3F4F6",border:"none",color:isSpeakingQuiz?"white":"#6B7280",borderRadius:8,width:38,height:38,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",flexShrink:0}}>
+                    <div style={{fontSize:17,fontWeight:600,lineHeight:1.6,flex:1,color:"#0F1923"}}>{q.q}</div>
+                    <button onClick={readCurrentQuiz} style={{background:isSpeakingQuiz?"#1A3A5C":"#F3F4F6",border:"none",color:isSpeakingQuiz?"white":"#6B7280",borderRadius:8,width:38,height:38,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",flexShrink:0}}>
                       {isSpeakingQuiz
                         ? <svg width="12" height="12" viewBox="0 0 14 14" fill="currentColor"><rect x="2" y="2" width="4" height="10" rx="1"/><rect x="8" y="2" width="4" height="10" rx="1"/></svg>
                         : <svg width="14" height="14" viewBox="0 0 20 20" fill="currentColor"><path d="M10 1a4 4 0 0 1 4 4v5a4 4 0 0 1-8 0V5a4 4 0 0 1 4-4zm-6 9a6 6 0 0 0 12 0h-2a4 4 0 0 1-8 0H4zm6 7v-2h-1v2H7v1h6v-1h-2z"/></svg>
@@ -1265,7 +1330,7 @@ export default function App() {
                       let extraCls = "choice-btn";
                       const showResult = feedbackMode==="immediate" ? answered : false;
                       if(showResult){if(idx===q.a)extraCls+=" choice-correct";else if(idx===selected)extraCls+=" choice-wrong";}
-                      const letterBg = showResult&&idx===q.a?"#059669":showResult&&idx===selected&&idx!==q.a?"#DC2626":readingChoiceIdx===idx?"#2563EB":"#F3F4F6";
+                      const letterBg = showResult&&idx===q.a?"#2E7D52":showResult&&idx===selected&&idx!==q.a?"#C0392B":readingChoiceIdx===idx?"#1A3A5C":"#F3F4F6";
                       const letterTx = (showResult&&(idx===q.a||(idx===selected&&idx!==q.a)))||readingChoiceIdx===idx?"white":"#6B7280";
                       const letter = showResult&&idx===q.a?"✓":showResult&&idx===selected&&idx!==q.a?"✗":readingChoiceIdx===idx?<Waveform active={true} color="white" size={10}/>:String.fromCharCode(65+idx);
                       return (
@@ -1273,7 +1338,7 @@ export default function App() {
                           style={{display:"flex",alignItems:"flex-start",gap:12,padding:"13px 16px",textAlign:"left",fontSize:14,lineHeight:1.5,fontFamily:"inherit"}}>
                           <span style={{width:26,height:26,borderRadius:6,background:letterBg,color:letterTx,display:"flex",alignItems:"center",justifyContent:"center",fontSize:12,fontWeight:700,flexShrink:0,marginTop:1,transition:"all .15s"}}>{letter}</span>
                           <div>
-                            <div style={{color:showResult&&idx===q.a?"#059669":"#111827",fontWeight:showResult&&idx===q.a?600:400}}>{ch}</div>
+                            <div style={{color:showResult&&idx===q.a?"#2E7D52":"#0F1923",fontWeight:showResult&&idx===q.a?600:400}}>{ch}</div>
                             {t?.c?.[idx]&&lang!=="fr"&&<div style={{fontSize:11.5,color:"#9CA3AF",fontStyle:"italic",marginTop:2,direction:isRTL?"rtl":"ltr"}}>{t.c[idx]}</div>}
                           </div>
                         </button>
@@ -1283,9 +1348,9 @@ export default function App() {
 
                   {/* Explanation (immediate mode only) */}
                   {answered && feedbackMode==="immediate" && (
-                    <div className="fade" style={{marginTop:16,padding:"14px 16px",background:selected===q.a?"#ECFDF5":"#FEF9C3",borderRadius:8,borderLeft:`3px solid ${selected===q.a?"#059669":"#D97706"}`}}>
+                    <div className="fade" style={{marginTop:16,padding:"14px 16px",background:selected===q.a?"#EDF7F2":"#FEF9C3",borderRadius:8,borderLeft:`3px solid ${selected===q.a?"#2E7D52":"#D97706"}`}}>
                       <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:6}}>
-                        <div style={{fontWeight:600,color:selected===q.a?"#059669":"#D97706",fontSize:13}}>
+                        <div style={{fontWeight:600,color:selected===q.a?"#2E7D52":"#D97706",fontSize:13}}>
                           {selected===q.a?"✓ Bonne réponse !":"✗ Réponse incorrecte"}
                         </div>
                         <button onClick={()=>{
@@ -1307,7 +1372,7 @@ export default function App() {
 
                 {answered && (
                   <div style={{display:"flex",justifyContent:"flex-end"}}>
-                    <button onClick={nextQ} style={{background:"#111827",color:"white",border:"none",borderRadius:8,padding:"12px 28px",cursor:"pointer",fontSize:14,fontWeight:700}}>
+                    <button onClick={nextQ} style={{background:"#0F1923",color:"white",border:"none",borderRadius:8,padding:"12px 28px",cursor:"pointer",fontSize:14,fontWeight:700}}>
                       {qIdx+1>=quizQs.length?"Voir les résultats →":"Suivant →"}
                     </button>
                   </div>
@@ -1325,7 +1390,7 @@ export default function App() {
           {screen==="results" && (
             <div className="fade">
               {/* Score banner */}
-              <div style={{background:passed?"linear-gradient(145deg,#1B4332,#2D6A4F)":"linear-gradient(145deg,#7F1D1D,#DC2626)",color:"white",textAlign:"center",padding:"40px 24px",borderRadius:12,marginBottom:20}}>
+              <div style={{background:passed?"linear-gradient(145deg,#1B4332,#2D6A4F)":"linear-gradient(145deg,#7F1D1D,#C0392B)",color:"white",textAlign:"center",padding:"40px 24px",borderRadius:12,marginBottom:20}}>
                 <div style={{fontSize:48,marginBottom:8}}>{passed?"🎉":"📚"}</div>
                 <div style={{fontSize:60,fontWeight:700,lineHeight:1,letterSpacing:-2}}>{totalScore}<span style={{fontSize:24,opacity:.6}}> / {quizQs.length}</span></div>
                 <div style={{fontSize:28,fontWeight:700,marginTop:8}}>{Math.round((totalScore/quizQs.length)*100)}%</div>
@@ -1337,7 +1402,7 @@ export default function App() {
               {/* Detailed review (end mode or wrong answers) */}
               {(feedbackMode==="end" || wrongAnswers.length>0) && (
                 <div style={{background:"white",borderRadius:12,border:"1px solid #E5E7EB",padding:"24px",marginBottom:16}}>
-                  <div style={{fontWeight:700,fontSize:15,color:"#111827",marginBottom:16}}>Révision complète des réponses</div>
+                  <div style={{fontWeight:700,fontSize:15,color:"#0F1923",marginBottom:16}}>Révision complète des réponses</div>
                   {(feedbackMode==="end" ? quizQs.map((_,i)=>({q:quizQs[i],correct:scores[i]})) : wrongAnswers.map(q=>({q,correct:false}))).map((item,i)=>{
                     const wq = feedbackMode==="end" ? item.q : item.q;
                     const correct = feedbackMode==="end" ? item.correct : false;
@@ -1349,12 +1414,12 @@ export default function App() {
                             {correct?"✓ Correcte":"✗ Incorrecte"}
                           </span>
                         </div>
-                        <div style={{fontWeight:600,fontSize:13,color:"#111827",marginBottom:8}}>{wq.q}</div>
+                        <div style={{fontWeight:600,fontSize:13,color:"#0F1923",marginBottom:8}}>{wq.q}</div>
                         {!correct && feedbackMode==="end" && (
-                          <div style={{fontSize:12,color:"#DC2626",marginBottom:4}}>Votre réponse : {wq.c?.[selected]||"—"}</div>
+                          <div style={{fontSize:12,color:"#C0392B",marginBottom:4}}>Votre réponse : {wq.c?.[selected]||"—"}</div>
                         )}
-                        <div style={{fontSize:12,color:"#059669",fontWeight:600,marginBottom:8}}>Bonne réponse : {wq.c?.[wq.a]}</div>
-                        <div style={{fontSize:12,color:"#6B7280",lineHeight:1.7,background:"#F9FAFB",borderRadius:6,padding:"10px 12px"}}>
+                        <div style={{fontSize:12,color:"#2E7D52",fontWeight:600,marginBottom:8}}>Bonne réponse : {wq.c?.[wq.a]}</div>
+                        <div style={{fontSize:12,color:"#6B7280",lineHeight:1.7,background:"#F5F6F8",borderRadius:6,padding:"10px 12px"}}>
                           <strong>Explication : </strong>{wq.e}
                         </div>
                       </div>
@@ -1365,19 +1430,19 @@ export default function App() {
 
               {/* Premium upsell */}
               {!isPremium && (
-                <div style={{background:"#111827",color:"white",borderRadius:12,padding:"24px",textAlign:"center",marginBottom:16}}>
+                <div style={{background:"#0F1923",color:"white",borderRadius:12,padding:"24px",textAlign:"center",marginBottom:16}}>
                   <div style={{fontWeight:700,fontSize:16,marginBottom:6}}>🚀 Débloquez les {ALL_QUESTIONS.length} questions</div>
                   <div style={{fontSize:13,opacity:.8,marginBottom:16}}>Mode écoute, 11 langues, analyses détaillées — 5,00 € une seule fois.</div>
-                  <a href={STRIPE_LINK} target="_blank" rel="noopener noreferrer" style={{display:"inline-block",background:"#2563EB",color:"white",borderRadius:8,padding:"11px 24px",fontWeight:700,fontSize:14,textDecoration:"none"}}>
+                  <a href={STRIPE_LINK} target="_blank" rel="noopener noreferrer" style={{display:"inline-block",background:"#1A3A5C",color:"white",borderRadius:8,padding:"11px 24px",fontWeight:700,fontSize:14,textDecoration:"none"}}>
                     Accès complet →
                   </a>
                 </div>
               )}
 
               <div style={{display:"flex",gap:10,justifyContent:"center",flexWrap:"wrap"}}>
-                <button onClick={() => startQuiz(currentQuizTheme)} style={{background:"#111827",color:"white",border:"none",borderRadius:8,padding:"12px 24px",cursor:"pointer",fontSize:13,fontWeight:700}}>🔄 Recommencer</button>
-                {isPremium&&<button onClick={()=>startListen("all")} style={{background:"white",color:"#111827",border:"1.5px solid #E5E7EB",borderRadius:8,padding:"12px 24px",cursor:"pointer",fontSize:13,fontWeight:600}}>🎧 Mode écoute</button>}
-                <button onClick={()=>{stopAll();setScreen(activeLevel?"level":"home");}} style={{background:"white",color:"#111827",border:"1.5px solid #E5E7EB",borderRadius:8,padding:"12px 24px",cursor:"pointer",fontSize:13,fontWeight:600}}>🏠 Accueil</button>
+                <button onClick={() => startQuiz(currentQuizTheme)} style={{background:"#0F1923",color:"white",border:"none",borderRadius:8,padding:"12px 24px",cursor:"pointer",fontSize:13,fontWeight:700}}>🔄 Recommencer</button>
+                {isPremium&&<button onClick={()=>startListen("all")} style={{background:"white",color:"#0F1923",border:"1.5px solid #E5E7EB",borderRadius:8,padding:"12px 24px",cursor:"pointer",fontSize:13,fontWeight:600}}>🎧 Mode écoute</button>}
+                <button onClick={()=>{stopAll();setScreen(activeLevel?"level":"home");}} style={{background:"white",color:"#0F1923",border:"1.5px solid #E5E7EB",borderRadius:8,padding:"12px 24px",cursor:"pointer",fontSize:13,fontWeight:600}}>🏠 Accueil</button>
               </div>
             </div>
           )}
@@ -1385,13 +1450,13 @@ export default function App() {
           {/* PROFILE */}
           {screen==="profile" && (
             <div className="fade">
-              <h2 style={{margin:"0 0 20px",fontSize:20,fontWeight:700,color:"#111827"}}>Profil</h2>
+              <h2 style={{margin:"0 0 20px",fontSize:20,fontWeight:700,color:"#0F1923"}}>Profil</h2>
               <div style={{background:"white",borderRadius:12,border:"1px solid #E5E7EB",padding:"24px",marginBottom:16}}>
-                <div style={{fontWeight:600,fontSize:14,marginBottom:16,color:"#111827"}}>Statut</div>
+                <div style={{fontWeight:600,fontSize:14,marginBottom:16,color:"#0F1923"}}>Statut</div>
                 <div style={{display:"flex",alignItems:"center",gap:12}}>
                   <div style={{width:48,height:48,borderRadius:"50%",background:"#F3F4F6",display:"flex",alignItems:"center",justifyContent:"center",fontSize:22}}>👤</div>
                   <div>
-                    <div style={{fontWeight:600,fontSize:14,color:"#111827"}}>{isPremium?"Compte Premium":"Compte Gratuit"}</div>
+                    <div style={{fontWeight:600,fontSize:14,color:"#0F1923"}}>{isPremium?"Compte Premium":"Compte Gratuit"}</div>
                     <div style={{fontSize:12,color:"#6B7280"}}>{isPremium?"Accès complet à toutes les questions":"10 questions par thème"}</div>
                   </div>
                   {isPremium && <div style={{marginLeft:"auto",background:"#FEF9C3",color:"#854D0E",borderRadius:6,padding:"4px 10px",fontSize:11,fontWeight:700}}>⭐ Premium</div>}
@@ -1399,16 +1464,16 @@ export default function App() {
               </div>
               {!isPremium && (
                 <div style={{background:"white",borderRadius:12,border:"1px solid #E5E7EB",padding:"24px",marginBottom:16}}>
-                  <div style={{fontWeight:600,fontSize:14,marginBottom:12,color:"#111827"}}>🔑 Code d'activation</div>
+                  <div style={{fontWeight:600,fontSize:14,marginBottom:12,color:"#0F1923"}}>🔑 Code d'activation</div>
                   <div style={{display:"flex",gap:8}}>
                     <input value={codeInput} onChange={e=>setCodeInput(e.target.value)} onKeyDown={e=>e.key==="Enter"&&handleCodeSubmit()} placeholder="CIVIC-XXXX-XXXX-XXXX"
-                      style={{flex:1,padding:"10px 12px",borderRadius:8,border:`1.5px solid ${codeStatus==="error"?"#DC2626":codeStatus==="ok"?"#059669":"#D1D5DB"}`,fontSize:12,fontFamily:"monospace",outline:"none"}}/>
+                      style={{flex:1,padding:"10px 12px",borderRadius:8,border:`1.5px solid ${codeStatus==="error"?"#C0392B":codeStatus==="ok"?"#2E7D52":"#D1D5DB"}`,fontSize:12,fontFamily:"monospace",outline:"none"}}/>
                     <button onClick={handleCodeSubmit} disabled={codeStatus==="checking"||codeStatus==="ok"}
-                      style={{background:"#111827",color:"white",border:"none",borderRadius:8,padding:"10px 16px",cursor:"pointer",fontWeight:700,fontSize:13}}>
+                      style={{background:"#0F1923",color:"white",border:"none",borderRadius:8,padding:"10px 16px",cursor:"pointer",fontWeight:700,fontSize:13}}>
                       {codeStatus==="checking"?"…":"Activer"}
                     </button>
                   </div>
-                  {codeStatus&&<div style={{marginTop:8,fontSize:12,color:codeStatus==="ok"?"#059669":"#DC2626",fontWeight:600}}>
+                  {codeStatus&&<div style={{marginTop:8,fontSize:12,color:codeStatus==="ok"?"#2E7D52":"#C0392B",fontWeight:600}}>
                     {codeStatus==="ok"?"✅ Accès débloqué !":codeStatus==="error"?"❌ Code invalide.":"⏳ Vérification…"}
                   </div>}
                 </div>
