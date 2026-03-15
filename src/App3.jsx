@@ -873,7 +873,7 @@ export default function App() {
   const promptQuizStart = (themeId, themes=null) => {
     setPendingQuizTheme(themeId);
     setPendingQuizThemes(themes);
-    setQuizLimit(null);
+    setQuizLimit(null); // null = all questions, pre-selected
     setShowFeedbackPicker(true);
   };
 
@@ -1030,7 +1030,7 @@ export default function App() {
             <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:8,marginBottom:20}}>
               {limitOptions.map(opt => (
                 <button key={opt.label} onClick={() => setQuizLimit(opt.val)}
-                  style={{padding:"12px 6px",borderRadius:8,border:`2px solid ${quizLimit===opt.val?"#0F1923":"#E5E7EB"}`,background:quizLimit===opt.val?"#0F1923":"white",color:quizLimit===opt.val?"white":"#374151",cursor:"pointer",textAlign:"center",transition:"all .15s"}}>
+                  style={{padding:"12px 6px",borderRadius:8,border:`2px solid ${quizLimit===opt.val?"#0F1923":"#E5E7EB"}`,background:quizLimit===opt.val?"#0F1923":"white",color:quizLimit===opt.val?"white":"#374151",cursor:"pointer",textAlign:"center",transition:"all .15s",fontFamily:"inherit"}}>
                   <div style={{fontWeight:700,fontSize:14}}>{opt.label}</div>
                   <div style={{fontSize:10,opacity:.7,marginTop:2}}>{opt.desc}</div>
                 </button>
