@@ -1115,7 +1115,7 @@ function ProfileScreen({ matchCount, userId, userProfile, onSignOut, onProfileUp
 // MAIN APP
 // ══════════════════════════════════════════════════════════════
 export default function App() {
-  var auth = useAuth();
+  var auth = {};
   var [screen, setScreen] = useState("discover");
   var [demoMatches, setDemoMatches] = useState([TRAVELERS[0], TRAVELERS[2]]);
   var [showMatch, setShowMatch] = useState(null);
