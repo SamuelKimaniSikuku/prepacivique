@@ -1,4 +1,8 @@
 import { useState, useEffect, useRef, useCallback } from "react";
+import { useAuth, useProfile, useDiscovery, useMatches, useConversations, useChat, useTrips } from "./hooks/useSupabase";
+import { isDemo } from "./lib/supabase";
+import { profilesService } from "./services/profiles";
+import { authService } from "./services/auth";
 
 // ══════════════════════════════════════════════════════════════
 // BADDIE — Fully Integrated Travel App
@@ -1115,7 +1119,7 @@ function ProfileScreen({ matchCount, userId, userProfile, onSignOut, onProfileUp
 // MAIN APP
 // ══════════════════════════════════════════════════════════════
 export default function App() {
-  var auth = {};
+  var auth = useAuth();
   var [screen, setScreen] = useState("discover");
   var [demoMatches, setDemoMatches] = useState([TRAVELERS[0], TRAVELERS[2]]);
   var [showMatch, setShowMatch] = useState(null);
