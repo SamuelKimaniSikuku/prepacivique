@@ -1,1216 +1,1423 @@
 import { useState, useEffect, useRef, useCallback } from "react";
-import { useAuth, useProfile, useDiscovery, useMatches, useConversations, useChat, useTrips } from "./hooks/useSupabase";
-import { isDemo } from "./lib/supabase";
-import { profilesService } from "./services/profiles";
-import { authService } from "./services/auth";
+import ALL_QUESTIONS from './data/questions';
+import FrenchPractice from './FrenchPractice';
 
-// ══════════════════════════════════════════════════════════════
-// BADDIE — Fully Integrated Travel App
-// Auth → Discover → Match → Chat (with sharing) → Trip Planner
-// ══════════════════════════════════════════════════════════════
+const STRIPE_LINK = "https://buy.stripe.com/9B63cxewr3QW3w2bXG0sU00";
+const TRIAL_PER_THEME = 10;
+const ANTHROPIC_KEY = (import.meta.env.VITE_ANTHROPIC_KEY || "").trim();
+const SUPABASE_URL = "https://vnctdsnfxvwvmkxqygaw.supabase.co";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZuY3Rkc25meHZ3dm1reHF5Z2F3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzEyNDk1NjcsImV4cCI6MjA4NjgyNTU2N30.qGAMzs2doeMFo3HoIlp4ao2s-crYR2JoOL_A7xrRCm8";
 
-// ─── Design Tokens ───────────────────────────────────────────
-var T = {
-  flame:"#FF4136", coral:"#FF6B5A", sunset:"#FF8C42", gold:"#FFB830",
-  midnight:"#0A0A14", ink:"#14142B", charcoal:"#1E1E32", slate:"#2D2D48",
-  ash:"#6E6E8A", mist:"#A0A0BE", cloud:"#E8E8F0", snow:"#F5F5FA",
-  white:"#FFFFFF", mint:"#00D4AA", electric:"#5B5BFF", rose:"#FF3B6F",
-  sky:"#38BDF8", violet:"#A78BFA", lime:"#84CC16",
-  glass:"rgba(255,255,255,0.06)", glassBorder:"rgba(255,255,255,0.1)",
-};
-
-var CATEGORY_ICONS = {
-  flight:"✈️", transport:"🚕", accommodation:"🏨", food:"🍜",
-  activity:"🎯", sightseeing:"📸", shopping:"🛍️", nightlife:"🌙",
-  relaxation:"🧘", other:"📌", insurance:"🛡️", visa:"📄", tips:"💰",
-};
-var CATEGORY_COLORS = {
-  flight:T.sky, transport:T.electric, accommodation:T.violet, food:T.sunset,
-  activity:T.mint, sightseeing:T.coral, shopping:T.rose, nightlife:T.violet,
-  relaxation:T.mint, other:T.ash,
-};
-
-// ─── Mock Data (used in demo mode) ──────────────────────────
-var TRAVELERS = [
-  { id:"d1", name:"Sofia", age:26, avatar:"\ud83e\uddd5", verified:true, city:"Barcelona", destination:"Bali", destEmoji:"\ud83c\uddf3\ud83c\udde9", destination_emoji:"\ud83c\uddf3\ud83c\udde9", dates:"Mar 15 - Apr 2", date_display:"Mar 15 - Apr 2", bio:"Yoga retreats, sunrise hikes, and street food adventures.", vibe:"Adventurous", budget:"Mid-range", interests:["Yoga","Hiking","Food","Photography"], compatibility:94 },
-  { id:"d2", name:"Marcus", age:29, avatar:"\ud83d\udc68\ud83c\udfbe", verified:true, city:"London", destination:"Tokyo", destEmoji:"\ud83c\uddef\ud83c\uddf5", destination_emoji:"\ud83c\uddef\ud83c\uddf5", dates:"Apr 5 - Apr 20", date_display:"Apr 5 - Apr 20", bio:"Anime nerd meets foodie. Ramen shops and arcade adventures.", vibe:"Cultural", budget:"Flexible", interests:["Anime","Ramen","Nightlife","Sneakers"], compatibility:87 },
-  { id:"d3", name:"Ayla", age:24, avatar:"\ud83d\udc69\ud83c\udffc", verified:false, city:"Istanbul", destination:"Morocco", destEmoji:"\ud83c\uddf2\ud83c\udde6", destination_emoji:"\ud83c\uddf2\ud83c\udde6", dates:"May 1 - May 14", date_display:"May 1 - May 14", bio:"Photographer chasing golden hour. Lets get lost in the medinas.", vibe:"Creative", budget:"Budget", interests:["Photography","Art","Tea","Architecture"], compatibility:91 },
-  { id:"d4", name:"Kai", age:31, avatar:"\ud83d\udc68\ud83c\udffd", verified:true, city:"Auckland", destination:"Patagonia", destEmoji:"\ud83c\udde6\ud83c\uddf7", destination_emoji:"\ud83c\udde6\ud83c\uddf7", dates:"Jun 10 - Jul 1", date_display:"Jun 10 - Jul 1", bio:"Mountaineer & trail runner. Planning the W Trek.", vibe:"Extreme", budget:"Mid-range", interests:["Trekking","Camping","Wildlife","Climbing"], compatibility:78 },
-  { id:"d5", name:"Priya", age:27, avatar:"\ud83d\udc69\ud83c\udffd", verified:true, city:"Mumbai", destination:"Greece", destEmoji:"\ud83c\uddec\ud83c\uddf7", destination_emoji:"\ud83c\uddec\ud83c\uddf7", dates:"Jul 5 - Jul 18", date_display:"Jul 5 - Jul 18", bio:"Island hopping, sunset cocktails, and ancient ruins.", vibe:"Social", budget:"Luxury", interests:["Islands","History","Cocktails","Sailing"], compatibility:85 },
-  { id:"d6", name:"Liam", age:28, avatar:"\ud83e\uddd1\ud83c\udffb", verified:true, city:"Dublin", destination:"Vietnam", destEmoji:"\ud83c\uddfb\ud83c\uddf3", destination_emoji:"\ud83c\uddfb\ud83c\uddf3", dates:"Aug 1 - Aug 20", date_display:"Aug 1 - Aug 20", bio:"Backpacker with a coffee addiction.", vibe:"Adventurous", budget:"Budget", interests:["Coffee","Motorbikes","Street Food"], compatibility:82 },
+const THEMES = [
+  { id:"valeurs",      label:"Principes & Valeurs",        icon:"⚖️",  color:"#C41E3A" },
+  { id:"institutions", label:"Institutions & Politique",   icon:"🏛️", color:"#2D6A4F" },
+  { id:"droits",       label:"Droits & Devoirs",           icon:"📜",  color:"#C41E3A" },
+  { id:"histoire",     label:"Histoire, Géo & Culture",    icon:"🗺️", color:"#6B21A8" },
+  { id:"societe",      label:"Vie en Société",             icon:"🤝",  color:"#B8720A" },
 ];
 
-var REPLIES = [
-  "That sounds amazing!","I'm so down!","Checking flights now ✈️",
-  "Great find! Saving this 📌","What's your budget?",
-  "Let me send you the itinerary 📋","Can't wait!! 🔥",
-  "We should split an Airbnb!","Just booked my hostel! 🏠",
-  "Let's do it! This trip is going to be epic ✈️",
+// CSP / CR / NAT levels mapping
+const LEVELS = [
+  {
+    id: "CSP",
+    label: "Préparer CSP",
+    fullLabel: "Préparation CSP",
+    sub: "Carte de séjour pluriannuelle",
+    icon: "🎓",
+    color: "#2563EB",
+    bg: "#EFF6FF",
+    themes: ["valeurs","societe","droits"],
+    desc: "Multi-year residence permit",
+  },
+  {
+    id: "CR",
+    label: "Préparer CR",
+    fullLabel: "Préparation CR",
+    sub: "Carte de résident",
+    icon: "🏅",
+    color: "#059669",
+    bg: "#ECFDF5",
+    themes: ["valeurs","institutions","droits","histoire","societe"],
+    desc: "Resident card",
+  },
+  {
+    id: "NAT",
+    label: "Préparer NAT",
+    fullLabel: "Préparation NAT",
+    sub: "Naturalisation",
+    icon: "👑",
+    color: "#7C3AED",
+    bg: "#F5F3FF",
+    themes: ["valeurs","institutions","droits","histoire","societe"],
+    desc: "Naturalization",
+  },
 ];
 
-function calcCompat(me, them) {
-  var s = 50;
-  if (me.vibe === them.vibe) s += 20;
-  if (me.budget === them.budget) s += 10;
-  s += (me.interests || []).filter(function(i) { return (them.interests||[]).includes(i); }).length * 8;
-  return Math.min(s, 99);
+const LANGUAGES = [
+  { code:"fr", label:"Français",   flag:"🇫🇷", native:"Français",  tts:"fr-FR" },
+  { code:"en", label:"English",    flag:"🇬🇧", native:"English",   tts:"en-GB" },
+  { code:"ar", label:"Arabic",     flag:"🇹🇳", native:"العربية",  tts:"ar-SA", rtl:true },
+  { code:"es", label:"Spanish",    flag:"🇪🇸", native:"Español",   tts:"es-ES" },
+  { code:"pt", label:"Portuguese", flag:"🇵🇹", native:"Português", tts:"pt-PT" },
+  { code:"it", label:"Italian",    flag:"🇮🇹", native:"Italiano",  tts:"it-IT" },
+  { code:"de", label:"German",     flag:"🇩🇪", native:"Deutsch",   tts:"de-DE" },
+  { code:"tr", label:"Turkish",    flag:"🇹🇷", native:"Türkçe",    tts:"tr-TR" },
+  { code:"zh", label:"Chinese",    flag:"🇨🇳", native:"中文",       tts:"zh-CN" },
+  { code:"ro", label:"Romanian",   flag:"🇷🇴", native:"Română",    tts:"ro-RO" },
+  { code:"pl", label:"Polish",     flag:"🇵🇱", native:"Polski",    tts:"pl-PL" },
+];
+
+const SPEEDS = [{ label:"0.75×", v:0.75 },{ label:"1×", v:1 },{ label:"1.25×", v:1.25 },{ label:"1.5×", v:1.5 }];
+
+const VALID_CODE_HASHES = new Set([
+  "307b4168f7f77d6a28483acf88702b802d8472ff6f3b75f97a8215eb24b08845",
+  "efcf8a1aed717abb01fdc12ab2a4ffe4b617f9d25740c1965913556dfbb41528",
+  "04084752038e1efbad6db7c5765392b59f22edfb983e18dff2c141dbd251795e",
+  "98d97a92ca12558b7e1abe6e2443f5da9e31db32e75bc4a7f050973c84e8c363",
+  "156654d7b3a6042c47b2dd30dd737973abc52c3b1fb66d5b394aefadea6361c2",
+  "c13e8fd2355813836dd1a3ceb48afa8c6041419962f94308d70ddac81affd5fe",
+  "71235b2c6e5ff4a82d72968ffacf0312b24d8e4487eb4bd9d206494a47b245bf",
+  "3bfec61a10b535f306e453fce283dc99c8ea72d9f49ad5e6aa9b2fb037a1ee55",
+  "19c69e6c19855953da25e6c617a7e36e61ecfcb95077284cc3a068a3ba67327b",
+  "f89fd2ff96e3f9a8705cc09364ec83122ca4110b97ed2841f36b62acf15b8235",
+  "4cef66e963e6384e027983737b7bea65435301fdea61202db74f8f0c684e8ace",
+  "bceab2e2c88f326eaf0e99acddb09c048c0ec4e906b73ad72e5411fd89ce7d6e",
+  "eddd06f31ce730cd8473f8a422993019a9db12bae6f6c892daae69794decc6b0",
+  "d2a1e887b4c191272535508ac5a5beee50c23bd81f0990767dff17f97b025c1c",
+  "b228be2eabdb50ad655af81afd03aa6272ce3ab230702430d5a8b9796ad81e45",
+  "a1363e5832ee0f7bdefd936e7c85e0497cf6dddd40fcf587d005c77687a43b2d",
+  "e1ecf052813924e9c98a604949d24fa88e87d77444e1857f8aeeee1f4462c6fd",
+  "fa7e3663f636bc7371069f09ee5de5c5bb08154c4b0b0e9d19f6d228aa48d804",
+  "e6931bbd3e99bf377a8ca741aecc7022fa47c8b821f056738e1c214de685f26f",
+  "40f8d4bb503401f62fd1d1c827db7f68499c95e6f02cd8ad1b9d2d32f6b03a5d",
+  "2def5b8c6210a57fe6ad6ff96fcfb0a10ecc5f308172349f69981b679b6b7aea",
+  "b669a6575df117384a02df976c0786a00b0a712b8851410909c4113b10ec431c",
+  "48775465f414fb5d8a9004d750070c79e041b07dab5d1c27466718233da8cdb6",
+  "f4d75d09604e192bfd58d0468402fd40cdb5b60947f9332940384d3ffd1177d7",
+  "b86c1fa43c940156bb9b83f5631565db0d92e283db6021cdbe342c5b3d55f727",
+  "069120eccbf3718540be5cab89669ddc7b9e73c2e10951be86d5ab900e16263a",
+  "9a29871574fecfef8f0553bbdba5795afb1c5ba3fe6139362f29cd24d9c831db",
+  "68c8ea0c193248e51704287301a1856f01c2ebcc0443843f45df72c5de2e4ffd",
+  "d777a8616217b6d3e42d5ebe4694df333401a351211444ac9fc41b30248ad691",
+  "22c464d0cd1d5957c2136593ba00b87bdfc4ffb79bce9bf7c7ed61cedfcf9b77",
+  "a0399bcf3e666d9523622f543bf62cfb969d25d3c274042b8f4fc9fc32ab7545",
+  "366902ad401ef990adaa965244359cfbf6fc9b958f3d082b113617cd12e98318",
+  "fca45c64e1c0eef430637f007e3c0ebf323bdc7b20c8d784df112eec3e7b0ffa",
+  "1f1b5dd5610b2f6985ea67467b9e1d62ecf84c19a6a11da9ee948b56fd6b8222",
+  "cd9dc4fcf9923871180b851756005222e78b97ac58c57abf1118271f6c584718",
+  "9caae91b263945b60f925b1d801b692e1b7cfe246bfdd7561a52d5954828f427",
+  "e180cc2f65d2ee1bf6114760b93be5b59967fd62a4d1c38564284f87b9f2aa14",
+  "c701f724c561f967f7a00296d6cf32b5f0feb878de5f4d813dd76a8720ea1fb7",
+  "5b1077205e4234166f574edf40ae0dfd429356f7741613d6040c514fa16d446f",
+  "63f55e3026985a856b1340032805dd4a118761a75b6671d7e214f35b8e0ee34c",
+  "9b5f3d13fce03b517cded1c9318fff468fe99daeb8cc6bc0e8172f66095c1ce4",
+  "8f448de5dc1dcd8edc19ec696af2c4c820e1952a446a0af162e5cc6f9a5021c1",
+  "ff22338a5ed93dc2c524d81ba0c0845c1b19ac6b13f1f12103bd7651a0942545",
+  "597c180b7a671cf987820b01a3aca94830addff1fd26eef84401a5aa786b0b21",
+  "02073489fe029f82152a583690c6f54bf95da5e7115b3a5bc87e99a059b5641b",
+  "a4a5e29134fcfaa821cd4de587480df335a815e72013ea8429a2742e94ad17ee",
+  "30b6500f1a307dda02b2a824526d52b7404687b8902fa5961a614687dfe8e1ce",
+  "b727ae907aab62a08d1fc13936532e43d773132fc2ddcf6bfff4af5eb2574358",
+  "cbe7da50c6098131ddec9d6a7e2e9be6591210fc2ac8e884878ad0addb41d600",
+  "1ec52318ec04e7ae3f136be0c89258b1c43cfb59e8ff138da0d6db43032fafb4",
+  "6a0d53615537ad93dd84c6c775cc2b69d3edc246a1a84e324c86c7f0ffe257ef",
+  "518890ae7ee9bb82ce380656e18fb4f036f7ba2767d361a154da798da96041f6",
+  "33530885b00d72d7bebb05a9b3cc247bde7a71c6d96b9587b376575b7a6359da",
+  "f972c015f6a91dbdede0dd9000b013aeaf5a36fb65bf3ff9df52be32e0de8b87",
+  "7898fdf243457fa130abc486c3ab0a66e4ee9df09d8c9c4b0ac8ecd5d56367f5",
+  "a9565847a873b1640afdf13db9d7bc2b32a4a4fa4c2b8643fdea777c0fbba496",
+  "a6084aef9faf543a179de0b993d1f84e11c6cc391e0a5982b558c5bb196c124a",
+  "2619e9c6ca303ee61d453821890d5edc06bd2227197f79e0d121c345dffbc09c",
+  "c1faaf9f5f25a79555e7917450e870d7c7147ef02ec2c99bfa100094c81ec8bd",
+  "0465ab66cca2ad1e1371472435dfc6b454adc8a828df09fe83082608c76232fc",
+  "f1f388a950be7bec21fed9412cb7c130ff7cfc2b3dd44b92f07cc0b100baf76b",
+  "7b0e91fb8029e8c736f44fe21e022119f2e9bf598115fb17f4fe3df042cde283",
+  "2d9f7a2e149a96a6235bfeaa3208b1c4581e7fb47491dbc9a6aad3ab0a7ff5e8",
+  "04da05174307d3f0f7693ee1cb6730fb693d9984b420a84132f314ba2be4aaca",
+  "9051e7743406d015609c77040e9aedb91962c97ea0adbfe44aaa44aaf8be4ea8",
+  "1f159b137f9c7b09616bd26fbfb7956f547df07a4d8ac369a293dcb4cf7193b0",
+  "fcf9198fac63ae8454598da48da695c4f390846a26349a446c23157abd73a583",
+  "c6266d717dd9d0db2f3d11aace22418f758d901b31973d462d5ab45363f889ca",
+  "e44da0c29916ecbc10fa648511fc9231a7606a0c4efdc2689ba40fb909d4d306",
+  "c442de8812e7e55269742b974499892a771587b5418566afc29b184b792b41ad",
+  "74f20856fa1abe1478df89f71dbfa4f4daffba7a56bdc6a0d0a82294b7cc533c",
+  "4b5011d8333b1db52b76203c74892a2ac73866c4ecccb1650dd15617c53f76ae",
+  "9af68986e64b2cd0c553917b2ce99b791618c60ff494b1a698cd87d921884601",
+  "e4b8c79e9e4b2edc296fcada19d222d73a24d1f8490404519409abde560cf6d4",
+  "92916eb58388ceca926ca38e55c29c8882d1fe6d261b82c7ff28cc5dea7d402d",
+  "3847fc14b5eb31a88c7eb15f69e5e9505dc3fc0cd16fea16727182c5c065eb79",
+  "bf868df92823a866912f122967cd19ae0b13c2fb58c037c20270bb037d601bba",
+  "39f1032d06729ea26100fcffe7052ad4c07b4f7769840edb15da9047c94cad5a",
+  "0b104f6badd758c70d53834dc35c98201ed503d2fbfdf20c894e57cb0c506f11",
+  "fffde3730b9467bc5174ff359074d11740e6a37eab4058500c31813aa5f141be",
+  "9e209cf0ae14d9659587ba226e20989b8c513135eb039ab202e8a327bf2ce84c",
+  "89d03b204fe58c6b87fdaf7822237509cd3f67b9c43f930363d64ecc18e7b892",
+  "7979fd403ef6545e852cd867c03e2ed0fe454e5253865172882f4f9c0df14570",
+  "298fd45b66abdbfe13a588cf768074b5a8e5c055b1d46f43d98c9579819c412c",
+  "cbf41b5b159d857e204b1b7df269b1dfd41f2331bd1adb9b8d95bdf8e854f289",
+  "cb85b51735ec0752fb875271979986b744e13074c864d462393b12fbee035ed0",
+  "4168af5d19667edf9897b0c25c31616837110c2e2f1aeea7450753b769b098b1",
+  "4bca9e1dd2a4c32921aa85167b82ca2c6344e05ddf4e61dd69253af571e26826",
+  "f0f79bda6c97b0b34732831dc39541c876d5eaa7f1c42cea33cc279f8157b5bd",
+  "0f8eb9a5d65a7c6d699485f9a60875be6345f32cb33ea9dc6ead278d9c46a4bf",
+  "ea9de899606a5cfdf1ba81bc3f80d29e0e7adbc22df8a5b9e2d665fa29e6431e",
+  "1c707b9afed82c079c09dfc972d09a79ee210bc92c6c97caa86fc0205c6bafa3",
+  "5b8e240adfa1b3b2eda8f3cf7d7b2d576041ad266506b81f1505399704e75833",
+  "f4e3e8625d60908b82f1761894efac4c670bc90b5810ea35fce9009117010c12",
+  "80ec4107069eae9b8f60c28ec7ed7f4cedcf4a17ea05c107087338f6dde7bbbf",
+  "757423511132097ac60d7f9bc0dea88ff489f07cbcbe440e0733dba0d93b5cf6",
+  "60c86b2820f60c6e491fc62bc64cb8430a7e50a74d6575da76128b264dd21922",
+  "f5fe30c9a1ede8dd97ee6a5b1c03b846d1dcd565a7030f269bfcbfc373519310",
+  "769de215ddb4e3e67245dca935741466c93dec512202d9ec1dd3528d5f5b853c",
+  "5877e69090ca419c3d7f0a654f6caa03d81cdad446736c64905ed089813c409a",
+  "56082d5d9c319fadca327215b54cbc330f48841366da3ebe6664db03d16ac0f7",
+  "4dd263969185e30eed8ee6c999ff9694a74b4850b11c84ffd229bdc1aeee4369",
+  "3faf6d47ad800b8c1f71e8824f1ee94125ae8efcb1a0414c6e5f44ff5b006733",
+  "2d6631aa4ac56242800d0174f6aae8974f53f6a45bfa4773aefe7706ded70150",
+  "7bbca00718a55c44e54ea0b553eec3bdf031bf8b1758dd8dda2b3b987a052d3a",
+  "50fc2f16f9cf2d28109dfa18717b1d63a4a85b8969cb0ebcd62fd5b3b0638b46",
+  "2250cfbae390049af2f762422b58d896680093d21e7f2c2bbdfb19c19279c1c3",
+  "bb0250b33e2e86d223bc8336be30ce1470bbacaf09fb24b9b61e1b902806abd7",
+  "fb61d70d3598a46cbbaac7bd8562ee28a7450e917b42cf927caebb9c23161e96",
+  "e28c953a7071405352a1f9a4be72a0f2753d6b1e31ddd55afdd651b323d1e3b5",
+  "198bbac26ae2057fb23e66069fe0294ff068a7f59383d58439d447268210627a",
+  "ffa6f266e578b8e358b2f36e758f7d8f3b279d446dfe0867fc02a581a2d4f3b3",
+  "569a47cc36af1229e4d97817428e2318eb527d3db8921f0e2eee19342acb3ce9",
+  "5f098d69e5d649279c0d0e37a41d219bd9608646eb937c8a8cbbae2e17928c09",
+  "dd6632a3b7fd7b4987eee94b816b942170e17e88dd7e27524ad1cb780f6e0ba5",
+  "a82f17ebacdf55e408de5c0425a14084778129b0ae096a4a24e5ffd6c8b06a66",
+  "dc4a45625bbc0d35d38f9c0e0824e29777b9dff5e99ab6c7c9bf4cae09a0c5cc",
+  "afd2f858496b6860330b8dae2a757c1047f99fb891e7b5967a08df06143abd12",
+  "60c9082e409fa4fbc2acf64eff99b48b9da37875b83172a58a1cc7d71eff0214",
+  "7030812746faabb2396bf93c110598e72c74b62bdfa2b52617bc0e5ab3dc9f6b",
+  "8a9ee84d39631688a72ec30cd2768daebf4211412087420bc7bc47b486f25150",
+  "38b896d0cf30dae6d248e6763d8b843911740ac2576ce96d8465885f1ca7e6fd",
+  "fe25d6ff3a12620800f332aef96da2f39c4c4b15e3cc4f63f9cebc3ddc2a7a4d",
+  "eead8587b46b1d6c01658ac08b952a390cdf910245cb61baa7a88cfc86efb5a3",
+  "4a6332269e82a2e4a0f726a4faf08b1b210c27c591f3d3c59d978b4a404380da",
+  "deb518c2e329ef3d07c7cec6169b196c97cd5bbedda511e6ed2fc2208043e18f",
+  "a3a855758447d60d620a5259ac38326d6280055c184ad32efd29812b5b7916b0",
+  "f329730e7e3570a3c340607cb97d0c2422c894d00355518d8246ee877bbe3dd6",
+  "1f3963774e9ce2eccc698fb6545b6bc00fad099c8d613c55aa78b473c7d7af81",
+  "794755c74be0beba94c82ac1bcaec58630df70727d09db9d89823b0dd1d574e3",
+  "f5a5653d7b8fad63ca4bb4447be9b449357ca3ea57bdeef0b452c921c6a5c393",
+  "28b3cea8e36aa362df043ff2f8a30c1aeb988ac1a549c5f79588f780d61f7ea7",
+  "48dfa0818cb646529098ddeb8e92f14eff661b3b7bf0f0c72504a1a7836704ad",
+  "86b21b473e053a52769b5018ab27604ce36bc1f8141de9aefe0fd3a6e3ec8330",
+  "a996974fb262b7724cbc8e12ca204f517aa635d6e7330504dd1b6b2f3fec3abf",
+  "16dd37c192eee779e9f650b3cb999608eb3e454f53378aee91ccec3109c258a2",
+  "1bd9bab634fcd8bc449adb5f5f4294e7ad35a16ce8ddca2e9a8e8dbd680fe33c",
+  "827d3c6ff090237c1f994775489e6fa84ae0c47b913b52635aa306e26cf380a8",
+  "17e4e8716418dfbf964faf2cb2a51ef5bc29cfd58c597139fe7f542c09e1c90f",
+  "72155ac18835e6015b72c34b8e9e18dd228af00c0e31bbe337092061c28903ce",
+  "65970777aa647f90fba791b182e49709ede2691b8bcd7f4b079993dc3f1f370d",
+  "43caf4f0dd1bd776a3285abc1566c437fcc4187df25a861b70ab3f1a474d3969",
+  "779975689c12b2d81c1362ffa7d327d03e847a918874398a83076581ca69eb21",
+  "1198124c69df21bf0031ab62466099738d0b29581f570dac23352c4359fc4d3b",
+  "a1e11871cad02d0ce895d6b1dd1176e99d5b8371345c7c41120fbe679badcb3c",
+  "926b6686980f8df008c68fedfad654d11a3ac4fbcb7239ba0f2876a1e9905ef8",
+  "beaa2ac50f32889b1f5d0d77321d9d2c1a84b132dc88fd818a69121f3715f592",
+  "c68aaaa34080e015fc0a6ea665c3c0cdb3c45349f91cc4d60ea77957bdf86132",
+  "0d0d01f7bee4c6b3f82c76a74581e5e97d4c9e6e5676e48b3c6ade0d35ca3eea",
+  "05a67866d6ec2a6889ac35455acfc33cbe6ca0c93b9f382cecd8f0114ebec31c",
+  "0deab5adec52435e6353ed59e32545165a9632d00da1d14c22cdd403ce20ccdf",
+  "8d57ec50752ddaefe462f6aaec147346fe25b6be4c82d2cfa08717da025ed5dd",
+  "5ebe55d6c792003b8a60a65598b44ce611eafd70986964a604beb1c93d6f3c3e",
+  "4cf297f54fe80775d812c481965555cd9a5c9f5032a8c1a241181170cf2cc76f",
+  "d4f04ff855859db466eed4a9aef3ed13d308e3369d9e54ff04f179b3a52e8df6",
+  "cdc719f1a535e7b0646ee30c46484945ce5c4c5ecf3fa7a54e6f5dc0f9500452",
+  "05d80af72eca3e760e2d70a43b6d3f57d1b74d926ebff4d89adb50b79082ebc5",
+  "655518f6c717cb6d9c5942691c08fc3a08bbdf37482d2871c96dc18c295c90e6",
+  "34c723d7d4b7846941054f1da1c58bf2f464f2f2b56f3938fdb631fd809f2e29",
+  "b894478b3521f9afb90166cff32b7bbc4e3f3bf24e7ce862dbe39150d10b8ea1",
+  "34ca286b86ac6109237ac8905c6287a12ff7ddb0610a3a9946e5da02cbf58b69",
+  "fa7e665acfdf0a7f1e05648b7bbef4e536d0bd9d0e7ff188f62b5dc308de8bf9",
+  "1d0d8b821a52d0ec7050f05201a2763e2813fc88b081a12cac33a53dcf1c582b",
+  "e589571587f2fb1a3653e3868d179c3037068d823647a3b6d522a350cf817717",
+  "b605c909eaf0824cb90b5dd1c51ff12977f8d412c7efbbe132410d066d81d4c8",
+  "16a5a7a67573b795aa9ed2a59215e9e2ae8679fcb89c355b47df1a11002443d8",
+  "80399c4ac80caae4dc60d6f292ce8dd865f66cc585bac30e832b7fa2b40a8dba",
+  "4a813d3ae0e0b5725f34149b8ad022f09fcdedbf7fcdc94ada379dc8a60619f3",
+  "156140aaf4002d7fddda0ff3e74b187081fc1672b6414623c05aae6d01f50596",
+  "014a52cacd89557f1a691f36f592a0f53acd94b4042fc10f0cfcddd4467d753b",
+  "5367ae0ad317f2a71b12fe88eada59e4ccb61c7524a0b9d44e529aadbdc68686",
+  "a22d4b03a5dacdea7ab821f47478ef267589dd9981d6a7019160d64596101dba",
+  "a3fa84060e5b1ae15654397354e4559b5af5a050abe3d664f4295f31ddf99e3b",
+  "3320e1544696dfec35211399e4a32171820996754666d3373438dfbec0879193",
+  "134d887a64d4542f68a310928f4060c8001107252048ca175c56a723e720b73b",
+  "d80ce57e8aacb8332f13f323d346052d3c11fdfe859848a14e6fac3e37791e1d",
+  "5d756a0bee08543da3558190edbeb2ca155b30081c5bad616d336c2c93970241",
+  "4b1a2fc4295f57bd4b4a301142024f5d9c2d51de272de61ff14b973deb81b4de",
+  "d7d1b5b8f3dbd2e3e672d28cc53f79549c1b117894009bfe36680d75120104fd",
+  "d37424ea3e69612a3b8d56bc82b0ac727bf2da9be6d90051a6c2142701a60043",
+  "d83426a6cd9e49e74ea9c23030b974a9126b284987a73e1f0342c54e9c177fdb",
+  "eededd563323a20f93e53291cea18daf29d0d6bf1cb1fff982b942538bd46bec",
+  "5633f036b78374f4750947bcc602bdbb6f8a65f85522dfb6a8721230467d28db",
+  "bc1c3be5effc1d91f97c5a7f5254e03c7f5e331c7e2080e02f5296d68eee1bfc",
+  "5a3b8c646369e99a11ee4da07b6d49be3e90108678f17322dc8d33103983089e",
+  "2afce2fc09317c10d6d9ee7f31498957180be41866afe15487a474426414554c",
+  "753d1bc5e56303468a0253f3c712c43bde8227c5a5fad46811031f5c6f0e1285",
+  "2f3b716fd1f43511882fea03492509dc0afd4c8574c3eb2b126ae30a8470ea04",
+  "428b10721c7c980ea38921c01455b82682ad2bf54a2053cb5817b9d16126349e",
+  "eb823533271e2db66d09abdc16129b214b20cd852cc79cd5c0eab7b1d66d54d0",
+  "f01e408e1b9d317a79e4ce82b1856d0424252baaccbdabd18c5e43eeeb2a1272",
+  "9ea2eec7781240305bdb1aaac2998da9a3af4cda8e3d84c65c03ece7b5a7ec0b",
+  "88ee989642d79ff284387bbf2531b0dd81a93f16e4b99b0df5b467d4ecf15878",
+  "791ff0ee4b45e44e8609a0e50f2b7294d9a9a907ef3572aaa6760700540fb5f7",
+  "ea6a59916e2b5d4e1ea5aa9e0b9924a276c1e2beb551ea12beb6a8c953ad0125",
+  "927ca23e1585d1fb0c0017c1ed66537d315924203705ca6e90cb91c087ce5912",
+  "aa9a40ee8a7b72cba6d5b9ef00bccc1152648105be628c3a0f018959f9057df9",
+  "fbafa4ce5871ea2019461aa66346b8d1225b376e4ecd96debd74616cfc3936ee",
+  "c7459531c1771a85c7cdd7537896b247c33ecbe2f26066e0fbdced5cb399ff7b",
+  "6c2fba1a2d7b438fd955050a29a405052901f686c6d8e68a4150b64be4d97dad",
+  "02ec9f57ce45083668a24c297cad8236fa200429f85746263c0b9ef3e9caced4",
+  "ca53eb220d0843c53d451fc1cda92c3febbfd9146c7ffb1980234ebdcccec20e",
+  "1d16cf1e72b71a60e8869f5732e00f6b4ee5eb817fd6aca887980a306969b133",
+  "155aa7839083b3f74f13c6f4ef912acb705832e4d394009e1177570da29c101b",
+  "11eb3a05c37c14fe090b5b5db389f658ec130058dd18846e91c28651724a6bd3",
+  "a195a1971b65918f164798e8f77a0ac82a20ea695b198949e3b131ad3649dd13",
+  "dc928f5c849712cf71a62d7a3fb5078200b1b2fe81f6d56c0cd91029a479cb88",
+  "f4f69c7dc528c8bc921cb035a386f60d22f6cc296cdded739bde97e59c94da80",
+  "0da121def35217b5bcb7d4d29dc08afb00dad4d4a03951a38a608151bcee8837",
+  "0854ac273516b986c854dde6ae109f593fabd8d7b34ef3eb88e02ef6009ac0c1",
+  "f9c8a4b245f22551c16abc6edf38e76b12a649106d929b99165cb2b4a5254c85",
+  "1e7fb61f37af02ec4631ba1b83514558afeefed5c12a48ec23e20d82e598a97b",
+  "cfd78214d17451364804d2070f2916a54e240e5283ef9b00d7337934b47d998c",
+  "3904987eb527dd55e94f6454d6d6b4253582b321d1d1d6fd53d24a0e11279220",
+  "2d0656d1e90bdcdbe46d2c955ea055c8ec3157fbca36bf28b29083b61e8accb6",
+  "1a9117a592df08291af2e26d464e201f18dfd64f5ce7da108f16a44f2ebb67c2",
+  "ec316ea673043672f1db95b5c2d64aaa6071cc4b5685b17613ccd007c2b1d1c2",
+  "d8ba8b4fbe7bd5fbf1a3e0494d4a1c67fc74459238d27e6bdd84ce27d5f896fd",
+  "64c474cbc478804e0aeb98b6b4b67578b1d67f6d997da7891bb24804324f3fca",
+  "9a138770986d03c26b77ac97aec8e8aec2a90a2f683ea20fce10209f9b9fee9f",
+  "68fd6c80f8b01e24d1a5d74de9c951eb2539943d0f455d5fc933b3bb2012ee3f",
+  "0bb59205bb82585f1f481510b324079e11d2d6d849cd5b2f794fc3932d143133",
+  "9fda09a0e3b09a37ab93c511fb547374c05a695427d58ebfccab584fbec9ae57",
+  "b293f9a6c3ea35f658fab3ae4a14726cdc26655ac37a07e594652ea44bcd9160",
+  "c7a2e5d424d632b9276bbca600a5e953f70a3991895d5c31a9768ab39ac61f19",
+  "52ec48da55f7ef60155fabe3de43c7d829d1d30b0c2e123f8052b73e508ca89a",
+  "1ba6746cd62193daad8beee9a5e00d731a0086de20666069f639e5219a8d8619",
+  "1e7417a3c4d4c2b5f9e92973b1d8df6836142f1a3541c3b0c7ea094e524b6ae6",
+  "c3e57545cc5323ca8bea1f1d436b78b862ed2dc76bfc2be36b1d51916c904416",
+  "e486b8ea8a1ef711eaa6512dea470f520cf05a94f2b9602accfe6a582dc48473",
+  "7d1b17181502b2f5c762288c8e088e01908f672bf52278e8dcab8365cde40f56",
+  "8c5444d2e28d7f869129ac31c2b025fa9f2c9a6439714ff47eed33f1d64a5c37",
+  "a124e519a3d1efc57d45ec05a7f38852fb39c51867b89977396bd2071ede2c47",
+  "cb1c2a81606fdfb17e30d5b4f19e055848c7b7dbfddff44b1a9ae0daae3284a2",
+  "ffc0b774e4034ffa5c90f1f1afd8a5576774b31bf2f285ba93f9cafe48dbe6a5",
+  "545f7c16167d11759647f1df0bb54205fec7c720bc9719fe40b8bf8faf24a65a",
+  "16c9481f4cc60a19b5e1ab18faec93f9bd65fc051e00e00699ab802e9f8150b3",
+  "3b87e446ce6c845a8868ab9834b47ff3291847095a99f79324857e5075ad6e7f",
+  "9044ac2f14fa7c3d260e04dd7574ba8df099a14b674d9a3f5750e0242b7296cb",
+  "109f3b18ee461c3b660369f5c217fd3c9b46992a6748f17412727d24792b3bd5",
+  "61c7e6931c764151b0d0a80b56c4874cc1c8b52f117b63842ad4713550479258",
+  "a70fb94f497d7f1cf19252d617d0fc364ab80904334dc4ae9c0080ba61ca5f62",
+  "9e442966b8099ee96882f12c7d544e3ece67d508a146146282316a28a66d37ea",
+  "9ed05c96f5a58a3b30eba3a45727a2d1a34f3b69fc949e0980d1d733eebc9bcb",
+  "7d4235072d2bf6a5c079cb7e995d995dfdc8959a1575173f353672357519858a",
+  "024aba7548d87655a848c7407a44d245f7fd4a62a346c28744e66722bf08f643",
+  "da4eed797ce01df5f1712cfd01b7c9d03cd9e25ad2e5d1c0236868d6dd4c1d48",
+  "b568ed77950ba49b36fae944d33c4346c63e38c4d61e298cf155cbe4b83be25a",
+  "329997db2105901f6961e6dd73d064b764ed07f015a2aa3cc05a5e1cf6b169f5",
+  "bcc29087ef9e9dbbd8bd1c359d95d5294ba55f713a70a90f5af97dca5f0efd76",
+]);
+
+async function validateCode(raw) {
+  try {
+    const normalized = raw.toUpperCase().replace(/[^A-Z0-9]/g, "");
+    const buf = new TextEncoder().encode(normalized);
+    const hashBuf = await crypto.subtle.digest("SHA-256", buf);
+    const hex = Array.from(new Uint8Array(hashBuf)).map(b => b.toString(16).padStart(2,"0")).join("");
+    return VALID_CODE_HASHES.has(hex);
+  } catch { return false; }
 }
 
-// ─── CSS ─────────────────────────────────────────────────────
-var css = `
-@import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=Fraunces:ital,wght@0,700;0,900;1,700&display=swap');
-*{margin:0;padding:0;box-sizing:border-box;}
-html,body,#root{height:100%;overflow:hidden;}
-body{font-family:'Sora',sans-serif;background:${T.midnight};color:${T.white};}
-::-webkit-scrollbar{width:3px;}::-webkit-scrollbar-thumb{background:${T.slate};border-radius:3px;}
-@keyframes fadeIn{from{opacity:0}to{opacity:1}}
-@keyframes fadeInUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
-@keyframes slideInR{from{opacity:0;transform:translateX(30px)}to{opacity:1;transform:translateX(0)}}
-@keyframes slideInL{from{opacity:0;transform:translateX(-30px)}to{opacity:1;transform:translateX(0)}}
-@keyframes popIn{from{opacity:0;transform:scale(0.7) rotate(-10deg)}60%{transform:scale(1.1) rotate(2deg)}to{opacity:1;transform:scale(1) rotate(0)}}
-@keyframes confetti{0%{transform:translateY(-100vh) rotate(0);opacity:1}100%{transform:translateY(100vh) rotate(720deg);opacity:0}}
-@keyframes typing{0%,60%{opacity:.3}30%{opacity:1}}
-@keyframes slideSheet{from{transform:translateY(100%)}to{transform:translateY(0)}}
-@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.04)}}
-@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
-@keyframes gradShift{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
-input,textarea,button,select{font-family:'Sora',sans-serif;}
-`;
+const BATCH_SIZE = 5;
+const TRANSLATION_ENDPOINT = "https://api.anthropic.com/v1/messages";
 
-// ─── Shared Components ───────────────────────────────────────
-function Glass({ children, style, onClick }) {
-  return <div onClick={onClick} style={{
-    background:T.glass, backdropFilter:"blur(16px)", WebkitBackdropFilter:"blur(16px)",
-    border:"1px solid "+T.glassBorder, borderRadius:16, ...style
-  }}>{children}</div>;
-}
-
-// ══════════════════════════════════════════════════════════════
-// AUTH SCREEN
-// ══════════════════════════════════════════════════════════════
-function AuthScreen({ onLogin }) {
-  var [mode, setMode] = useState("splash");
-  var [email, setEmail] = useState("");
-  var [pw, setPw] = useState("");
-  var [name, setName] = useState("");
-  var [loading, setLoading] = useState(false);
-  var [error, setError] = useState("");
-  var [emailSent, setEmailSent] = useState(false); // ← NEW
-
-  useEffect(function() { var t = setTimeout(function(){ setMode("login"); }, 2200); return function(){ clearTimeout(t); }; }, []);
-
-  async function submit() {
-    setLoading(true);
-    setError("");
-    try {
-      if (isDemo) {
-        setTimeout(function(){ onLogin({ name: name||"Traveler", email: email }); }, 1000);
-        return;
-      }
-      var isSignup = mode === "signup";
-      if (isSignup) {
-        var result = await authService.signUp({ email, password: pw, name: name || "Traveler", avatar: "😎" });
-        if (result.error) { setError(result.error.message); setLoading(false); return; }
-        // If no session, email confirmation is required
-        if (result.user && !result.session) {
-          setEmailSent(true); // ← SHOW CONFIRMATION SCREEN
-          setLoading(false);
-          return;
-        }
-        if (result.user) onLogin(result.user);
-      } else {
-        var result = await authService.signIn({ email, password: pw });
-        if (result.error) { setError(result.error.message); setLoading(false); return; }
-        if (result.user) onLogin(result.user);
-      }
-    } catch (e) {
-      setError(e.message || "Something went wrong");
-      setLoading(false);
-    }
-  }
-
-  if (mode === "splash") {
-    return <div style={{ height:"100vh", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center",
-      background:"radial-gradient(ellipse at 30% 20%, "+T.flame+"22 0%, transparent 50%), "+T.midnight }}>
-      <div style={{ animation:"popIn 0.8s cubic-bezier(0.34,1.56,0.64,1) forwards", textAlign:"center" }}>
-        <div style={{ fontSize:56, animation:"float 3s ease-in-out infinite" }}>✈️</div>
-        <h1 style={{ fontFamily:"'Fraunces',serif", fontSize:48, fontWeight:900,
-          background:"linear-gradient(135deg,"+T.flame+","+T.sunset+","+T.gold+")",
-          backgroundSize:"200% 200%", animation:"gradShift 3s ease infinite",
-          WebkitBackgroundClip:"text", WebkitTextFillColor:"transparent", letterSpacing:-2 }}>baddie</h1>
-        <p style={{ color:T.mist, fontSize:13, letterSpacing:4, textTransform:"uppercase", fontWeight:300, marginTop:8 }}>find your travel tribe</p>
-      </div>
-    </div>;
-  }
-
-  // ── Email confirmation screen ────────────────────────────
-  if (emailSent) {
-    return <div style={{ height:"100vh", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center",
-      padding:32, textAlign:"center", background:"radial-gradient(ellipse at 20% 0%, "+T.flame+"12 0%, transparent 50%), "+T.midnight,
-      animation:"fadeIn 0.5s ease" }}>
-      <div style={{ animation:"popIn 0.6s cubic-bezier(0.34,1.56,0.64,1)", maxWidth:340 }}>
-        <div style={{ fontSize:72, marginBottom:20, animation:"float 3s ease-in-out infinite" }}>✉️</div>
-        <h2 style={{ fontFamily:"'Fraunces',serif", fontSize:28, fontWeight:900, marginBottom:10,
-          background:"linear-gradient(135deg,"+T.flame+","+T.sunset+")", WebkitBackgroundClip:"text", WebkitTextFillColor:"transparent" }}>
-          Check your email!
-        </h2>
-        <p style={{ color:T.mist, fontSize:14, lineHeight:1.6, marginBottom:8 }}>
-          We sent a confirmation link to
-        </p>
-        <p style={{ color:T.coral, fontWeight:700, fontSize:15, marginBottom:20,
-          background:T.flame+"15", padding:"8px 16px", borderRadius:12, display:"inline-block" }}>
-          {email}
-        </p>
-        <p style={{ color:T.ash, fontSize:12, lineHeight:1.6, marginBottom:28 }}>
-          Click the link in your email to activate your account, then come back and sign in.
-        </p>
-        <button onClick={function(){ setEmailSent(false); setMode("login"); setError(""); }} style={{
-          width:"100%", padding:"14px", borderRadius:14, border:"none",
-          background:"linear-gradient(135deg,"+T.flame+","+T.sunset+")", color:T.white,
-          fontSize:14, fontWeight:600, cursor:"pointer", boxShadow:"0 4px 24px "+T.flame+"44", marginBottom:12
-        }}>Go to Sign In ✈️</button>
-        <p style={{ color:T.ash, fontSize:11 }}>
-          Didn't get it?{" "}
-          <span onClick={submit} style={{ color:T.coral, cursor:"pointer", fontWeight:600 }}>Resend email</span>
-        </p>
-      </div>
-    </div>;
-  }
-
-  var isSignupMode = mode === "signup";
-  var inputSt = { width:"100%", padding:"13px 16px", borderRadius:14, border:"1px solid "+T.glassBorder, background:T.glass, color:T.white, fontSize:14, outline:"none" };
-
-  return <div style={{ height:"100vh", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", padding:24,
-    background:"radial-gradient(ellipse at 20% 0%, "+T.flame+"12 0%, transparent 50%), "+T.midnight, animation:"fadeIn 0.5s ease" }}>
-    <div style={{ width:"100%", maxWidth:380 }}>
-      <div style={{ textAlign:"center", marginBottom:40, animation:"fadeInUp 0.5s ease" }}>
-        <div style={{ fontSize:36, marginBottom:8 }}>✈️</div>
-        <h1 style={{ fontFamily:"'Fraunces',serif", fontSize:32, fontWeight:900,
-          background:"linear-gradient(135deg,"+T.flame+","+T.sunset+")", WebkitBackgroundClip:"text", WebkitTextFillColor:"transparent" }}>baddie</h1>
-        <p style={{ color:T.ash, fontSize:12, marginTop:6 }}>{isSignupMode?"Create your account":"Welcome back, traveler"}</p>
-        {isDemo && <p style={{ color:T.gold, fontSize:10, marginTop:4, background:T.gold+"15", padding:"4px 10px", borderRadius:8, display:"inline-block" }}>Demo Mode — No real account needed</p>}
-      </div>
-      <div style={{ display:"flex", flexDirection:"column", gap:12, animation:"fadeInUp 0.5s ease 0.1s both" }}>
-        {isSignupMode && <input value={name} onChange={function(e){setName(e.target.value)}} placeholder="Your name" style={inputSt} />}
-        <input value={email} onChange={function(e){setEmail(e.target.value)}} placeholder="Email" type="email" style={inputSt} />
-        <input value={pw} onChange={function(e){setPw(e.target.value)}} placeholder="Password" type="password" style={inputSt}
-          onKeyDown={function(e){if(e.key==="Enter")submit()}} />
-        {error && <p style={{ color:T.rose, fontSize:12, textAlign:"center" }}>{error}</p>}
-        <button onClick={submit} disabled={loading} style={{
-          width:"100%", padding:"14px", borderRadius:14, border:"none",
-          background:"linear-gradient(135deg,"+T.flame+","+T.sunset+")", color:T.white,
-          fontSize:15, fontWeight:600, cursor:"pointer", boxShadow:"0 4px 24px "+T.flame+"44",
-          opacity:loading?0.7:1
-        }}>{loading?"Taking off... ✈️":isSignupMode?"Create Account":"Sign In"}</button>
-      </div>
-      <p style={{ textAlign:"center", marginTop:28, fontSize:13, color:T.ash }}>
-        {isSignupMode?"Already have an account? ":"New to Baddie? "}
-        <span onClick={function(){setMode(isSignupMode?"login":"signup"); setError(""); }} style={{ color:T.coral, cursor:"pointer", fontWeight:600 }}>
-          {isSignupMode?"Sign in":"Create account"}
-        </span>
-      </p>
-    </div>
-  </div>;
-}
-
-// ══════════════════════════════════════════════════════════════
-// DISCOVER SCREEN (Swipe Cards)
-// ══════════════════════════════════════════════════════════════
-function DiscoverScreen({ onMatch, matches, userId, userProfile }) {
-  var discovery = useDiscovery(isDemo ? null : userId);
-  var [demoCards, setDemoCards] = useState(function(){ return TRAVELERS.filter(function(t){ return !matches.find(function(m){return m.id===t.id}); }); });
-  var [dragging, setDragging] = useState(false);
-  var [dragX, setDragX] = useState(0);
-  var [exitDir, setExitDir] = useState(null);
-  var startX = useRef(0);
-
-  var current, hasMore;
-  if (isDemo) {
-    current = demoCards[demoCards.length - 1];
-    hasMore = demoCards.length > 0;
-  } else {
-    current = discovery.currentTraveler;
-    hasMore = discovery.hasMore;
-  }
-
-  var likeOp = Math.min(1, Math.max(0, dragX / 100));
-  var nopeOp = Math.min(1, Math.max(0, -dragX / 100));
-
-  function onStart(x) { setDragging(true); startX.current = x; }
-  function onMove(x) { if (dragging) setDragX(x - startX.current); }
-  function onEnd() {
-    setDragging(false);
-    if (Math.abs(dragX) > 110) { swipe(dragX > 0 ? "right" : "left"); }
-    else { setDragX(0); }
-  }
-
-  async function swipe(dir) {
-    setExitDir(dir);
-    setTimeout(async function() {
-      if (isDemo) {
-        if (dir === "right" && current) onMatch(current);
-        setDemoCards(function(p){ return p.slice(0,-1); });
-      } else {
-        if (current) {
-          var action = dir === "right" ? "like" : "dislike";
-          var result = await discovery.swipe(current.id, action);
-          if (result && result.isMatch) onMatch(current);
-        }
-      }
-      setExitDir(null); setDragX(0);
-    }, 300);
-  }
-
-  if (!current || !hasMore) return <div style={{ flex:1, display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", padding:24 }}>
-    <div style={{ fontSize:56, marginBottom:12 }}>🌍</div>
-    <h2 style={{ fontFamily:"'Fraunces',serif", fontSize:22 }}>No more travelers</h2>
-    <p style={{ color:T.ash, marginTop:8, textAlign:"center" }}>Check back soon for new travel buddies!</p>
-  </div>;
-
-  var displayName = current.name || "Traveler";
-  var displayDest = current.destination || "";
-  var displayDestEmoji = current.destEmoji || current.destination_emoji || "🌍";
-  var displayDates = current.dates || current.date_display || "";
-  var displayBio = current.bio || "";
-  var displayCity = current.city || "";
-  var displayAge = current.age || "";
-  var displayAvatar = current.avatar || current.avatar_url || "😎";
-  var displayInterests = current.interests || [];
-
-  var compat = userProfile ? profilesService.calcCompatibility(userProfile, current) : calcCompat({vibe:"Adventurous",budget:"Mid-range",interests:["Hiking","Food","Photography"]}, current);
-
-  return <div style={{ flex:1, display:"flex", flexDirection:"column", padding:"0 16px 12px", overflow:"hidden" }}>
-    <div style={{ flex:1, position:"relative", display:"flex", alignItems:"center", justifyContent:"center" }}>
-      {(isDemo ? demoCards.slice(-3,-1) : []).map(function(c,i){
-        return <div key={c.id} style={{ position:"absolute", width:"100%", maxWidth:360, aspectRatio:"3/4.2",
-          borderRadius:22, background:T.charcoal, border:"1px solid "+T.glassBorder,
-          transform:"scale("+(0.92+i*0.04)+") translateY("+((1-i)*10)+"px)", opacity:0.4+i*0.3 }} />;
-      })}
-      <div
-        onMouseDown={function(e){onStart(e.clientX)}}
-        onMouseMove={function(e){onMove(e.clientX)}}
-        onMouseUp={onEnd} onMouseLeave={function(){if(dragging)onEnd()}}
-        onTouchStart={function(e){onStart(e.touches[0].clientX)}}
-        onTouchMove={function(e){onMove(e.touches[0].clientX)}}
-        onTouchEnd={onEnd}
-        style={{
-          position:"absolute", width:"100%", maxWidth:360, aspectRatio:"3/4.2",
-          borderRadius:22, overflow:"hidden", cursor:dragging?"grabbing":"grab",
-          transform: exitDir ? "translateX("+(exitDir==="right"?500:-500)+"px) rotate("+(exitDir==="right"?25:-25)+"deg)"
-            : "translateX("+dragX+"px) rotate("+(dragX*0.07)+"deg)",
-          transition: dragging ? "none" : "all 0.3s cubic-bezier(0.34,1.56,0.64,1)",
-          userSelect:"none",
-        }}>
-        <div style={{ width:"100%", height:"100%",
-          background: current.avatar_url ? "url("+current.avatar_url+") center/cover" : "linear-gradient(135deg, "+T.flame+"40, "+T.sunset+"30, "+T.violet+"20)",
-          position:"relative", display:"flex", flexDirection:"column", justifyContent:"flex-end" }}>
-          <div style={{ position:"absolute", inset:0, background:"linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.2) 50%, transparent)" }} />
-          <div style={{ position:"absolute", top:28, left:20, padding:"6px 18px", border:"3px solid "+T.mint,
-            borderRadius:8, transform:"rotate(-15deg)", opacity:likeOp, color:T.mint, fontWeight:800, fontSize:24, letterSpacing:2 }}>LET'S GO</div>
-          <div style={{ position:"absolute", top:28, right:20, padding:"6px 18px", border:"3px solid "+T.rose,
-            borderRadius:8, transform:"rotate(15deg)", opacity:nopeOp, color:T.rose, fontWeight:800, fontSize:24, letterSpacing:2 }}>NOPE</div>
-          {!current.avatar_url && <div style={{ position:"absolute", top:"30%", left:"50%", transform:"translateX(-50%)", fontSize:80 }}>{displayAvatar}</div>}
-          <div style={{ position:"absolute", top:14, right:14, background:"rgba(0,0,0,0.5)", backdropFilter:"blur(10px)",
-            borderRadius:12, padding:"5px 11px", display:"flex", alignItems:"center", gap:5 }}>
-            <span style={{ color:T.mint, fontWeight:700, fontSize:13 }}>{compat}%</span>
-            <span style={{ fontSize:10, color:T.mist }}>match</span>
-          </div>
-          <div style={{ position:"relative", padding:"20px 18px" }}>
-            <div style={{ display:"flex", alignItems:"baseline", gap:8, marginBottom:4 }}>
-              <h2 style={{ fontFamily:"'Fraunces',serif", fontSize:26, fontWeight:700 }}>{displayName}{displayAge ? ", "+displayAge : ""}</h2>
-              <span style={{ fontSize:11, color:T.mist }}>{displayCity}</span>
-            </div>
-            <div style={{ display:"inline-flex", alignItems:"center", gap:6,
-              background:"linear-gradient(135deg, "+T.flame+"cc, "+T.sunset+"cc)", borderRadius:18, padding:"4px 13px", marginBottom:8 }}>
-              <span>{displayDestEmoji}</span>
-              <span style={{ fontSize:12, fontWeight:600 }}>{displayDest}</span>
-              <span style={{ fontSize:10, opacity:0.8 }}>· {displayDates}</span>
-            </div>
-            <p style={{ fontSize:12, color:"rgba(255,255,255,0.8)", lineHeight:1.5, marginBottom:8 }}>{displayBio}</p>
-            <div style={{ display:"flex", flexWrap:"wrap", gap:5 }}>
-              {displayInterests.slice(0,4).map(function(i){ return <span key={i} style={{ background:"rgba(255,255,255,0.12)", borderRadius:10, padding:"2px 9px", fontSize:10, color:T.cloud }}>{i}</span>; })}
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div style={{ display:"flex", justifyContent:"center", gap:18, paddingBottom:4 }}>
-      <button onClick={function(){swipe("left")}} style={actionBtnStyle(T.rose)}>✕</button>
-      <button onClick={function(){swipe("right")}} style={actionBtnStyle(T.mint)}>✈</button>
-    </div>
-  </div>;
-}
-
-function actionBtnStyle(color) {
-  return { width:56, height:56, borderRadius:"50%", border:"2px solid "+color+"44", background:color+"15",
-    color:color, cursor:"pointer", fontSize:22, display:"flex", alignItems:"center", justifyContent:"center" };
-}
-
-// ══════════════════════════════════════════════════════════════
-// MATCH OVERLAY
-// ══════════════════════════════════════════════════════════════
-function MatchOverlay({ match, userAvatar, onMessage, onClose }) {
-  var colors = [T.flame,T.sunset,T.gold,T.mint,T.electric,T.rose];
-  var matchDest = match.destination || match.shared_destination || "";
-  var matchEmoji = match.destEmoji || match.destination_emoji || "🌍";
-  return <div style={{ position:"fixed", inset:0, zIndex:100, background:"rgba(0,0,0,0.92)", backdropFilter:"blur(20px)",
-    display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", animation:"fadeIn 0.3s" }}>
-    {Array.from({length:20}).map(function(_,i){
-      return <div key={i} style={{ position:"absolute", top:-20, left:Math.random()*100+"%",
-        width:8, height:8, borderRadius:Math.random()>0.5?"50%":"2px", background:colors[i%6],
-        animation:"confetti "+(2+Math.random()*2)+"s linear "+(Math.random()*0.5)+"s infinite" }} />;
-    })}
-    <div style={{ animation:"popIn 0.6s cubic-bezier(0.34,1.56,0.64,1)", textAlign:"center" }}>
-      <div style={{ fontSize:52, marginBottom:8 }}>✈️</div>
-      <h1 style={{ fontFamily:"'Fraunces',serif", fontSize:38, fontWeight:900,
-        background:"linear-gradient(135deg,"+T.flame+","+T.gold+")", WebkitBackgroundClip:"text", WebkitTextFillColor:"transparent" }}>It's a Trip!</h1>
-      <p style={{ color:T.mist, fontSize:13, marginBottom:28 }}>You and {match.name} want to explore {matchDest} {matchEmoji}</p>
-      <div style={{ display:"flex", alignItems:"center", justifyContent:"center", gap:20, marginBottom:36 }}>
-        <div style={{ width:80, height:80, borderRadius:"50%", border:"3px solid "+T.flame,
-          display:"flex", alignItems:"center", justifyContent:"center", fontSize:40, background:T.charcoal }}>{userAvatar}</div>
-        <div style={{ fontSize:24 }}>❤️</div>
-        <div style={{ width:80, height:80, borderRadius:"50%", border:"3px solid "+T.sunset,
-          display:"flex", alignItems:"center", justifyContent:"center", fontSize:40, background:T.charcoal }}>{match.avatar || "😎"}</div>
-      </div>
-      <button onClick={onMessage} style={{ width:240, padding:"13px", borderRadius:14, border:"none",
-        background:"linear-gradient(135deg,"+T.flame+","+T.sunset+")", color:T.white, fontSize:14, fontWeight:600, cursor:"pointer", marginBottom:10 }}>Send a Message 💬</button>
-      <br/>
-      <button onClick={onClose} style={{ width:240, padding:"13px", borderRadius:14, border:"1px solid "+T.glassBorder,
-        background:T.glass, color:T.white, fontSize:14, fontWeight:500, cursor:"pointer" }}>Keep Swiping</button>
-    </div>
-  </div>;
-}
-
-// ══════════════════════════════════════════════════════════════
-// CHATS LIST SCREEN
-// ══════════════════════════════════════════════════════════════
-function ChatsListScreen({ matches, userId, onOpenChat }) {
-  var [search, setSearch] = useState("");
-  var convos = useConversations(isDemo ? null : userId);
-  var displayList = isDemo ? matches : (convos.conversations || []);
-  var filtered = displayList.filter(function(m){
-    var name = m.name || (m.match ? (m.match.user1?.name || m.match.user2?.name) : "") || "";
-    return name.toLowerCase().includes(search.toLowerCase());
+async function translateBatch(questions, targetLangCode) {
+  if (!ANTHROPIC_KEY) throw new Error("Missing Anthropic API key.");
+  const langName = LANGUAGES.find(l=>l.code===targetLangCode)?.label||targetLangCode;
+  const payload = questions.map(q=>({q:q.q,c:q.c,e:q.e}));
+  const res = await fetch(TRANSLATION_ENDPOINT, {
+    method:"POST",
+    headers:{"Content-Type":"application/json","Authorization":`Bearer ${ANTHROPIC_KEY}`},
+    body: JSON.stringify({
+      model:"claude-sonnet-4-20250514", max_tokens:2000, temperature:0.2,
+      messages:[{role:"user",content:`Translate these French civic exam questions into ${langName}. Return ONLY a valid JSON array, no markdown. Keep numbers, dates, proper nouns unchanged. Structure: [{"q":"...","c":["...","...","...","..."],"e":"..."}]\n${JSON.stringify(payload)}`}],
+    }),
   });
+  const text = await res.text();
+  if (!res.ok) throw new Error(`Translation failed (${res.status})`);
+  const data = JSON.parse(text);
+  const merged = (data.content||[]).map(b=>b.text||"").join("").replace(/```json|```/g,"").trim();
+  const parsed = JSON.parse(merged);
+  if (!Array.isArray(parsed)) throw new Error("Bad translation response");
+  return parsed.map((translated, idx) => {
+    const original = questions[idx];
+    if (!translated || !Array.isArray(translated.c) || translated.c.length !== original.c.length) return original;
+    return translated;
+  });
+}
 
-  return <div style={{ flex:1, display:"flex", flexDirection:"column", overflow:"hidden" }}>
-    <div style={{ padding:"0 16px 10px" }}>
-      <div style={{ display:"flex", alignItems:"center", gap:10, background:T.glass, border:"1px solid "+T.glassBorder, borderRadius:14, padding:"10px 14px" }}>
-        <span style={{ color:T.ash }}>🔍</span>
-        <input value={search} onChange={function(e){setSearch(e.target.value)}} placeholder="Search chats..."
-          style={{ flex:1, background:"none", border:"none", outline:"none", color:T.white, fontSize:13 }} />
-      </div>
-    </div>
-    <div style={{ flex:1, overflow:"auto", padding:"0 16px" }}>
-      {filtered.length === 0 ? <div style={{ textAlign:"center", padding:40 }}>
-        <div style={{ fontSize:44, marginBottom:10 }}>💬</div>
-        <h3 style={{ fontFamily:"'Fraunces',serif" }}>No chats yet</h3>
-        <p style={{ color:T.ash, fontSize:12 }}>Match with travelers to start chatting!</p>
-      </div> : filtered.map(function(m, i) {
-        var displayName = m.name || "";
-        var displayAvatar = m.avatar || "😎";
-        var displayDest = m.destination || m.shared_destination || "";
-        var displayDestEmoji = m.destEmoji || m.destination_emoji || "🌍";
-        var lastMsg = m.lastMessage ? m.lastMessage.content : "Matched! Say hi 👋";
-        var unread = m.unreadCount || 0;
-        if (!isDemo && m.match) {
-          var otherUser = m.match.user1?.id === userId ? m.match.user2 : m.match.user1;
-          displayName = otherUser?.name || "Traveler";
-          displayAvatar = otherUser?.avatar || "😎";
-          displayDest = m.match.shared_destination || "";
-        }
-        return <div key={m.id} onClick={function(){onOpenChat(m)}} style={{
-          display:"flex", alignItems:"center", gap:12, padding:"13px 0",
-          borderBottom:"1px solid "+T.glass, cursor:"pointer",
-          animation:"fadeInUp 0.3s ease "+(i*0.04)+"s both"
-        }}>
-          <div style={{ width:48, height:48, borderRadius:"50%", background:T.charcoal, display:"flex", alignItems:"center", justifyContent:"center",
-            fontSize:24, border:"2px solid "+T.glassBorder, position:"relative" }}>
-            {displayAvatar}
-            <div style={{ position:"absolute", bottom:0, right:0, width:12, height:12, borderRadius:"50%", background:T.mint, border:"2px solid "+T.midnight }} />
+function Waveform({ active, color="#fff", size=16 }) {
+  if (!active) return null;
+  return <span style={{display:"inline-flex",alignItems:"center",gap:2,height:size}}>{[.4,.9,.6,1,.7,.85,.4].map((h,i)=><span key={i} style={{display:"inline-block",width:2.5,borderRadius:2,background:color,height:size*h,animation:`wv${i%4} .8s ease-in-out ${i*0.09}s infinite`}}/>)}</span>;
+}
+
+// ── PAYWALL MODAL ─────────────────────────────────────────────────────────────
+function PaywallModal({ reason, onClose, codeInput, setCodeInput, codeStatus, handleCodeSubmit }) {
+  const reasons = {
+    quiz:   { icon:"🔒", title:"Essai terminé !", sub:`Vous avez exploré les ${TRIAL_PER_THEME} questions d'essai de ce thème.` },
+    listen: { icon:"🎧", title:"Fonctionnalité Premium", sub:"Le mode écoute complet est réservé aux abonnés." },
+    lang:   { icon:"🌐", title:"Fonctionnalité Premium", sub:"La traduction en 11 langues est réservée aux abonnés." },
+  };
+  const r = reasons[reason]||reasons.quiz;
+  const statusColor = codeStatus==="ok"?"#059669":codeStatus==="error"?"#DC2626":"#DC2626";
+  const statusMsg = codeStatus==="checking"?"⏳ Vérification…":codeStatus==="ok"?"✅ Code valide !":codeStatus==="error"?"❌ Code invalide.":null;
+  return (
+    <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.55)",zIndex:200,display:"flex",alignItems:"center",justifyContent:"center",padding:16}} onClick={onClose}>
+      <div onClick={e=>e.stopPropagation()} style={{background:"white",borderRadius:12,padding:"32px 28px",maxWidth:420,width:"100%",textAlign:"center",boxShadow:"0 24px 64px rgba(0,0,0,.18)",position:"relative"}}>
+        <button onClick={onClose} style={{position:"absolute",top:14,right:16,background:"none",border:"none",fontSize:20,cursor:"pointer",color:"#9CA3AF"}}>✕</button>
+        <div style={{fontSize:44,marginBottom:10}}>{r.icon}</div>
+        <h2 style={{margin:"0 0 8px",fontSize:18,fontWeight:700,color:"#111827"}}>{r.title}</h2>
+        <p style={{margin:"0 0 20px",color:"#6B7280",fontSize:13,lineHeight:1.7}}>{r.sub}</p>
+        <a href={STRIPE_LINK} target="_blank" rel="noopener noreferrer" style={{display:"block",background:"#111827",color:"white",borderRadius:8,padding:"13px",fontWeight:700,fontSize:14,textDecoration:"none",marginBottom:16}}>
+          💳 Accès complet — 5,00 € →
+        </a>
+        <div style={{background:"#F9FAFB",borderRadius:8,padding:"14px",border:"1px solid #E5E7EB"}}>
+          <div style={{fontSize:12,color:"#6B7280",marginBottom:8}}>Code d'activation</div>
+          <div style={{display:"flex",gap:7}}>
+            <input value={codeInput} onChange={e=>setCodeInput(e.target.value)} onKeyDown={e=>e.key==="Enter"&&handleCodeSubmit()} placeholder="CIVIC-XXXX-XXXX-XXXX"
+              style={{flex:1,padding:"9px 11px",borderRadius:6,border:`1.5px solid ${codeStatus==="error"?"#DC2626":codeStatus==="ok"?"#059669":"#D1D5DB"}`,fontSize:12,fontFamily:"monospace",outline:"none"}}/>
+            <button onClick={handleCodeSubmit} disabled={codeStatus==="checking"||codeStatus==="ok"}
+              style={{background:"#111827",color:"white",border:"none",borderRadius:6,padding:"9px 14px",cursor:"pointer",fontWeight:700,fontSize:12}}>
+              {codeStatus==="checking"?"…":"OK"}
+            </button>
           </div>
-          <div style={{ flex:1, minWidth:0 }}>
-            <div style={{ display:"flex", justifyContent:"space-between", marginBottom:2 }}>
-              <span style={{ fontWeight:600, fontSize:14 }}>{displayName}</span>
-              <span style={{ color:T.ash, fontSize:10 }}>Now</span>
-            </div>
-            <p style={{ color:T.mist, fontSize:12, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{lastMsg}</p>
-          </div>
-          <div style={{ display:"flex", flexDirection:"column", alignItems:"flex-end", gap:4 }}>
-            <div style={{ background:"linear-gradient(135deg,"+T.flame+"44,"+T.sunset+"44)", borderRadius:8, padding:"3px 8px", fontSize:10, color:T.coral }}>
-              {displayDestEmoji} {displayDest}
-            </div>
-            {unread > 0 && <div style={{ background:T.flame, borderRadius:10, padding:"1px 7px", fontSize:10, fontWeight:700 }}>{unread}</div>}
-          </div>
-        </div>;
-      })}
+          {statusMsg&&<div style={{marginTop:7,fontSize:12,fontWeight:600,color:statusColor}}>{statusMsg}</div>}
+        </div>
+        <button onClick={onClose} style={{marginTop:12,background:"none",border:"none",color:"#9CA3AF",cursor:"pointer",fontSize:12}}>Continuer l'essai gratuit</button>
+      </div>
     </div>
-  </div>;
+  );
 }
 
-// ══════════════════════════════════════════════════════════════
-// CHAT DETAIL with SHARING
-// ══════════════════════════════════════════════════════════════
-var SHARE_OPTIONS = [
-  { id:"flight", icon:"✈️", label:"Flight", color:T.sky },
-  { id:"itinerary", icon:"📋", label:"Day Plan", color:T.mint },
-  { id:"expense", icon:"💰", label:"Expense", color:T.gold },
-  { id:"poll", icon:"📊", label:"Poll", color:T.violet },
-  { id:"packing", icon:"🎒", label:"Packing", color:T.coral },
-  { id:"checklist", icon:"✅", label:"Checklist", color:T.lime },
-  { id:"location", icon:"📍", label:"Location", color:T.rose },
-];
-
-function FlightCard({ data, isMine }) {
-  return <div style={{ borderRadius:14, overflow:"hidden", width:250,
-    background:isMine?"rgba(255,65,54,0.08)":"rgba(255,255,255,0.05)", border:"1px solid "+(isMine?T.flame+"33":T.glassBorder) }}>
-    <div style={{ padding:"7px 11px", display:"flex", alignItems:"center", justifyContent:"space-between",
-      background:T.sky+"12", borderBottom:"1px solid "+T.glassBorder }}>
-      <div style={{ display:"flex", alignItems:"center", gap:5 }}>
-        <span style={{ fontSize:13 }}>✈️</span>
-        <span style={{ fontSize:10, fontWeight:600 }}>{data.airline}</span>
-        <span style={{ fontSize:9, color:T.ash }}>{data.flight_number}</span>
-      </div>
-      <span style={{ fontSize:8, padding:"2px 7px", borderRadius:6, fontWeight:600,
-        background:T.gold+"22", color:T.gold, textTransform:"uppercase" }}>{data.status||"found"}</span>
+// ── STATS CARD ────────────────────────────────────────────────────────────────
+function StatsCard({ label, value }) {
+  return (
+    <div style={{background:"white",borderRadius:10,border:"1px solid #E5E7EB",padding:"20px 16px",textAlign:"center",flex:1,minWidth:100}}>
+      <div style={{fontSize:13,color:"#6B7280",marginBottom:8}}>{label}</div>
+      <div style={{fontSize:22,fontWeight:700,color:"#111827"}}>{value}</div>
     </div>
-    <div style={{ padding:10 }}>
-      <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:6 }}>
-        <div style={{ textAlign:"center" }}>
-          <div style={{ fontSize:16, fontWeight:800, fontFamily:"'Fraunces',serif" }}>{data.from}</div>
-          <div style={{ fontSize:8, color:T.ash }}>{data.fromCity}</div>
-        </div>
-        <div style={{ flex:1, margin:"0 8px", height:1, background:T.mist+"44", position:"relative" }}>
-          <div style={{ position:"absolute", left:"50%", transform:"translateX(-50%)", fontSize:8, color:T.mist, background:T.midnight, padding:"0 4px" }}>{data.duration||"—"}</div>
-        </div>
-        <div style={{ textAlign:"center" }}>
-          <div style={{ fontSize:16, fontWeight:800, fontFamily:"'Fraunces',serif" }}>{data.to}</div>
-          <div style={{ fontSize:8, color:T.ash }}>{data.toCity}</div>
-        </div>
-      </div>
-      <div style={{ display:"flex", justifyContent:"space-between", fontSize:10 }}>
-        <span style={{ color:T.mist }}>{data.date||""}</span>
-        <span style={{ fontWeight:700, color:T.gold }}>${data.price}</span>
-      </div>
-    </div>
-    <button style={{ width:"100%", padding:7, border:"none", borderTop:"1px solid "+T.glassBorder,
-      background:"transparent", color:T.sky, fontSize:10, fontWeight:600, cursor:"pointer" }}>📌 Save to Trip</button>
-  </div>;
+  );
 }
 
-function PollCard({ data, onVote }) {
-  var total = data.options.reduce(function(s,o){ return s+(o.votes||[]).length; }, 0);
-  return <div style={{ borderRadius:14, overflow:"hidden", width:250, background:"rgba(255,255,255,0.05)", border:"1px solid "+T.glassBorder }}>
-    <div style={{ padding:"7px 11px", background:T.violet+"12", borderBottom:"1px solid "+T.glassBorder }}>
-      <span style={{ fontSize:11, fontWeight:600 }}>📊 {data.question}</span>
-    </div>
-    <div style={{ padding:"6px 10px", display:"flex", flexDirection:"column", gap:5 }}>
-      {data.options.map(function(opt) {
-        var pct = total > 0 ? ((opt.votes||[]).length/total)*100 : 0;
-        var voted = (opt.votes||[]).includes("me");
-        return <div key={opt.id} onClick={function(){onVote&&onVote(opt.id)}} style={{
-          position:"relative", padding:"7px 10px", borderRadius:8, cursor:"pointer",
-          border:"1px solid "+(voted?T.violet+"66":T.glassBorder), overflow:"hidden" }}>
-          <div style={{ position:"absolute", left:0, top:0, bottom:0, width:pct+"%",
-            background:voted?T.violet+"20":T.white+"06", transition:"width 0.4s", borderRadius:8 }} />
-          <div style={{ position:"relative", display:"flex", justifyContent:"space-between" }}>
-            <span style={{ fontSize:11 }}>{opt.text}</span>
-            <span style={{ fontSize:9, fontWeight:600, color:voted?T.violet:T.ash }}>{Math.round(pct)}%</span>
-          </div>
-        </div>;
-      })}
-    </div>
-    <div style={{ padding:"5px 10px", borderTop:"1px solid "+T.glassBorder, fontSize:9, color:T.ash, textAlign:"center" }}>{total} votes</div>
-  </div>;
-}
-
-function ItineraryCard({ data }) {
-  return <div style={{ borderRadius:14, overflow:"hidden", width:250, background:"rgba(255,255,255,0.05)", border:"1px solid "+T.glassBorder }}>
-    <div style={{ padding:"7px 11px", background:T.mint+"12", borderBottom:"1px solid "+T.glassBorder, display:"flex", justifyContent:"space-between" }}>
-      <span style={{ fontSize:11, fontWeight:600 }}>📋 {data.title}</span>
-      <span style={{ fontSize:9, color:T.ash }}>{data.date}</span>
-    </div>
-    <div style={{ padding:"4px 0" }}>
-      {(data.activities||[]).map(function(a,i){
-        return <div key={i} style={{ display:"flex", alignItems:"center", gap:6, padding:"5px 11px" }}>
-          <span style={{ fontSize:9, color:T.mist, minWidth:34, fontWeight:500 }}>{a.time}</span>
-          <span style={{ fontSize:12 }}>{a.icon}</span>
-          <span style={{ fontSize:10, flex:1 }}>{a.title}</span>
-          {a.cost>0&&<span style={{ fontSize:9, color:T.gold }}>${a.cost}</span>}
-        </div>;
-      })}
-    </div>
-  </div>;
-}
-
-function ExpenseCard({ data }) {
-  return <div style={{ borderRadius:14, overflow:"hidden", width:250, background:"rgba(255,255,255,0.05)", border:"1px solid "+T.glassBorder }}>
-    <div style={{ padding:"7px 11px", background:T.gold+"12", borderBottom:"1px solid "+T.glassBorder }}>
-      <span style={{ fontSize:11, fontWeight:600 }}>💰 {data.title}</span>
-    </div>
-    <div style={{ padding:"4px 0" }}>
-      {(data.items||[]).map(function(item,i){
-        return <div key={i} style={{ display:"flex", alignItems:"center", gap:6, padding:"4px 11px" }}>
-          <span style={{ fontSize:12 }}>{item.icon}</span>
-          <span style={{ fontSize:10, flex:1 }}>{item.label}</span>
-          <span style={{ fontSize:10, fontWeight:600, color:T.gold }}>${item.amount}</span>
-        </div>;
-      })}
-    </div>
-    <div style={{ padding:"8px 11px", borderTop:"1px solid "+T.glassBorder, background:T.gold+"08",
-      display:"flex", justifyContent:"space-between" }}>
-      <span style={{ fontSize:11, fontWeight:700 }}>Total: <span style={{ color:T.gold }}>${data.total}</span></span>
-      <span style={{ fontSize:10, color:T.mint }}>${data.perPerson}/person</span>
-    </div>
-  </div>;
-}
-
-function ChecklistCard({ data }) {
-  return <div style={{ borderRadius:14, overflow:"hidden", width:250, background:"rgba(255,255,255,0.05)", border:"1px solid "+T.glassBorder }}>
-    <div style={{ padding:"7px 11px", background:T.lime+"12", borderBottom:"1px solid "+T.glassBorder }}>
-      <span style={{ fontSize:11, fontWeight:600 }}>✅ {data.title}</span>
-    </div>
-    <div style={{ padding:"4px 10px" }}>
-      {(data.items||[]).map(function(item,i){
-        return <div key={i} style={{ display:"flex", alignItems:"center", gap:5, padding:"3px 0" }}>
-          <span style={{ fontSize:11 }}>{item.done?"✅":"⬜"}</span>
-          <span style={{ fontSize:10, color:item.done?T.ash:T.white, textDecoration:item.done?"line-through":"none" }}>{item.text}</span>
-        </div>;
-      })}
-    </div>
-  </div>;
-}
-
-function ShareSheet({ onClose, onShare }) {
-  var [selected, setSelected] = useState(null);
-  var [fd, setFd] = useState({airline:"",flight_number:"",from:"",fromCity:"",to:"",toCity:"",price:"",date:"",duration:""});
-  var [pd, setPd] = useState({question:"",options:["",""]});
-  var [cd, setCd] = useState({title:"",items:["",""]});
-  var inp = { width:"100%", padding:"10px 12px", borderRadius:10, border:"1px solid "+T.glassBorder, background:T.glass, color:T.white, fontSize:12, outline:"none", marginBottom:7 };
-
-  function submit() {
-    if (selected==="flight") onShare("flight",{...fd, price:parseFloat(fd.price)||0, status:"found"});
-    else if (selected==="poll") onShare("poll",{ question:pd.question, options:pd.options.filter(function(o){return o.trim()}).map(function(o,i){return {id:"o"+i,text:o,votes:[]}}), totalVotes:0 });
-    else if (selected==="checklist") onShare("checklist",{ title:cd.title||"Checklist", items:cd.items.filter(function(i){return i.trim()}).map(function(i){return {text:i,done:false}}) });
-    onClose();
-  }
-
-  return <div style={{ position:"fixed", inset:0, zIndex:100, animation:"fadeIn 0.2s" }}>
-    <div onClick={onClose} style={{ position:"absolute", inset:0, background:"rgba(0,0,0,0.6)" }} />
-    <div style={{ position:"absolute", bottom:0, left:0, right:0, maxWidth:480, margin:"0 auto",
-      background:T.ink, borderRadius:"20px 20px 0 0", padding:"14px 16px 28px",
-      animation:"slideSheet 0.3s cubic-bezier(0.34,1.56,0.64,1)", maxHeight:"75vh", overflow:"auto" }}>
-      <div style={{ width:36, height:4, borderRadius:2, background:T.slate, margin:"0 auto 14px" }} />
-      {!selected ? <>
-        <h3 style={{ fontFamily:"'Fraunces',serif", fontSize:17, marginBottom:12 }}>Share to Chat</h3>
-        <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:8 }}>
-          {SHARE_OPTIONS.map(function(opt){
-            return <button key={opt.id} onClick={function(){setSelected(opt.id)}} style={{
-              display:"flex", flexDirection:"column", alignItems:"center", gap:5, padding:"12px 6px",
-              borderRadius:14, border:"1px solid "+T.glassBorder, background:T.glass, cursor:"pointer" }}>
-              <div style={{ width:36, height:36, borderRadius:10, background:opt.color+"18",
-                display:"flex", alignItems:"center", justifyContent:"center", fontSize:18 }}>{opt.icon}</div>
-              <span style={{ fontSize:9, color:T.mist }}>{opt.label}</span>
-            </button>;
-          })}
-        </div>
-      </> : selected==="flight" ? <>
-        <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:12 }}>
-          <button onClick={function(){setSelected(null)}} style={{ background:"none", border:"none", color:T.mist, fontSize:16, cursor:"pointer" }}>←</button>
-          <h3 style={{ fontFamily:"'Fraunces',serif", fontSize:17 }}>✈️ Share Flight</h3>
-        </div>
-        <input style={inp} placeholder="Airline" value={fd.airline} onChange={function(e){setFd({...fd,airline:e.target.value})}} />
-        <input style={inp} placeholder="Flight # (e.g. SQ 726)" value={fd.flight_number} onChange={function(e){setFd({...fd,flight_number:e.target.value})}} />
-        <div style={{ display:"flex", gap:6 }}>
-          <input style={{...inp,flex:1}} placeholder="From (CDG)" value={fd.from} onChange={function(e){setFd({...fd,from:e.target.value})}} />
-          <input style={{...inp,flex:1}} placeholder="To (DPS)" value={fd.to} onChange={function(e){setFd({...fd,to:e.target.value})}} />
-        </div>
-        <div style={{ display:"flex", gap:6 }}>
-          <input style={{...inp,flex:1}} placeholder="Depart city" value={fd.fromCity} onChange={function(e){setFd({...fd,fromCity:e.target.value})}} />
-          <input style={{...inp,flex:1}} placeholder="Arrive city" value={fd.toCity} onChange={function(e){setFd({...fd,toCity:e.target.value})}} />
-        </div>
-        <div style={{ display:"flex", gap:6 }}>
-          <input style={{...inp,flex:1}} placeholder="Date (Mar 15)" value={fd.date} onChange={function(e){setFd({...fd,date:e.target.value})}} />
-          <input style={{...inp,flex:1}} placeholder="Price ($)" type="number" value={fd.price} onChange={function(e){setFd({...fd,price:e.target.value})}} />
-        </div>
-        <button onClick={submit} style={{ width:"100%", padding:"11px", borderRadius:12, border:"none",
-          background:"linear-gradient(135deg,"+T.flame+","+T.sunset+")", color:T.white, fontSize:12, fontWeight:600, cursor:"pointer" }}>Share Flight ✈️</button>
-      </> : selected==="poll" ? <>
-        <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:12 }}>
-          <button onClick={function(){setSelected(null)}} style={{ background:"none", border:"none", color:T.mist, fontSize:16, cursor:"pointer" }}>←</button>
-          <h3 style={{ fontFamily:"'Fraunces',serif", fontSize:17 }}>📊 Create Poll</h3>
-        </div>
-        <input style={inp} placeholder="Question..." value={pd.question} onChange={function(e){setPd({...pd,question:e.target.value})}} />
-        {pd.options.map(function(o,i){ return <input key={i} style={inp} placeholder={"Option "+(i+1)} value={o} onChange={function(e){var opts=[...pd.options]; opts[i]=e.target.value; setPd({...pd,options:opts})}} />; })}
-        <button onClick={function(){setPd({...pd,options:[...pd.options,""]})}} style={{ background:"none", border:"none", color:T.violet, fontSize:11, cursor:"pointer", marginBottom:6 }}>+ Add option</button>
-        <button onClick={submit} style={{ width:"100%", padding:"11px", borderRadius:12, border:"none",
-          background:"linear-gradient(135deg,"+T.violet+","+T.electric+")", color:T.white, fontSize:12, fontWeight:600, cursor:"pointer" }}>Share Poll 📊</button>
-      </> : selected==="checklist" ? <>
-        <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:12 }}>
-          <button onClick={function(){setSelected(null)}} style={{ background:"none", border:"none", color:T.mist, fontSize:16, cursor:"pointer" }}>←</button>
-          <h3 style={{ fontFamily:"'Fraunces',serif", fontSize:17 }}>✅ Create Checklist</h3>
-        </div>
-        <input style={inp} placeholder="Title..." value={cd.title} onChange={function(e){setCd({...cd,title:e.target.value})}} />
-        {cd.items.map(function(item,i){ return <input key={i} style={inp} placeholder={"Item "+(i+1)} value={item} onChange={function(e){var items=[...cd.items]; items[i]=e.target.value; setCd({...cd,items:items})}} />; })}
-        <button onClick={function(){setCd({...cd,items:[...cd.items,""]})}} style={{ background:"none", border:"none", color:T.lime, fontSize:11, cursor:"pointer", marginBottom:6 }}>+ Add item</button>
-        <button onClick={submit} style={{ width:"100%", padding:"11px", borderRadius:12, border:"none",
-          background:"linear-gradient(135deg,"+T.mint+","+T.lime+")", color:T.midnight, fontSize:12, fontWeight:600, cursor:"pointer" }}>Share Checklist ✅</button>
-      </> : <>
-        <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:12 }}>
-          <button onClick={function(){setSelected(null)}} style={{ background:"none", border:"none", color:T.mist, fontSize:16, cursor:"pointer" }}>←</button>
-          <h3 style={{ fontFamily:"'Fraunces',serif", fontSize:17 }}>Coming Soon</h3>
-        </div>
-        <p style={{ color:T.ash, fontSize:12 }}>This feature is coming in the next update!</p>
-      </>}
-    </div>
-  </div>;
-}
-
-function ChatDetail({ match, userId, onBack }) {
-  var conversationId = isDemo ? null : (match.id || match.conversation_id);
-  var chatHook = useChat(conversationId, userId);
-  var [demoMessages, setDemoMessages] = useState([
-    { id:1, from:"them", type:"text", text:"Heyy! So excited about "+(match.destination||match.shared_destination||"our trip")+"! "+(match.destEmoji||match.destination_emoji||"🌍"), time:"2:30 PM" },
-    { id:2, from:"me", type:"text", text:"Sameee! I've been looking at flights already ✈️", time:"2:31 PM" },
-  ]);
-  var [input, setInput] = useState("");
-  var [showShare, setShowShare] = useState(false);
-  var [typing, setTypingState] = useState(false);
-  var scrollRef = useRef(null);
-
-  var messages = isDemo ? demoMessages : chatHook.messages;
-  var isTyping = isDemo ? typing : chatHook.typingUsers.length > 0;
-
-  useEffect(function() { scrollRef.current && scrollRef.current.scrollTo({ top:scrollRef.current.scrollHeight, behavior:"smooth" }); }, [messages, isTyping]);
-
-  async function send() {
-    if (!input.trim()) return;
-    if (isDemo) {
-      setDemoMessages(function(p){ return p.concat([{ id:Date.now(), from:"me", type:"text", text:input.trim(), time:"Now" }]); });
-      setInput("");
-      setTypingState(true);
-      setTimeout(function() {
-        setTypingState(false);
-        setDemoMessages(function(p){ return p.concat([{ id:Date.now()+1, from:"them", type:"text", text:REPLIES[Math.floor(Math.random()*REPLIES.length)], time:"Now" }]); });
-      }, 1500+Math.random()*1500);
-    } else {
-      await chatHook.sendMessage(input.trim());
-      setInput("");
-    }
-  }
-
-  function handleShare(type, data) {
-    if (isDemo) {
-      setDemoMessages(function(p){ return p.concat([{ id:Date.now(), from:"me", type:type, time:"Now", data:data }]); });
-      setTypingState(true);
-      var reactions = { flight:"Great find! ✈️", poll:"Voted! 📊", checklist:"Nice list! ✅", itinerary:"Love this! 📋", expense:"Looks good! 💰" };
-      setTimeout(function() {
-        setTypingState(false);
-        setDemoMessages(function(p){ return p.concat([{ id:Date.now()+1, from:"them", type:"text", text:reactions[type]||"Nice share! 🔥", time:"Now" }]); });
-      }, 2000);
-    } else {
-      chatHook.sendMessage(JSON.stringify(data), type, data);
-    }
-  }
-
-  function handleVote(optId) {
-    setDemoMessages(function(prev){ return prev.map(function(m){
-      if (m.type!=="poll") return m;
-      return {...m, data:{...m.data, options:m.data.options.map(function(o){
-        if (o.id!==optId) return {...o, votes:(o.votes||[]).filter(function(v){return v!=="me"})};
-        return {...o, votes:(o.votes||[]).includes("me")?(o.votes||[]).filter(function(v){return v!=="me"}):[...(o.votes||[]),"me"]};
-      })}};
-    }); });
-  }
-
-  function renderMsg(msg) {
-    var isMine = isDemo ? msg.from === "me" : msg.sender_id === userId;
-    var msgContent = msg.text || msg.content || "";
-    var msgType = msg.type || "text";
-    var msgData = msg.data || msg.metadata || {};
-    var msgTime = msg.time || (msg.created_at ? new Date(msg.created_at).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) : "");
-
-    return <div key={msg.id} style={{ alignSelf:isMine?"flex-end":"flex-start", maxWidth:"82%",
-      animation:(isMine?"slideInR":"slideInL")+" 0.3s ease both" }}>
-      {!isMine && <div style={{ display:"flex", alignItems:"center", gap:5, marginBottom:2 }}>
-        <div style={{ width:18, height:18, borderRadius:"50%", background:T.charcoal, display:"flex", alignItems:"center", justifyContent:"center", fontSize:10 }}>{match.avatar || "😎"}</div>
-        <span style={{ fontSize:8, color:T.ash }}>{match.name || msg.sender?.name || ""}</span>
-      </div>}
-      <div style={{ marginLeft:isMine?0:23 }}>
-        {msgType==="text" ? <div style={{ padding:"9px 13px", borderRadius:16,
-          background:isMine?"linear-gradient(135deg,"+T.flame+","+T.sunset+")":T.slate,
-          borderBottomRightRadius:isMine?4:16, borderBottomLeftRadius:isMine?16:4 }}>
-          <p style={{ fontSize:13, lineHeight:1.5 }}>{msgContent}</p>
-        </div>
-        : msgType==="flight" ? <FlightCard data={msgData} isMine={isMine} />
-        : msgType==="poll" ? <PollCard data={msgData} onVote={handleVote} />
-        : msgType==="itinerary" ? <ItineraryCard data={msgData} />
-        : msgType==="expense" ? <ExpenseCard data={msgData} />
-        : msgType==="checklist" ? <ChecklistCard data={msgData} />
-        : <div style={{ padding:"9px 13px", borderRadius:16, background:T.slate }}>
-            <p style={{ fontSize:13, lineHeight:1.5 }}>{msgContent}</p>
-          </div>}
-      </div>
-      <span style={{ fontSize:8, color:T.ash, display:"block", marginTop:2, textAlign:isMine?"right":"left", paddingLeft:isMine?0:23 }}>{msgTime}</span>
-    </div>;
-  }
-
-  var matchName = match.name || "Chat";
-  var matchAvatar = match.avatar || "😎";
-  var matchDest = match.destination || match.shared_destination || "";
-  var matchDestEmoji = match.destEmoji || match.destination_emoji || "🌍";
-  var matchDates = match.dates || match.date_display || "";
-
-  return <div style={{ position:"fixed", inset:0, zIndex:50, background:T.midnight, display:"flex", flexDirection:"column", animation:"slideInR 0.25s ease" }}>
-    <div style={{ display:"flex", alignItems:"center", gap:10, padding:"14px 14px 10px",
-      borderBottom:"1px solid "+T.glass, background:"linear-gradient(to bottom,"+T.ink+","+T.midnight+")" }}>
-      <button onClick={onBack} style={{ background:"none", border:"none", color:T.white, fontSize:20, cursor:"pointer" }}>←</button>
-      <div style={{ width:36, height:36, borderRadius:"50%", background:T.charcoal, display:"flex", alignItems:"center", justifyContent:"center", fontSize:18 }}>{matchAvatar}</div>
-      <div style={{ flex:1 }}><h3 style={{ fontSize:15, fontWeight:600 }}>{matchName}</h3><span style={{ fontSize:10, color:T.mint }}>● Online</span></div>
-      <div style={{ background:"linear-gradient(135deg,"+T.flame+"33,"+T.sunset+"33)", borderRadius:10, padding:"4px 9px" }}>
-        <span style={{ fontSize:10 }}>{matchDestEmoji} {matchDest}</span>
-      </div>
-    </div>
-    <div style={{ margin:"8px 14px", padding:"7px 11px", borderRadius:10, background:"linear-gradient(135deg,"+T.flame+"12,"+T.sunset+"08)",
-      border:"1px solid "+T.flame+"25", display:"flex", alignItems:"center", gap:8 }}>
-      <span>🗺️</span>
-      <span style={{ fontSize:11, fontWeight:600 }}>Trip to {matchDest}</span>
-      <span style={{ fontSize:10, color:T.ash }}>{matchDates}</span>
-    </div>
-    <div ref={scrollRef} style={{ flex:1, overflow:"auto", padding:"6px 14px", display:"flex", flexDirection:"column", gap:7 }}>
-      {messages.map(renderMsg)}
-      {isTyping && <div style={{ alignSelf:"flex-start", animation:"fadeIn 0.3s" }}>
-        <div style={{ background:T.slate, borderRadius:16, borderBottomLeftRadius:4, padding:"9px 16px", display:"flex", gap:4, marginLeft:23 }}>
-          {[0,1,2].map(function(i){ return <div key={i} style={{ width:6, height:6, borderRadius:"50%", background:T.mist, animation:"typing 1.2s ease "+(i*0.2)+"s infinite" }} />; })}
-        </div>
-      </div>}
-    </div>
-    <div style={{ padding:"9px 14px 13px", display:"flex", gap:8, alignItems:"center",
-      borderTop:"1px solid "+T.glass, background:"linear-gradient(to top,"+T.ink+","+T.midnight+")" }}>
-      <button onClick={function(){setShowShare(true)}} style={{
-        width:38, height:38, borderRadius:"50%", border:"none", background:"linear-gradient(135deg,"+T.flame+"22,"+T.sunset+"22)",
-        color:T.coral, fontSize:18, cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>+</button>
-      <input value={input} onChange={function(e){
-        setInput(e.target.value);
-        if (!isDemo && chatHook.sendTyping) chatHook.sendTyping(true);
-      }} onKeyDown={function(e){if(e.key==="Enter")send()}}
-        placeholder="Type a message..." style={{ flex:1, padding:"10px 14px", borderRadius:20, background:T.glass,
-        border:"1px solid "+T.glassBorder, color:T.white, fontSize:13, outline:"none" }} />
-      <button onClick={send} style={{ width:38, height:38, borderRadius:"50%", border:"none",
-        background:input.trim()?"linear-gradient(135deg,"+T.flame+","+T.sunset+")":T.slate,
-        color:T.white, fontSize:16, cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>↑</button>
-    </div>
-    {showShare && <ShareSheet onClose={function(){setShowShare(false)}} onShare={handleShare} />}
-  </div>;
-}
-
-// ══════════════════════════════════════════════════════════════
-// TRIPS SCREEN
-// ══════════════════════════════════════════════════════════════
-function TripsScreen({ matches, userId }) {
-  var tripsHook = useTrips(isDemo ? null : userId);
-  var [demoTrips, setDemoTrips] = useState([
-    { id:"t1", destination:"Bali", flag:"🇮🇩", dates:"Mar 15 – Apr 2", status:"planning", buddy:matches[0]||null,
-      items:[{text:"Book flights",done:true},{text:"Reserve villa",done:true},{text:"Yoga retreat",done:false},{text:"Volcano trek",done:false}] },
-  ]);
-  var [expanded, setExpanded] = useState(null);
-  var [newItem, setNewItem] = useState("");
-  var trips = isDemo ? demoTrips : (tripsHook.trips || []);
-
-  function addItem(tripId) {
-    if (!newItem.trim()) return;
-    if (isDemo) {
-      setDemoTrips(function(p){ return p.map(function(t){ return t.id===tripId ? {...t, items:t.items.concat([{text:newItem.trim(),done:false}])} : t; }); });
-    }
-    setNewItem("");
-  }
-  function toggleItem(tripId, idx) {
-    if (isDemo) {
-      setDemoTrips(function(p){ return p.map(function(t){
-        return t.id===tripId ? {...t, items:t.items.map(function(item,i){ return i===idx?{...item,done:!item.done}:item; })} : t;
-      }); });
-    }
-  }
-
-  if (expanded) {
-    var trip = trips.find(function(t){return t.id===expanded});
-    if (!trip) return null;
-    var items = trip.items || [];
-    var done = items.filter(function(i){return i.done}).length;
-    return <div style={{ flex:1, overflow:"auto", padding:"0 16px 16px", animation:"fadeIn 0.3s" }}>
-      <button onClick={function(){setExpanded(null)}} style={{ background:"none", border:"none", color:T.mist, fontSize:13, cursor:"pointer", marginBottom:14, display:"flex", alignItems:"center", gap:5 }}>← Back</button>
-      <Glass style={{ padding:18, marginBottom:18 }}>
-        <div style={{ display:"flex", alignItems:"center", gap:10, marginBottom:6 }}>
-          <span style={{ fontSize:28 }}>{trip.flag || trip.destination_emoji || "🌍"}</span>
-          <div><h2 style={{ fontFamily:"'Fraunces',serif", fontSize:22 }}>{trip.destination}</h2><p style={{ color:T.ash, fontSize:11 }}>{trip.dates || trip.date_display || ""}</p></div>
-          <span style={{ marginLeft:"auto", padding:"3px 10px", borderRadius:8, fontSize:10, fontWeight:600, background:T.mint+"22", color:T.mint, textTransform:"capitalize" }}>{trip.status}</span>
-        </div>
-        {items.length > 0 && <>
-          <div style={{ height:5, borderRadius:3, background:T.slate, marginTop:10 }}>
-            <div style={{ height:"100%", borderRadius:3, width:(done/items.length*100)+"%", background:"linear-gradient(90deg,"+T.mint+","+T.lime+")", transition:"width 0.4s" }} />
-          </div>
-          <div style={{ fontSize:10, color:T.ash, marginTop:4 }}>{done}/{items.length} completed</div>
-        </>}
-      </Glass>
-      <h3 style={{ fontSize:11, color:T.ash, textTransform:"uppercase", letterSpacing:2, marginBottom:10 }}>Checklist</h3>
-      {items.map(function(item, idx){
-        return <div key={idx} onClick={function(){toggleItem(trip.id,idx)}} style={{
-          display:"flex", alignItems:"center", gap:11, padding:"11px 14px", marginBottom:6,
-          background:T.glass, border:"1px solid "+T.glassBorder, borderRadius:12, cursor:"pointer", opacity:item.done?0.5:1 }}>
-          <div style={{ width:20, height:20, borderRadius:6, border:item.done?"none":"2px solid "+T.ash,
-            background:item.done?"linear-gradient(135deg,"+T.mint+","+T.lime+")":"none",
-            display:"flex", alignItems:"center", justifyContent:"center", fontSize:11 }}>{item.done?"✓":""}</div>
-          <span style={{ fontSize:13, textDecoration:item.done?"line-through":"none", color:item.done?T.ash:T.white }}>{item.text}</span>
-        </div>;
-      })}
-      <div style={{ display:"flex", gap:8, marginTop:10 }}>
-        <input value={newItem} onChange={function(e){setNewItem(e.target.value)}} onKeyDown={function(e){if(e.key==="Enter")addItem(trip.id)}}
-          placeholder="Add a task..." style={{ flex:1, padding:"11px 14px", borderRadius:12, background:T.glass, border:"1px solid "+T.glassBorder, color:T.white, fontSize:13, outline:"none" }} />
-        <button onClick={function(){addItem(trip.id)}} style={{ padding:"11px 18px", borderRadius:12, border:"none",
-          background:"linear-gradient(135deg,"+T.flame+","+T.sunset+")", color:T.white, fontWeight:600, cursor:"pointer", fontSize:12 }}>Add</button>
-      </div>
-    </div>;
-  }
-
-  return <div style={{ flex:1, overflow:"auto", padding:"0 16px 16px" }}>
-    {trips.length === 0 ? <div style={{ textAlign:"center", padding:40 }}>
-      <div style={{ fontSize:44, marginBottom:10 }}>🗺️</div>
-      <h3 style={{ fontFamily:"'Fraunces',serif" }}>No trips yet</h3>
-      <p style={{ color:T.ash, fontSize:12 }}>Match with travelers to start planning!</p>
-    </div> : trips.map(function(trip, i) {
-      var tripFlag = trip.flag || trip.destination_emoji || "🌍";
-      var tripDates = trip.dates || trip.date_display || "";
-      var tripItems = trip.items || [];
-      return <Glass key={trip.id} onClick={function(){setExpanded(trip.id)}} style={{
-        padding:16, marginBottom:10, cursor:"pointer", animation:"fadeInUp 0.3s ease "+(i*0.06)+"s both" }}>
-        <div style={{ display:"flex", justifyContent:"space-between", alignItems:"start", marginBottom:10 }}>
-          <div style={{ display:"flex", alignItems:"center", gap:10 }}>
-            <span style={{ fontSize:24 }}>{tripFlag}</span>
-            <div><h3 style={{ fontFamily:"'Fraunces',serif", fontSize:17 }}>{trip.destination}</h3><p style={{ color:T.ash, fontSize:11 }}>{tripDates}</p></div>
-          </div>
-          <span style={{ padding:"3px 9px", borderRadius:8, fontSize:10, fontWeight:600, background:T.mint+"22", color:T.mint }}>{trip.status}</span>
-        </div>
-        <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center" }}>
-          {trip.buddy && <div style={{ width:28, height:28, borderRadius:"50%", background:T.charcoal, display:"flex", alignItems:"center", justifyContent:"center", fontSize:14 }}>{trip.buddy.avatar || "😎"}</div>}
-          <span style={{ color:T.ash, fontSize:11 }}>{tripItems.length} tasks</span>
-        </div>
-      </Glass>;
-    })}
-  </div>;
-}
-
-// ══════════════════════════════════════════════════════════════
-// EDIT PROFILE SCREEN
-// ══════════════════════════════════════════════════════════════
-var AVATARS = ["😎","🧕","👨🏾","👩🏻","👨🏽","👩🏽","🧑🏻","👩🏾","🧔","👱","🧑‍🦱","🧑‍🦰","🏄","🧗","🤿","🧘"];
-var VIBES = ["Adventurous","Cultural","Creative","Extreme","Social","Relaxed","Spontaneous","Luxury"];
-var BUDGETS = ["Budget","Mid-range","Flexible","Luxury"];
-var ALL_INTERESTS = ["Hiking","Food","Photography","Yoga","Music","Art","Nightlife","History","Beaches","Mountains","Camping","Surfing","Diving","Architecture","Markets","Coffee","Motorbikes","Wildlife","Sailing","Trekking"];
-
-function EditProfileScreen({ userProfile, onSave, onBack }) {
-  var [name, setName] = useState(userProfile?.name || "");
-  var [bio, setBio] = useState(userProfile?.bio || "");
-  var [city, setCity] = useState(userProfile?.city || "");
-  var [avatar, setAvatar] = useState(userProfile?.avatar || "😎");
-  var [vibe, setVibe] = useState(userProfile?.vibe || "Adventurous");
-  var [budget, setBudget] = useState(userProfile?.budget || "Mid-range");
-  var [interests, setInterests] = useState(userProfile?.interests || []);
-  var [destination, setDestination] = useState(userProfile?.destination || "");
-  var [dates, setDates] = useState(userProfile?.dates || "");
-  var [saved, setSaved] = useState(false);
-
-  function toggleInterest(interest) {
-    setInterests(function(prev) {
-      return prev.includes(interest) ? prev.filter(function(i){ return i !== interest; }) : prev.concat([interest]);
-    });
-  }
-
-  function save() {
-    var updated = { name, bio, city, avatar, vibe, budget, interests, destination, dates };
-    onSave(updated);
-    setSaved(true);
-    setTimeout(function(){ setSaved(false); onBack(updated); }, 1000);
-  }
-
-  var inputSt = { width:"100%", padding:"12px 14px", borderRadius:12, border:"1px solid "+T.glassBorder,
-    background:T.glass, color:T.white, fontSize:13, outline:"none", marginBottom:10 };
-  var labelSt = { fontSize:10, color:T.ash, textTransform:"uppercase", letterSpacing:2, marginBottom:7, display:"block" };
-
-  return <div style={{ position:"fixed", inset:0, zIndex:60, background:T.midnight, display:"flex", flexDirection:"column", animation:"slideInR 0.25s ease" }}>
-    {/* Header */}
-    <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"14px 16px 10px",
-      borderBottom:"1px solid "+T.glass }}>
-      <button onClick={function(){ onBack(null); }} style={{ background:"none", border:"none", color:T.mist, fontSize:20, cursor:"pointer" }}>←</button>
-      <h2 style={{ fontFamily:"'Fraunces',serif", fontSize:18, fontWeight:700 }}>Edit Profile</h2>
-      <button onClick={save} style={{ padding:"7px 18px", borderRadius:20, border:"none",
-        background: saved ? T.mint : "linear-gradient(135deg,"+T.flame+","+T.sunset+")",
-        color:T.white, fontSize:12, fontWeight:600, cursor:"pointer", transition:"background 0.3s" }}>
-        {saved ? "Saved ✓" : "Save"}
-      </button>
-    </div>
-
-    <div style={{ flex:1, overflow:"auto", padding:"16px 16px 32px" }}>
-      {/* Avatar picker */}
-      <div style={{ textAlign:"center", marginBottom:24 }}>
-        <div style={{ width:80, height:80, borderRadius:"50%", border:"3px solid "+T.flame, background:T.charcoal,
-          display:"flex", alignItems:"center", justifyContent:"center", fontSize:38, margin:"0 auto 14px" }}>{avatar}</div>
-        <span style={labelSt}>Choose your avatar</span>
-        <div style={{ display:"flex", flexWrap:"wrap", justifyContent:"center", gap:8 }}>
-          {AVATARS.map(function(a){
-            return <button key={a} onClick={function(){ setAvatar(a); }} style={{
-              width:44, height:44, borderRadius:"50%", border: avatar===a ? "2px solid "+T.flame : "2px solid transparent",
-              background: avatar===a ? T.flame+"22" : T.glass, fontSize:22, cursor:"pointer",
-              transition:"all 0.15s" }}>{a}</button>;
-          })}
-        </div>
-      </div>
-
-      {/* Basic info */}
-      <span style={labelSt}>Your name</span>
-      <input value={name} onChange={function(e){setName(e.target.value)}} placeholder="Your name" style={inputSt} />
-
-      <span style={labelSt}>Your city</span>
-      <input value={city} onChange={function(e){setCity(e.target.value)}} placeholder="Where are you based?" style={inputSt} />
-
-      <span style={labelSt}>Bio</span>
-      <textarea value={bio} onChange={function(e){setBio(e.target.value)}} placeholder="Tell other travelers about yourself..."
-        rows={3} style={{...inputSt, resize:"none", lineHeight:1.5}} />
-
-      {/* Next destination */}
-      <span style={labelSt}>Next destination</span>
-      <input value={destination} onChange={function(e){setDestination(e.target.value)}} placeholder="e.g. Bali, Tokyo, Morocco" style={inputSt} />
-
-      <span style={labelSt}>Travel dates</span>
-      <input value={dates} onChange={function(e){setDates(e.target.value)}} placeholder="e.g. Mar 15 – Apr 2" style={inputSt} />
-
-      {/* Travel vibe */}
-      <span style={labelSt}>Travel vibe</span>
-      <div style={{ display:"flex", flexWrap:"wrap", gap:7, marginBottom:16 }}>
-        {VIBES.map(function(v){
-          return <button key={v} onClick={function(){ setVibe(v); }} style={{
-            padding:"7px 14px", borderRadius:20, border:"none", cursor:"pointer", fontSize:12, fontWeight:500,
-            background: vibe===v ? "linear-gradient(135deg,"+T.flame+","+T.sunset+")" : T.glass,
-            color: vibe===v ? T.white : T.mist,
-            border: vibe===v ? "none" : "1px solid "+T.glassBorder,
-            transition:"all 0.15s" }}>{v}</button>;
-        })}
-      </div>
-
-      {/* Budget */}
-      <span style={labelSt}>Budget</span>
-      <div style={{ display:"flex", gap:7, marginBottom:16 }}>
-        {BUDGETS.map(function(b){
-          return <button key={b} onClick={function(){ setBudget(b); }} style={{
-            flex:1, padding:"9px 4px", borderRadius:12, border:"none", cursor:"pointer", fontSize:11, fontWeight:500,
-            background: budget===b ? "linear-gradient(135deg,"+T.gold+"cc,"+T.sunset+"cc)" : T.glass,
-            color: budget===b ? T.midnight : T.mist,
-            border: budget===b ? "none" : "1px solid "+T.glassBorder,
-            transition:"all 0.15s" }}>{b}</button>;
-        })}
-      </div>
-
-      {/* Interests */}
-      <span style={labelSt}>Interests ({interests.length} selected)</span>
-      <div style={{ display:"flex", flexWrap:"wrap", gap:7, marginBottom:16 }}>
-        {ALL_INTERESTS.map(function(interest){
-          var on = interests.includes(interest);
-          return <button key={interest} onClick={function(){ toggleInterest(interest); }} style={{
-            padding:"6px 13px", borderRadius:20, border:"none", cursor:"pointer", fontSize:11, fontWeight:500,
-            background: on ? T.electric+"33" : T.glass,
-            color: on ? T.violet : T.mist,
-            border: on ? "1px solid "+T.violet+"66" : "1px solid "+T.glassBorder,
-            transition:"all 0.15s" }}>{interest}</button>;
-        })}
-      </div>
-
-      {/* Save button */}
-      <button onClick={save} style={{ width:"100%", padding:"14px", borderRadius:14, border:"none",
-        background: saved ? "linear-gradient(135deg,"+T.mint+","+T.lime+")" : "linear-gradient(135deg,"+T.flame+","+T.sunset+")",
-        color: saved ? T.midnight : T.white, fontSize:14, fontWeight:600, cursor:"pointer",
-        boxShadow:"0 4px 24px "+T.flame+"44", transition:"all 0.3s", marginTop:8 }}>
-        {saved ? "✓ Profile Saved!" : "Save Profile ✈️"}
-      </button>
-    </div>
-  </div>;
-}
-
-// ══════════════════════════════════════════════════════════════
-// PROFILE SCREEN
-// ══════════════════════════════════════════════════════════════
-function ProfileScreen({ matchCount, userId, userProfile, onSignOut, onProfileUpdate }) {
-  var [editMode, setEditMode] = useState(false);
-  var [localProfile, setLocalProfile] = useState(userProfile);
-
-  var displayName = localProfile?.name || "You";
-  var displayAvatar = localProfile?.avatar || "😎";
-  var displayEmail = localProfile?.email || userProfile?.email || "explorer@baddie.app";
-  var displayBio = localProfile?.bio || "";
-  var displayCity = localProfile?.city || "";
-  var displayDest = localProfile?.destination || "";
-  var displayVibe = localProfile?.vibe || "";
-
-  function handleSave(updated) {
-    if (updated) {
-      setLocalProfile(function(prev){ return {...prev, ...updated}; });
-      if (onProfileUpdate) onProfileUpdate(updated);
-    }
-  }
-
-  if (editMode) {
-    return <EditProfileScreen
-      userProfile={localProfile}
-      onSave={handleSave}
-      onBack={function(updated){ if(updated) handleSave(updated); setEditMode(false); }}
-    />;
-  }
-
-  return <div style={{ flex:1, overflow:"auto", padding:"0 16px 16px" }}>
-    <Glass style={{ padding:22, textAlign:"center", marginBottom:18, animation:"fadeInUp 0.4s ease" }}>
-      <div style={{ width:72, height:72, borderRadius:"50%", margin:"0 auto 10px", background:T.charcoal, border:"3px solid "+T.flame,
-        display:"flex", alignItems:"center", justifyContent:"center", fontSize:32 }}>{displayAvatar}</div>
-      <h2 style={{ fontFamily:"'Fraunces',serif", fontSize:20 }}>{displayName}</h2>
-      {displayCity && <p style={{ color:T.coral, fontSize:11, marginTop:2 }}>📍 {displayCity}</p>}
-      <p style={{ color:T.ash, fontSize:12, marginTop:2 }}>{displayEmail}</p>
-      {displayBio && <p style={{ color:T.mist, fontSize:11, marginTop:8, lineHeight:1.5, fontStyle:"italic" }}>"{displayBio}"</p>}
-      {displayDest && <div style={{ display:"inline-flex", alignItems:"center", gap:5, marginTop:10,
-        background:T.flame+"22", borderRadius:12, padding:"4px 12px" }}>
-        <span style={{ fontSize:11, color:T.coral }}>✈️ Heading to {displayDest}</span>
-      </div>}
-      {displayVibe && <div style={{ display:"inline-flex", alignItems:"center", gap:5, marginTop:6, marginLeft:6,
-        background:T.electric+"18", borderRadius:12, padding:"4px 12px" }}>
-        <span style={{ fontSize:11, color:T.violet }}>{displayVibe}</span>
-      </div>}
-      {isDemo && <p style={{ color:T.gold, fontSize:10, marginTop:6, background:T.gold+"15", padding:"3px 8px", borderRadius:6, display:"inline-block" }}>Demo Mode</p>}
-      <div style={{ display:"flex", justifyContent:"center", gap:24, marginTop:16 }}>
-        {[{icon:"🔥",label:"Matches",value:matchCount},{icon:"✈️",label:"Trips",value:localProfile?.trip_count||1},{icon:"🌍",label:"Countries",value:4}].map(function(s){
-          return <div key={s.label} style={{ textAlign:"center" }}>
-            <div style={{ fontSize:18, marginBottom:3 }}>{s.icon}</div>
-            <div style={{ fontSize:18, fontWeight:700 }}>{s.value}</div>
-            <div style={{ fontSize:10, color:T.ash }}>{s.label}</div>
-          </div>;
-        })}
-      </div>
-    </Glass>
-
-    {/* Menu items */}
-    {[
-      { icon:"👤", label:"Edit Profile", action: function(){ setEditMode(true); } },
-      { icon:"🎯", label:"Travel Preferences", action: function(){ setEditMode(true); } },
-      { icon:"🔔", label:"Notifications", action: null },
-      { icon:"🔒", label:"Privacy", action: null },
-      { icon:"🎨", label:"Appearance", action: null },
-      { icon:"❓", label:"Help", action: null },
-    ].map(function(item, i){
-      return <div key={i} onClick={item.action || undefined} style={{
-        display:"flex", alignItems:"center", gap:12, padding:"13px 14px", borderRadius:12, cursor: item.action ? "pointer" : "default",
-        background: item.action ? "transparent" : "transparent",
-        transition:"background 0.15s" }}>
-        <span style={{ fontSize:16 }}>{item.icon}</span>
-        <span style={{ fontSize:13, fontWeight:500, color: item.action ? T.white : T.ash }}>{item.label}</span>
-        <span style={{ marginLeft:"auto", color: item.action ? T.coral : T.slate }}>›</span>
-      </div>;
-    })}
-
-    <button onClick={onSignOut} style={{ width:"100%", marginTop:16, padding:13, borderRadius:14, border:"1px solid "+T.rose+"33", background:T.rose+"11", color:T.rose, fontSize:13, fontWeight:500, cursor:"pointer" }}>Sign Out</button>
-  </div>;
-}
-
-// ══════════════════════════════════════════════════════════════
-// MAIN APP
-// ══════════════════════════════════════════════════════════════
-export default function App() {
-  var auth = useAuth();
-  var [screen, setScreen] = useState("discover");
-  var [demoMatches, setDemoMatches] = useState([TRAVELERS[0], TRAVELERS[2]]);
-  var [showMatch, setShowMatch] = useState(null);
-  var [activeChat, setActiveChat] = useState(null);
-  var [manualAuth, setManualAuth] = useState(false);
-
-  var userId = auth.user?.id || null;
-  var profileHook = useProfile(isDemo ? null : userId);
-  var matchesHook = useMatches(isDemo ? null : userId);
-
-  var userProfile = isDemo
-    ? { name:"You", avatar:"😎", vibe:"Adventurous", budget:"Mid-range", interests:["Hiking","Food","Photography"] }
-    : profileHook.profile;
-
-  var matches = isDemo ? demoMatches : (matchesHook.matches || []);
-  var isAuthed = isDemo ? manualAuth : !!auth.user;
-  var isLoading = isDemo ? false : auth.loading;
-
-  function handleLogin(data) {
-    if (isDemo) setManualAuth(true);
-  }
-
-  function handleMatch(traveler) {
-    if (isDemo) {
-      if (!demoMatches.find(function(m){return m.id===traveler.id})) setDemoMatches(function(p){return p.concat([traveler])});
-    }
-    setShowMatch(traveler);
-  }
-
-  async function handleSignOut() {
-    if (isDemo) { setManualAuth(false); return; }
-    await auth.signOut();
-  }
-
-  if (isLoading) return <>
-    <style>{css}</style>
-    <div style={{ height:"100vh", display:"flex", alignItems:"center", justifyContent:"center", background:T.midnight }}>
-      <div style={{ textAlign:"center", animation:"fadeIn 0.5s" }}>
-        <div style={{ fontSize:48, animation:"float 2s ease-in-out infinite" }}>✈️</div>
-        <p style={{ color:T.mist, marginTop:12 }}>Loading...</p>
-      </div>
-    </div>
-  </>;
-
-  if (!isAuthed) return <><style>{css}</style><AuthScreen onLogin={handleLogin} /></>;
-
-  var userAvatar = userProfile?.avatar || "😎";
-
-  var tabs = [
-    { id:"discover", icon:"🔥", label:"Discover" },
-    { id:"chats", icon:"💬", label:"Chats" },
-    { id:"trips", icon:"✈️", label:"Trips" },
-    { id:"profile", icon:"👤", label:"Profile" },
+// ── SIDEBAR NAV ───────────────────────────────────────────────────────────────
+function Sidebar({ activeLevel, setActiveLevel, screen, setScreen, isPremium, stats, stopAll }) {
+  const navItems = [
+    { id:"home", label:"Accueil", icon:"🏠" },
+    ...LEVELS.map(l => ({ id:`level-${l.id}`, label:l.label, icon:l.icon, levelId:l.id })),
+    { id:"french", label:"Français", icon:"🇫🇷" },
+    { id:"profile", label:"Profil", icon:"👤" },
   ];
 
-  return <>
-    <style>{css}</style>
-    <div style={{ height:"100vh", display:"flex", flexDirection:"column", maxWidth:480, margin:"0 auto",
-      background:"radial-gradient(ellipse at 20% 0%, "+T.flame+"08 0%, transparent 40%), "+T.midnight }}>
-      <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"14px 18px 10px" }}>
-        <h1 style={{ fontFamily:"'Fraunces',serif", fontSize:22, fontWeight:900,
-          background:"linear-gradient(135deg,"+T.flame+","+T.sunset+")", WebkitBackgroundClip:"text", WebkitTextFillColor:"transparent" }}>baddie</h1>
-        <div style={{ display:"flex", gap:8, alignItems:"center" }}>
-          {matches.length>0 && <div style={{ background:T.flame+"22", borderRadius:12, padding:"3px 9px", display:"flex", alignItems:"center", gap:4 }}>
-            <span style={{ fontSize:11 }}>🔥</span><span style={{ fontSize:11, color:T.coral, fontWeight:600 }}>{matches.length}</span>
-          </div>}
-          <div style={{ width:32, height:32, borderRadius:"50%", background:T.charcoal, border:"2px solid "+T.slate,
-            display:"flex", alignItems:"center", justifyContent:"center", fontSize:16, cursor:"pointer" }}
-            onClick={function(){setScreen("profile")}}>{userAvatar}</div>
+  return (
+    <div style={{width:220,flexShrink:0,background:"white",borderRight:"1px solid #E5E7EB",minHeight:"100vh",display:"flex",flexDirection:"column"}}>
+      {/* Logo */}
+      <div style={{padding:"20px 20px 16px",borderBottom:"1px solid #F3F4F6"}}>
+        <div style={{display:"flex",alignItems:"center",gap:8}}>
+          <span style={{fontSize:20}}>📖</span>
+          <div>
+            <span style={{fontWeight:800,fontSize:14,color:"#2563EB"}}>prépa</span>
+            <span style={{fontWeight:800,fontSize:14,color:"#111827"}}>civique</span>
+          </div>
+        </div>
+        {isPremium && <div style={{marginTop:6,background:"#FEF9C3",color:"#854D0E",borderRadius:4,padding:"2px 8px",fontSize:10,fontWeight:700,display:"inline-block"}}>⭐ PREMIUM</div>}
+      </div>
+
+      {/* Nav */}
+      <nav style={{flex:1,padding:"12px 10px"}}>
+        {navItems.map(item => {
+          const isActive = item.id === "home" ? screen === "home" && !activeLevel
+            : item.levelId ? activeLevel === item.levelId
+            : screen === item.id;
+          return (
+            <button key={item.id} onClick={() => {
+              stopAll();
+              if (item.id === "home") { setActiveLevel(null); setScreen("home"); }
+              else if (item.levelId) { setActiveLevel(item.levelId); setScreen("level"); }
+              else { setActiveLevel(null); setScreen(item.id); }
+            }} style={{
+              display:"flex",alignItems:"center",gap:10,width:"100%",padding:"9px 12px",
+              borderRadius:8,border:"none",cursor:"pointer",textAlign:"left",marginBottom:2,
+              background:isActive?"#EFF6FF":"transparent",
+              color:isActive?"#2563EB":"#4B5563",fontWeight:isActive?600:400,fontSize:13,
+            }}>
+              <span style={{fontSize:15}}>{item.icon}</span>
+              {item.label}
+            </button>
+          );
+        })}
+      </nav>
+
+      {/* Unlock banner */}
+      {!isPremium && (
+        <div style={{margin:"10px",background:"#111827",borderRadius:8,padding:"14px 12px",color:"white",cursor:"pointer"}} onClick={() => setScreen("pricing")}>
+          <div style={{fontWeight:700,fontSize:12,marginBottom:4}}>🔓 Débloquer l'accès</div>
+          <div style={{fontSize:11,opacity:.7,marginBottom:8}}>{ALL_QUESTIONS.length} questions · 11 langues · Audio</div>
+          <div style={{background:"#2563EB",borderRadius:6,padding:"6px",textAlign:"center",fontWeight:700,fontSize:12}}>5,00 € →</div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ── LEVEL DASHBOARD ───────────────────────────────────────────────────────────
+function LevelDashboard({ level, stats, onStartQuiz, onStartMockExam, onStartListen, isPremium, checkPremium }) {
+  const lv = LEVELS.find(l => l.id === level);
+  const levelQuestions = ALL_QUESTIONS.filter(q => lv.themes.includes(q.theme));
+  const levelStats = stats[level] || { answered:0, correct:0, exams:0, scores:[] };
+  const successRate = levelStats.answered > 0 ? Math.round((levelStats.correct / levelStats.answered) * 100) : 0;
+  const avgScore = levelStats.scores.length > 0 ? Math.round(levelStats.scores.reduce((a,b)=>a+b,0)/levelStats.scores.length) : null;
+
+  return (
+    <div>
+      <div style={{marginBottom:6,fontSize:13,color:"#6B7280",cursor:"pointer",display:"inline-flex",alignItems:"center",gap:4}}>
+        ← Retour au tableau de bord
+      </div>
+      <h1 style={{margin:"0 0 4px",fontSize:22,fontWeight:700,color:"#111827"}}>{lv.fullLabel}</h1>
+      <div style={{color:"#6B7280",fontSize:14,marginBottom:20}}>{lv.sub}</div>
+
+      {/* Stats row */}
+      <div style={{display:"flex",gap:12,marginBottom:24,flexWrap:"wrap"}}>
+        <StatsCard label="Questions répondues" value={levelStats.answered} />
+        <StatsCard label="Réponses correctes" value={levelStats.correct} />
+        <StatsCard label="Taux de réussite" value={`${successRate}%`} />
+        <StatsCard label="Examens passés" value={levelStats.exams} />
+        <StatsCard label="Score moyen" value={avgScore !== null ? `${avgScore}%` : "—"} />
+      </div>
+
+      {/* Action cards */}
+      <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(220px,1fr))",gap:14,marginBottom:24}}>
+        {/* Practice */}
+        <div onClick={() => onStartQuiz(lv.themes[0])}
+          style={{background:"white",borderRadius:10,border:"2px solid #111827",padding:"22px",cursor:"pointer",transition:"all .2s"}}
+          onMouseEnter={e=>e.currentTarget.style.boxShadow="0 4px 16px rgba(0,0,0,.1)"}
+          onMouseLeave={e=>e.currentTarget.style.boxShadow="none"}>
+          <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:12}}>
+            <div style={{width:40,height:40,background:"#F3F4F6",borderRadius:8,display:"flex",alignItems:"center",justifyContent:"center",fontSize:18}}>📖</div>
+            <span style={{background:"#DCFCE7",color:"#166534",borderRadius:4,padding:"2px 8px",fontSize:11,fontWeight:600}}>1 test gratuit</span>
+          </div>
+          <div style={{fontWeight:700,fontSize:15,color:"#111827",marginBottom:4}}>Pratiquer par sections</div>
+          <div style={{fontSize:12,color:"#6B7280"}}>Entraînez-vous sur les 5 thèmes de l'examen</div>
+        </div>
+
+        {/* Mock exam */}
+        <div onClick={() => { if(!checkPremium("quiz")) return; onStartMockExam(); }}
+          style={{background:"white",borderRadius:10,border:"1px solid #E5E7EB",padding:"22px",cursor:"pointer"}}
+          onMouseEnter={e=>e.currentTarget.style.boxShadow="0 4px 16px rgba(0,0,0,.08)"}
+          onMouseLeave={e=>e.currentTarget.style.boxShadow="none"}>
+          <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:12}}>
+            <div style={{width:40,height:40,background:"#F3F4F6",borderRadius:8,display:"flex",alignItems:"center",justifyContent:"center",fontSize:18}}>📝</div>
+            <div style={{display:"flex",gap:5,alignItems:"center"}}>
+              <span style={{fontSize:11,color:"#9CA3AF"}}>26 examens</span>
+              {!isPremium && <span style={{fontSize:12}}>🔒</span>}
+            </div>
+          </div>
+          <div style={{fontWeight:700,fontSize:15,color:"#111827",marginBottom:4}}>Passer un examen blanc</div>
+          <div style={{fontSize:12,color:"#6B7280"}}>Simulez l'examen officiel (40 questions, 45 min)</div>
+        </div>
+
+        {/* Listen */}
+        <div onClick={() => onStartListen(null)}
+          style={{background:"white",borderRadius:10,border:"1px solid #E5E7EB",padding:"22px",cursor:"pointer"}}
+          onMouseEnter={e=>e.currentTarget.style.boxShadow="0 4px 16px rgba(0,0,0,.08)"}
+          onMouseLeave={e=>e.currentTarget.style.boxShadow="none"}>
+          <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:12}}>
+            <div style={{width:40,height:40,background:"#F3F4F6",borderRadius:8,display:"flex",alignItems:"center",justifyContent:"center",fontSize:18}}>🎧</div>
+            {!isPremium && <span style={{fontSize:12}}>🔒</span>}
+          </div>
+          <div style={{fontWeight:700,fontSize:15,color:"#111827",marginBottom:4}}>Réviser mes erreurs</div>
+          <div style={{fontSize:12,color:"#6B7280"}}>Mode écoute · Questions + réponses + explications</div>
         </div>
       </div>
 
-      {screen==="discover" && <DiscoverScreen onMatch={handleMatch} matches={matches} userId={userId} userProfile={userProfile} />}
-      {screen==="chats" && <ChatsListScreen matches={matches} userId={userId} onOpenChat={setActiveChat} />}
-      {screen==="trips" && <TripsScreen matches={matches} userId={userId} />}
-      {screen==="profile" && <ProfileScreen matchCount={matches.length} userId={userId} userProfile={userProfile} onSignOut={handleSignOut} onProfileUpdate={function(updated){ /* future: sync to Supabase */ }} />}
+      {/* Progression by section */}
+      <div style={{background:"white",borderRadius:10,border:"1px solid #E5E7EB",padding:"24px"}}>
+        <div style={{fontWeight:700,fontSize:15,marginBottom:20,color:"#111827"}}>Progression par section</div>
+        <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(120px,1fr))",gap:20}}>
+          {THEMES.map(t => {
+            const themeProgress = (stats[level]?.byTheme?.[t.id] || 0);
+            const total = ALL_QUESTIONS.filter(q=>q.theme===t.id).length;
+            const pct = total > 0 ? Math.round((themeProgress/total)*100) : 0;
+            return (
+              <div key={t.id} style={{textAlign:"center"}}>
+                <div style={{position:"relative",width:72,height:72,margin:"0 auto 10px"}}>
+                  <svg viewBox="0 0 72 72" style={{width:72,height:72,transform:"rotate(-90deg)"}}>
+                    <circle cx="36" cy="36" r="28" fill="none" stroke="#F3F4F6" strokeWidth="6"/>
+                    <circle cx="36" cy="36" r="28" fill="none" stroke={t.color} strokeWidth="6"
+                      strokeDasharray={`${2*Math.PI*28}`}
+                      strokeDashoffset={`${2*Math.PI*28*(1-pct/100)}`}
+                      strokeLinecap="round" style={{transition:"stroke-dashoffset .6s ease"}}/>
+                  </svg>
+                  <div style={{position:"absolute",inset:0,display:"flex",alignItems:"center",justifyContent:"center",fontSize:13,fontWeight:700,color:"#111827"}}>{pct}%</div>
+                </div>
+                <div style={{fontSize:11,color:"#6B7280",lineHeight:1.4}}>{t.label}</div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+}
 
-      <div style={{ display:"flex", borderTop:"1px solid "+T.glass, background:"linear-gradient(to top,"+T.ink+","+T.midnight+")", padding:"7px 8px 10px" }}>
-        {tabs.map(function(tab){
-          return <button key={tab.id} onClick={function(){setScreen(tab.id)}} style={{
-            flex:1, display:"flex", flexDirection:"column", alignItems:"center", gap:2,
-            background:"none", border:"none", cursor:"pointer", color:screen===tab.id?T.flame:T.ash }}>
-            <span style={{ fontSize:18, transform:screen===tab.id?"scale(1.12)":"scale(1)", transition:"transform 0.2s" }}>{tab.icon}</span>
-            <span style={{ fontSize:9, fontWeight:screen===tab.id?600:400 }}>{tab.label}</span>
-            {screen===tab.id && <div style={{ width:4, height:4, borderRadius:"50%", background:T.flame, marginTop:-1 }} />}
-          </button>;
-        })}
+// ── HOME DASHBOARD ────────────────────────────────────────────────────────────
+function HomeDashboard({ stats, onSelectLevel, setScreen }) {
+  const totalAnswered = Object.values(stats).reduce((a,b)=>a+(b.answered||0),0);
+  const totalCorrect  = Object.values(stats).reduce((a,b)=>a+(b.correct||0),0);
+  const totalExams    = Object.values(stats).reduce((a,b)=>a+(b.exams||0),0);
+  const allScores     = Object.values(stats).flatMap(b=>b.scores||[]);
+  const avgScore      = allScores.length > 0 ? Math.round(allScores.reduce((a,b)=>a+b,0)/allScores.length) : null;
+  const successRate   = totalAnswered > 0 ? Math.round((totalCorrect/totalAnswered)*100) : 0;
+  const hour = new Date().getHours();
+  const greeting = hour < 12 ? "Bonjour" : hour < 18 ? "Bon après-midi" : "Bonsoir";
+
+  return (
+    <div>
+      <h1 style={{margin:"0 0 4px",fontSize:22,fontWeight:700,color:"#111827"}}>{greeting} !</h1>
+      <p style={{margin:"0 0 24px",color:"#6B7280",fontSize:14}}>Choisissez votre niveau de préparation pour l'examen civique français.</p>
+
+      {/* Global stats */}
+      <div style={{display:"flex",gap:12,marginBottom:28,flexWrap:"wrap"}}>
+        <StatsCard label="Questions répondues" value={totalAnswered} />
+        <StatsCard label="Réponses correctes" value={totalCorrect} />
+        <StatsCard label="Taux de réussite" value={`${successRate}%`} />
+        <StatsCard label="Examens passés" value={totalExams} />
+        <StatsCard label="Score moyen" value={avgScore !== null ? `${avgScore}%` : "—"} />
       </div>
 
-      {showMatch && <MatchOverlay match={showMatch} userAvatar={userAvatar} onMessage={function(){ setShowMatch(null); setActiveChat(showMatch); setScreen("chats"); }} onClose={function(){setShowMatch(null)}} />}
-      {activeChat && <ChatDetail match={activeChat} userId={userId} onBack={function(){setActiveChat(null)}} />}
+      {/* Continue preparation */}
+      <div style={{fontWeight:700,fontSize:15,marginBottom:14,color:"#111827"}}>Continuer votre préparation</div>
+      <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(200px,1fr))",gap:12,marginBottom:28}}>
+        {LEVELS.map(lv => (
+          <div key={lv.id} onClick={() => onSelectLevel(lv.id)}
+            style={{background:"white",borderRadius:10,border:"1px solid #E5E7EB",padding:"18px 16px",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"space-between",transition:"all .2s"}}
+            onMouseEnter={e=>{e.currentTarget.style.borderColor="#2563EB";e.currentTarget.style.boxShadow="0 2px 12px rgba(37,99,235,.1)";}}
+            onMouseLeave={e=>{e.currentTarget.style.borderColor="#E5E7EB";e.currentTarget.style.boxShadow="none";}}>
+            <div style={{display:"flex",alignItems:"center",gap:12}}>
+              <div style={{width:38,height:38,borderRadius:8,background:lv.bg,display:"flex",alignItems:"center",justifyContent:"center",fontSize:18}}>{lv.icon}</div>
+              <div>
+                <div style={{fontWeight:600,fontSize:14,color:"#111827"}}>{lv.label}</div>
+                <div style={{fontSize:11,color:"#9CA3AF"}}>{lv.sub}</div>
+              </div>
+            </div>
+            <span style={{color:"#9CA3AF",fontSize:16}}>›</span>
+          </div>
+        ))}
+        {/* French practice shortcut */}
+        <div onClick={() => setScreen("french")}
+          style={{background:"white",borderRadius:10,border:"1px solid #E5E7EB",padding:"18px 16px",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"space-between"}}
+          onMouseEnter={e=>{e.currentTarget.style.borderColor="#7C3AED";e.currentTarget.style.boxShadow="0 2px 12px rgba(124,58,237,.1)";}}
+          onMouseLeave={e=>{e.currentTarget.style.borderColor="#E5E7EB";e.currentTarget.style.boxShadow="none";}}>
+          <div style={{display:"flex",alignItems:"center",gap:12}}>
+            <div style={{width:38,height:38,borderRadius:8,background:"#F5F3FF",display:"flex",alignItems:"center",justifyContent:"center",fontSize:18}}>🇫🇷</div>
+            <div>
+              <div style={{fontWeight:600,fontSize:14,color:"#111827"}}>Pratique Français</div>
+              <div style={{fontSize:11,color:"#9CA3AF"}}>DILF · DELF · DALF · TCF · TEF</div>
+            </div>
+          </div>
+          <span style={{color:"#9CA3AF",fontSize:16}}>›</span>
+        </div>
+      </div>
     </div>
-  </>;
+  );
+}
+
+// ── MAIN APP ──────────────────────────────────────────────────────────────────
+export default function App() {
+  const [screen, setScreen]         = useState("home");
+  const [activeLevel, setActiveLevel] = useState(null); // "CSP" | "CR" | "NAT"
+  const [isPremium, setIsPremium]   = useState(() => { try { return localStorage.getItem("prepacivique_premium")==="true"; } catch { return false; } });
+  const [trialUsed, setTrialUsed]   = useState(() => { try { const s = localStorage.getItem("prepacivique_trial_v2"); return s ? JSON.parse(s) : {valeurs:0,institutions:0,droits:0,histoire:0,societe:0}; } catch { return {valeurs:0,institutions:0,droits:0,histoire:0,societe:0}; } });
+  const [globalStats, setGlobalStats] = useState(() => { try { const s = localStorage.getItem("prepacivique_stats"); return s ? JSON.parse(s) : {}; } catch { return {}; } });
+  const [codeInput, setCodeInput]   = useState("");
+  const [codeStatus, setCodeStatus] = useState(null);
+  const [paywallReason, setPaywallReason] = useState(null);
+  const [lang, setLang]             = useState(() => { try { return localStorage.getItem("prepacivique_lang")||"fr"; } catch { return "fr"; } });
+  const [showLangMenu, setShowLangMenu] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
+  const [translations, setTranslations] = useState({});
+  const [xlateProgress, setXlateProgress] = useState(0);
+  const [xlateError, setXlateError] = useState(null);
+  const [speed, setSpeed]           = useState(1);
+  const [listenIncludeExpl, setListenIncludeExpl] = useState(true);
+  const [listenBilingual, setListenBilingual] = useState(true);
+  const [quizQs, setQuizQs]         = useState([]);
+  const [qIdx, setQIdx]             = useState(0);
+  const [selected, setSelected]     = useState(null);
+  const [answered, setAnswered]     = useState(false);
+  const [scores, setScores]         = useState({});
+  const [wrongAnswers, setWrongAnswers] = useState([]);
+  const [allWrongAnswers, setAllWrongAnswers] = useState([]);
+  const [mockTimeLeft, setMockTimeLeft] = useState(null);
+  const [isMockExam, setIsMockExam] = useState(false);
+  const [currentQuizTheme, setCurrentQuizTheme] = useState(null);
+  const [feedbackMode, setFeedbackMode] = useState("immediate"); // "immediate" | "end"
+  const [showFeedbackPicker, setShowFeedbackPicker] = useState(false);
+  const [pendingQuizTheme, setPendingQuizTheme] = useState(null);
+  const [listenQs, setListenQs]     = useState([]);
+  const [listenIdx, setListenIdx]   = useState(0);
+  const [listenPlaying, setListenPlaying] = useState(false);
+  const [listenPhase, setListenPhase] = useState("");
+  const [readingChoiceIdx, setReadingChoiceIdx] = useState(null);
+  const [isSpeakingQuiz, setIsSpeakingQuiz] = useState(false);
+  const [autoReadQuiz, setAutoReadQuiz] = useState(false);
+  const [assignedCode, setAssignedCode] = useState("");
+  const [codeLoading, setCodeLoading] = useState(false);
+
+  const quizSpeakAbortRef = useRef(false);
+  const synthRef = useRef(null);
+  const translatingRef = useRef(false);
+  const listenRef = useRef({playing:false,idx:0,questions:[]});
+
+  useEffect(() => { synthRef.current = window.speechSynthesis; return () => synthRef.current?.cancel(); }, []);
+  useEffect(() => { try { localStorage.setItem("prepacivique_premium", isPremium?"true":"false"); } catch {} }, [isPremium]);
+  useEffect(() => { try { localStorage.setItem("prepacivique_trial_v2", JSON.stringify(trialUsed)); } catch {} }, [trialUsed]);
+  useEffect(() => { try { localStorage.setItem("prepacivique_lang", lang); } catch {} }, [lang]);
+  useEffect(() => { try { localStorage.setItem("prepacivique_stats", JSON.stringify(globalStats)); } catch {} }, [globalStats]);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("payment") === "success") {
+      window.history.replaceState({}, "", window.location.pathname);
+      setScreen("payment-success");
+      setCodeLoading(true);
+      (async () => {
+        try {
+          await new Promise(r => setTimeout(r, 5000));
+          const sessionId = params.get("session_id");
+          const email = params.get("email");
+          for (let attempt = 0; attempt < 15; attempt++) {
+            let url = sessionId
+              ? `${SUPABASE_URL}/rest/v1/activation_codes?stripe_session_id=eq.${encodeURIComponent(sessionId)}&used=eq.true&select=code&order=used_at.desc&limit=1`
+              : email
+              ? `${SUPABASE_URL}/rest/v1/activation_codes?customer_email=eq.${encodeURIComponent(email)}&used=eq.true&select=code&order=used_at.desc&limit=1`
+              : null;
+            if (!url) break;
+            const res = await fetch(url, { headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` } });
+            if (res.ok) { const data = await res.json(); if (data?.length > 0) { setAssignedCode(data[0].code); break; } }
+            await new Promise(r => setTimeout(r, 2000));
+          }
+        } catch {}
+        setCodeLoading(false);
+      })();
+    }
+  }, []);
+
+  const handleCodeSubmit = async () => {
+    const trimmed = codeInput.trim();
+    if (!trimmed) return;
+    setCodeStatus("checking");
+    const valid = await validateCode(trimmed);
+    if (valid) {
+      setIsPremium(true); setCodeStatus("ok"); setPaywallReason(null);
+      setTimeout(() => { setCodeInput(""); setCodeStatus(null); setScreen("home"); }, 1200);
+    } else {
+      setCodeStatus("error");
+      setTimeout(() => setCodeStatus(null), 2500);
+    }
+  };
+
+  const currentLang = LANGUAGES.find(l => l.code === lang) || LANGUAGES[0];
+  const isRTL = !!currentLang.rtl;
+  const getT = useCallback((idx) => (lang==="fr"||!translations[lang]||!isPremium) ? null : translations[lang][idx]||null, [lang,translations,isPremium]);
+  const requirePremium = (r) => setPaywallReason(r);
+  const checkPremium   = (r) => { if (isPremium) return true; requirePremium(r); return false; };
+  const isLoading = isPremium && lang !== "fr" && !translations[lang];
+  const loadPct = Math.round((xlateProgress / ALL_QUESTIONS.length) * 100);
+
+  useEffect(() => {
+    if (!isPremium || lang === "fr" || translations[lang]) return;
+    if (translatingRef.current) return;
+    translatingRef.current = true;
+    setXlateProgress(0); setXlateError(null);
+    (async () => {
+      const result = [];
+      for (let i = 0; i < ALL_QUESTIONS.length; i += BATCH_SIZE) {
+        try {
+          const tr = await translateBatch(ALL_QUESTIONS.slice(i, i+BATCH_SIZE), lang);
+          result.push(...tr);
+          setXlateProgress(result.length);
+        } catch (err) {
+          setXlateError(err instanceof Error ? err.message : "Erreur de traduction.");
+          translatingRef.current = false; return;
+        }
+      }
+      setTranslations(prev => ({...prev, [lang]: result}));
+      setXlateProgress(ALL_QUESTIONS.length);
+      translatingRef.current = false;
+    })();
+  }, [lang, isPremium]);
+
+  const stopAll = useCallback(() => {
+    synthRef.current?.cancel();
+    listenRef.current.playing = false;
+    setListenPlaying(false); setListenPhase(""); setReadingChoiceIdx(null);
+    setIsSpeakingQuiz(false);
+  }, []);
+
+  useEffect(() => {
+    if (!isMockExam || mockTimeLeft === null) return;
+    const interval = setInterval(() => {
+      setMockTimeLeft(t => {
+        if (t === null || t <= 1) { clearInterval(interval); setScreen("results"); setIsMockExam(false); return 0; }
+        return t - 1;
+      });
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [isMockExam]);
+
+  const speakOne = useCallback((text, langCode, onEnd) => {
+    if (!synthRef.current) { onEnd?.(); return; }
+    const utt = new SpeechSynthesisUtterance(text);
+    utt.lang = LANGUAGES.find(l=>l.code===langCode)?.tts||"fr-FR"; utt.rate = speed;
+    utt.onend = onEnd||null; utt.onerror = onEnd||null;
+    synthRef.current.speak(utt);
+  }, [speed]);
+
+  const runListenFrom = useCallback((idx, questions, bilingual) => {
+    if (!synthRef.current) return;
+    synthRef.current.cancel();
+    const playQ = (i) => {
+      if (!listenRef.current.playing || i >= questions.length) { setListenPlaying(false); setListenPhase(""); return; }
+      listenRef.current.idx = i; setListenIdx(i);
+      const q = questions[i];
+      const t = bilingual ? getT(q.origIdx ?? ALL_QUESTIONS.findIndex(x=>x.q===q.q)) : null;
+      const segs = [
+        { text:`Question ${i+1} sur ${questions.length}.`, lang:"fr", phase:"question" },
+        { text:q.q, lang:"fr", phase:"question" },
+        ...(t&&lang!=="fr"?[{text:t.q,lang,phase:"question"}]:[]),
+        { text:`La bonne réponse est : ${q.c[q.a]}`, lang:"fr", phase:"answer", ci:q.a },
+        ...(t&&lang!=="fr"?[{text:t.c[q.a],lang,phase:"answer",ci:q.a}]:[]),
+        ...(listenIncludeExpl?[{text:q.e,lang:"fr",phase:"explanation"},...(t&&lang!=="fr"?[{text:t.e,lang,phase:"explanation"}]:[])]:[] ),
+      ];
+      let si = 0;
+      const next = () => {
+        if (!listenRef.current.playing) return;
+        if (si >= segs.length) { setListenPhase("pause"); setTimeout(() => { if(listenRef.current.playing) playQ(i+1); }, 800); return; }
+        const seg = segs[si++]; setListenPhase(seg.phase);
+        if (seg.ci !== undefined) setReadingChoiceIdx(seg.ci); else setReadingChoiceIdx(null);
+        speakOne(seg.text, seg.lang, next);
+      };
+      next();
+    };
+    playQ(idx);
+  }, [lang, listenIncludeExpl, getT, speakOne]);
+
+  const startListen = (themeFilter) => {
+    if (!checkPremium("listen")) return;
+    stopAll();
+    const pool = (themeFilter
+      ? ALL_QUESTIONS.map((q,i)=>({...q,origIdx:i})).filter(q=>q.theme===themeFilter)
+      : ALL_QUESTIONS.map((q,i)=>({...q,origIdx:i}))
+    );
+    setListenQs(pool); setListenIdx(0);
+    listenRef.current = {playing:true,idx:0,questions:pool};
+    setListenPlaying(true); setScreen("listen");
+    setTimeout(() => runListenFrom(0, pool, listenBilingual), 200);
+  };
+
+  const toggleListenPause = () => {
+    if (listenPlaying) { synthRef.current?.cancel(); listenRef.current.playing=false; setListenPlaying(false); }
+    else { listenRef.current.playing=true; setListenPlaying(true); runListenFrom(listenIdx, listenRef.current.questions, listenBilingual); }
+  };
+
+  const skipTo = (i) => {
+    synthRef.current?.cancel(); setListenIdx(i); listenRef.current.idx = i;
+    if (listenPlaying) setTimeout(() => runListenFrom(i, listenRef.current.questions, listenBilingual), 150);
+  };
+
+  // Show feedback mode picker before starting quiz
+  const promptQuizStart = (themeId) => {
+    setPendingQuizTheme(themeId);
+    setShowFeedbackPicker(true);
+  };
+
+  const startQuiz = (themeId=null) => {
+    stopAll();
+    setShowFeedbackPicker(false);
+    let pool = (themeId
+      ? ALL_QUESTIONS.map((q,i)=>({...q,origIdx:i})).filter(q=>q.theme===themeId)
+      : ALL_QUESTIONS.map((q,i)=>({...q,origIdx:i}))
+    ).slice();
+    for (let i=pool.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[pool[i],pool[j]]=[pool[j],pool[i]];}
+    // Shuffle choices within each question
+    pool = pool.map(q => {
+      const indices = [0,1,2,3];
+      for(let i=3;i>0;i--){const j=Math.floor(Math.random()*(i+1));[indices[i],indices[j]]=[indices[j],indices[i]];}
+      const newC = indices.map(i => q.c[i]);
+      const newA = indices.indexOf(q.a);
+      return {...q, c: newC, a: newA};
+    });
+    if (!isPremium) {
+      if (themeId) { pool = pool.slice(0, TRIAL_PER_THEME); }
+      else {
+        const byTheme = {};
+        pool = pool.filter(q => { byTheme[q.theme]=(byTheme[q.theme]||0); if(byTheme[q.theme]<TRIAL_PER_THEME){byTheme[q.theme]++;return true;}return false; });
+      }
+    }
+    setCurrentQuizTheme(themeId);
+    setQuizQs(pool); setQIdx(0); setSelected(null); setAnswered(false); setScores({}); setWrongAnswers([]);
+    setIsMockExam(false); setMockTimeLeft(null); setAutoReadQuiz(false);
+    setScreen("quiz");
+  };
+
+  const startMockExam = () => {
+    if (!checkPremium("quiz")) return;
+    let pool = [...ALL_QUESTIONS].map((q,i)=>({...q,origIdx:i})).sort(()=>Math.random()-.5).slice(0,40);
+    pool = pool.map(q => {
+      const indices = [0,1,2,3];
+      for(let i=3;i>0;i--){const j=Math.floor(Math.random()*(i+1));[indices[i],indices[j]]=[indices[j],indices[i]];}
+      const newC = indices.map(i => q.c[i]);
+      const newA = indices.indexOf(q.a);
+      return {...q, c: newC, a: newA};
+    });
+    setQuizQs(pool); setQIdx(0); setSelected(null); setAnswered(false); setScores({}); setWrongAnswers([]);
+    setCurrentQuizTheme(null); setIsMockExam(true); setMockTimeLeft(45*60); setScreen("quiz");
+  };
+
+  const handleAnswer = (idx) => {
+    if (answered) return;
+    quizSpeakAbortRef.current = true;
+    setSelected(idx); setAnswered(true);
+    const correct = idx === quizQs[qIdx].a;
+    setScores(p => ({...p,[qIdx]:correct}));
+    if (!correct) setWrongAnswers(p => [...p, quizQs[qIdx]]);
+    if (!isPremium) { const theme=quizQs[qIdx].theme; setTrialUsed(u=>({...u,[theme]:Math.max(u[theme]||0,qIdx+1)})); }
+    // Update global stats
+    if (activeLevel) {
+      setGlobalStats(prev => {
+        const lv = prev[activeLevel] || {answered:0,correct:0,exams:0,scores:[],byTheme:{}};
+        const byTheme = {...(lv.byTheme||{})};
+        byTheme[quizQs[qIdx].theme] = (byTheme[quizQs[qIdx].theme]||0) + 1;
+        return {...prev,[activeLevel]:{...lv,answered:lv.answered+1,correct:lv.correct+(correct?1:0),byTheme}};
+      });
+    }
+    stopAll();
+  };
+
+  const nextQ = () => {
+    quizSpeakAbortRef.current = true; stopAll();
+    if (qIdx+1 >= quizQs.length) {
+      setAllWrongAnswers(prev => { const prevQs=prev.map(q=>q.q); return [...prev,...wrongAnswers.filter(q=>!prevQs.includes(q.q))]; });
+      // If mock exam, record score
+      if (isMockExam && activeLevel) {
+        const sc = Math.round((Object.values(scores).filter(Boolean).length / quizQs.length) * 100);
+        setGlobalStats(prev => { const lv=prev[activeLevel]||{answered:0,correct:0,exams:0,scores:[],byTheme:{}}; return {...prev,[activeLevel]:{...lv,exams:lv.exams+1,scores:[...(lv.scores||[]),sc]}}; });
+      }
+      setScreen("results"); return;
+    }
+    setQIdx(c => c+1); setSelected(null); setAnswered(false);
+  };
+
+  const readCurrentQuiz = () => {
+    if (isSpeakingQuiz) { quizSpeakAbortRef.current=true; synthRef.current?.cancel(); setIsSpeakingQuiz(false); setReadingChoiceIdx(null); return; }
+    quizSpeakAbortRef.current = false; synthRef.current?.cancel();
+    const q = quizQs[qIdx];
+    const segs = [{text:q.q,lang:"fr"},...q.c.map((ch,i)=>({text:`${String.fromCharCode(65+i)}. ${ch}`,lang:"fr",ci:i}))];
+    setIsSpeakingQuiz(true); let si=0;
+    const next = () => {
+      if (quizSpeakAbortRef.current||si>=segs.length){setReadingChoiceIdx(null);setIsSpeakingQuiz(false);return;}
+      const seg=segs[si++]; if(seg.ci!==undefined)setReadingChoiceIdx(seg.ci);else setReadingChoiceIdx(null);
+      const utt=new SpeechSynthesisUtterance(seg.text); utt.lang="fr-FR"; utt.rate=speed;
+      utt.onend=next; utt.onerror=next; synthRef.current?.speak(utt);
+    };
+    setTimeout(next, 50);
+  };
+
+  const totalScore   = Object.values(scores).filter(Boolean).length;
+  const totalAnswered = Object.values(scores).length;
+  const passMark     = Math.ceil(quizQs.length * 0.8);
+  const passed       = totalScore >= passMark;
+  const listenCurQ   = listenQs[listenIdx];
+  const phaseLabel   = {question:"🗣️ Question",answer:"✅ Réponse",explanation:"💡 Explication",pause:"⏸ Pause"};
+
+  return (
+    <div style={{display:"flex",minHeight:"100vh",background:"#F9FAFB",fontFamily:"-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif",direction:isRTL?"rtl":"ltr"}}>
+      <style>{`
+        @keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+        @keyframes wv0{0%,100%{transform:scaleY(.3)}50%{transform:scaleY(1)}}
+        @keyframes wv1{0%,100%{transform:scaleY(.8)}50%{transform:scaleY(.3)}}
+        @keyframes wv2{0%,100%{transform:scaleY(.5)}50%{transform:scaleY(1)}}
+        @keyframes wv3{0%,100%{transform:scaleY(1)}50%{transform:scaleY(.4)}}
+        @keyframes shimmer{0%,100%{opacity:.4}50%{opacity:.9}}
+        @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(37,99,235,.3)}70%{box-shadow:0 0 0 10px rgba(37,99,235,0)}}
+        .fade{animation:fadeUp .35s ease forwards}
+        .choice-btn{transition:all .15s ease;border:1.5px solid #E5E7EB;background:white;width:100%;cursor:pointer;border-radius:8px;font-family:inherit}
+        .choice-btn:not(:disabled):hover{border-color:#2563EB;background:#EFF6FF}
+        .choice-correct{border-color:#059669!important;background:#ECFDF5!important}
+        .choice-wrong{border-color:#DC2626!important;background:#FEF2F2!important}
+        .shimmer{animation:shimmer 1.2s ease infinite}
+        ::-webkit-scrollbar{width:4px}::-webkit-scrollbar-thumb{background:#D1D5DB;border-radius:4px}
+        @media(max-width:640px){.sidebar{display:none!important}.mobile-header{display:flex!important}}
+        .mobile-header{display:none}
+      `}</style>
+
+      {/* Paywall */}
+      {paywallReason && <PaywallModal reason={paywallReason} onClose={() => setPaywallReason(null)} codeInput={codeInput} setCodeInput={setCodeInput} codeStatus={codeStatus} handleCodeSubmit={handleCodeSubmit}/>}
+
+      {/* Feedback mode picker modal */}
+      {showFeedbackPicker && (
+        <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.45)",zIndex:200,display:"flex",alignItems:"center",justifyContent:"center",padding:16}}>
+          <div style={{background:"white",borderRadius:12,padding:"32px 28px",maxWidth:460,width:"100%",boxShadow:"0 24px 64px rgba(0,0,0,.15)"}}>
+            <h2 style={{margin:"0 0 6px",fontSize:17,fontWeight:700,color:"#111827"}}>
+              {THEMES.find(t=>t.id===pendingQuizTheme)?.label||"Quiz"} — {ALL_QUESTIONS.filter(q=>q.theme===pendingQuizTheme).length} questions
+            </h2>
+            <p style={{margin:"0 0 20px",color:"#6B7280",fontSize:13}}>Test en {pendingQuizTheme ? ALL_QUESTIONS.filter(q=>q.theme===pendingQuizTheme).length : quizQs.length} questions</p>
+            <div style={{fontWeight:600,fontSize:14,marginBottom:12,color:"#111827"}}>Mode de feedback</div>
+            {[
+              {id:"immediate",label:"Immédiat",desc:"Voir la bonne réponse et l'explication après chaque question."},
+              {id:"end",label:"À la fin",desc:"Voir toutes les réponses uniquement à la fin du test"},
+            ].map(opt => (
+              <label key={opt.id} style={{display:"flex",alignItems:"flex-start",gap:12,padding:"14px 16px",borderRadius:8,border:`1.5px solid ${feedbackMode===opt.id?"#2563EB":"#E5E7EB"}`,background:feedbackMode===opt.id?"#EFF6FF":"white",cursor:"pointer",marginBottom:10}}>
+                <input type="radio" checked={feedbackMode===opt.id} onChange={() => setFeedbackMode(opt.id)} style={{marginTop:2,accentColor:"#2563EB"}}/>
+                <div>
+                  <div style={{fontWeight:600,fontSize:13,color:"#111827"}}>{opt.label}</div>
+                  <div style={{fontSize:12,color:"#6B7280",marginTop:2}}>{opt.desc}</div>
+                </div>
+              </label>
+            ))}
+            <div style={{display:"flex",gap:10,marginTop:20}}>
+              <button onClick={() => setShowFeedbackPicker(false)} style={{flex:1,padding:"12px",borderRadius:8,border:"1.5px solid #E5E7EB",background:"white",cursor:"pointer",fontWeight:600,fontSize:14,color:"#374151"}}>Annuler</button>
+              <button onClick={() => startQuiz(pendingQuizTheme)} style={{flex:2,padding:"12px",borderRadius:8,border:"none",background:"#111827",color:"white",cursor:"pointer",fontWeight:700,fontSize:14}}>Commencer le test</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Sidebar */}
+      <div className="sidebar">
+        <Sidebar activeLevel={activeLevel} setActiveLevel={setActiveLevel} screen={screen} setScreen={setScreen} isPremium={isPremium} stats={globalStats} stopAll={stopAll}/>
+      </div>
+
+      {/* Main content */}
+      <div style={{flex:1,overflowY:"auto"}}>
+        {/* Top bar */}
+        <div style={{background:"white",borderBottom:"1px solid #E5E7EB",padding:"0 24px",height:56,display:"flex",alignItems:"center",justifyContent:"space-between",position:"sticky",top:0,zIndex:50}}>
+          <div style={{display:"flex",alignItems:"center",gap:8}}>
+            {(screen!=="home"||activeLevel) && (
+              <button onClick={() => { stopAll(); if(screen==="quiz"||screen==="results"||screen==="listen"){setScreen(activeLevel?"level":"home");}else{setActiveLevel(null);setScreen("home");} }}
+                style={{background:"none",border:"none",cursor:"pointer",color:"#6B7280",fontSize:13,display:"flex",alignItems:"center",gap:4,padding:"6px 10px",borderRadius:6,fontWeight:500}}>
+                ← {activeLevel ? `Retour à ${LEVELS.find(l=>l.id===activeLevel)?.label}` : "Retour"}
+              </button>
+            )}
+          </div>
+          <div style={{display:"flex",gap:8,alignItems:"center"}}>
+            {isLoading && <div style={{fontSize:11,color:"#6B7280",display:"flex",alignItems:"center",gap:6}}><span className="shimmer" style={{width:8,height:8,borderRadius:"50%",background:"#2563EB",display:"inline-block"}}/>Traduction {loadPct}%</div>}
+            {/* Settings */}
+            <div style={{position:"relative"}}>
+              <button onClick={() => {setShowSettings(v=>!v);setShowLangMenu(false);}} style={{background:"none",border:"1px solid #E5E7EB",borderRadius:6,padding:"5px 10px",cursor:"pointer",color:"#374151",fontSize:13}}>⚙️</button>
+              {showSettings && (
+                <div style={{position:"absolute",top:"calc(100% + 6px)",right:0,background:"white",borderRadius:8,boxShadow:"0 8px 32px rgba(0,0,0,.12)",padding:"16px",minWidth:220,zIndex:120,border:"1px solid #E5E7EB"}}>
+                  <div style={{fontWeight:600,fontSize:13,marginBottom:12,color:"#111827"}}>Paramètres audio</div>
+                  <div style={{fontSize:11,color:"#6B7280",marginBottom:6}}>Vitesse de lecture</div>
+                  <div style={{display:"flex",gap:4,marginBottom:12}}>
+                    {SPEEDS.map(s=><button key={s.v} onClick={()=>setSpeed(s.v)} style={{flex:1,padding:"5px 0",borderRadius:6,border:speed===s.v?"1.5px solid #2563EB":"1.5px solid #E5E7EB",background:speed===s.v?"#EFF6FF":"white",color:speed===s.v?"#2563EB":"#374151",fontSize:11,fontWeight:600,cursor:"pointer"}}>{s.label}</button>)}
+                  </div>
+                  <label style={{display:"flex",alignItems:"center",gap:8,cursor:"pointer",marginBottom:8,fontSize:12,color:"#374151"}}>
+                    <input type="checkbox" checked={listenIncludeExpl} onChange={e=>setListenIncludeExpl(e.target.checked)}/>Inclure les explications
+                  </label>
+                  <label style={{display:"flex",alignItems:"center",gap:8,cursor:"pointer",fontSize:12,color:"#374151"}}>
+                    <input type="checkbox" checked={listenBilingual} onChange={e=>setListenBilingual(e.target.checked)}/>Lecture bilingue
+                  </label>
+                </div>
+              )}
+            </div>
+            {/* Language */}
+            <div style={{position:"relative"}}>
+              <button onClick={() => { if(!isPremium&&lang==="fr"){requirePremium("lang");return;} setShowLangMenu(v=>!v);setShowSettings(false); }}
+                style={{display:"flex",alignItems:"center",gap:5,background:"none",border:"1px solid #E5E7EB",borderRadius:6,padding:"5px 10px",cursor:"pointer",color:"#374151",fontSize:12}}>
+                <span>{currentLang.flag}</span><span style={{fontWeight:600}}>{lang==="fr"?"FR":lang.toUpperCase()}</span>
+                {!isPremium&&<span style={{fontSize:10}}>🔒</span>}
+              </button>
+              {showLangMenu && isPremium && (
+                <div style={{position:"absolute",top:"calc(100% + 6px)",right:0,background:"white",borderRadius:8,boxShadow:"0 8px 32px rgba(0,0,0,.12)",overflow:"hidden",minWidth:180,zIndex:120,maxHeight:320,overflowY:"auto",border:"1px solid #E5E7EB"}}>
+                  {LANGUAGES.map(l=>(
+                    <button key={l.code} onClick={()=>{setLang(l.code);setShowLangMenu(false);}} style={{display:"flex",alignItems:"center",gap:8,padding:"8px 12px",border:"none",borderBottom:"1px solid #F3F4F6",background:lang===l.code?"#EFF6FF":"white",cursor:"pointer",width:"100%",textAlign:"left"}}>
+                      <span style={{fontSize:15}}>{l.flag}</span>
+                      <span style={{fontSize:12,fontWeight:lang===l.code?700:400,color:"#111827"}}>{l.native}</span>
+                      {lang===l.code&&<span style={{marginLeft:"auto",color:"#2563EB",fontSize:12}}>✓</span>}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+            {/* Premium badge or unlock */}
+            {isPremium
+              ? <div style={{background:"#FEF9C3",color:"#854D0E",borderRadius:6,padding:"4px 10px",fontSize:11,fontWeight:700}}>⭐ Premium</div>
+              : <button onClick={()=>setScreen("pricing")} style={{background:"#111827",color:"white",border:"none",borderRadius:6,padding:"6px 12px",cursor:"pointer",fontSize:12,fontWeight:600}}>🔓 Débloquer</button>
+            }
+          </div>
+        </div>
+
+        {/* Page content */}
+        <div style={{padding:"28px 28px",maxWidth:900,margin:"0 auto"}} onClick={() => { showLangMenu&&setShowLangMenu(false); showSettings&&setShowSettings(false); }}>
+
+          {/* HOME */}
+          {screen==="home" && !activeLevel && (
+            <div className="fade">
+              <HomeDashboard stats={globalStats} onSelectLevel={(id) => { setActiveLevel(id); setScreen("level"); }} setScreen={setScreen}/>
+            </div>
+          )}
+
+          {/* LEVEL */}
+          {screen==="level" && activeLevel && (
+            <div className="fade">
+              <LevelDashboard
+                level={activeLevel}
+                stats={globalStats}
+                onStartQuiz={(themeId) => promptQuizStart(themeId)}
+                onStartMockExam={startMockExam}
+                onStartListen={startListen}
+                isPremium={isPremium}
+                checkPremium={checkPremium}
+              />
+            </div>
+          )}
+
+          {/* PAYMENT SUCCESS */}
+          {screen==="payment-success" && (
+            <div className="fade" style={{textAlign:"center",padding:"60px 20px"}}>
+              <div style={{fontSize:56,marginBottom:16}}>{codeLoading?"⏳":"🎉"}</div>
+              <h2 style={{fontSize:22,fontWeight:700,color:"#111827",marginBottom:8}}>{codeLoading?"Récupération de votre code…":"Paiement confirmé !"}</h2>
+              {codeLoading
+                ? <p style={{color:"#6B7280"}}>Veuillez patienter…</p>
+                : <>
+                    {assignedCode && (
+                      <div style={{background:"#F9FAFB",border:"2px solid #2563EB",borderRadius:10,padding:"20px",marginBottom:20,display:"inline-block"}}>
+                        <div style={{fontSize:11,color:"#6B7280",marginBottom:6}}>Votre code d'activation :</div>
+                        <div style={{fontFamily:"monospace",fontSize:20,fontWeight:700,color:"#111827",letterSpacing:2,marginBottom:12}}>{assignedCode}</div>
+                        <button onClick={() => { navigator.clipboard.writeText(assignedCode); alert("Copié !"); }} style={{background:"white",border:"1px solid #2563EB",borderRadius:6,padding:"6px 16px",cursor:"pointer",fontSize:12,color:"#2563EB",fontWeight:600}}>📋 Copier</button>
+                      </div>
+                    )}
+                    <div style={{marginTop:12}}>
+                      <button onClick={() => { setCodeInput(assignedCode); setScreen("pricing"); }} style={{background:"#111827",color:"white",border:"none",borderRadius:8,padding:"12px 28px",cursor:"pointer",fontSize:14,fontWeight:700}}>
+                        Activer mon accès →
+                      </button>
+                    </div>
+                  </>
+              }
+            </div>
+          )}
+
+          {/* PRICING */}
+          {screen==="pricing" && (
+            <div className="fade">
+              <h2 style={{margin:"0 0 6px",fontSize:22,fontWeight:700,color:"#111827"}}>Accès complet</h2>
+              <p style={{margin:"0 0 24px",color:"#6B7280"}}>{ALL_QUESTIONS.length} questions officielles · Mode écoute · 11 langues</p>
+              <div style={{background:"white",borderRadius:12,border:"2px solid #2563EB",padding:"28px",maxWidth:420,marginBottom:20}}>
+                <div style={{fontWeight:800,fontSize:28,color:"#111827",marginBottom:4}}>5,00 €</div>
+                <div style={{color:"#6B7280",fontSize:13,marginBottom:20}}>Paiement unique · Accès à vie</div>
+                {["✓ "+ALL_QUESTIONS.length+" questions officielles","✓ Mode écoute Play All","✓ 11 langues + traduction IA","✓ Résultats et analyses détaillés","✓ Vitesse audio réglable","✓ Accès à vie"].map(f=>(
+                  <div key={f} style={{fontSize:13,color:"#374151",marginBottom:8,fontWeight:500}}>{f}</div>
+                ))}
+                <a href={STRIPE_LINK} target="_blank" rel="noopener noreferrer" style={{display:"block",marginTop:20,background:"#111827",color:"white",borderRadius:8,padding:"13px",fontWeight:700,fontSize:14,textDecoration:"none",textAlign:"center"}}>
+                  💳 Acheter maintenant
+                </a>
+              </div>
+              {!isPremium && (
+                <div style={{background:"white",borderRadius:12,border:"1px solid #E5E7EB",padding:"24px",maxWidth:420}}>
+                  <div style={{fontWeight:600,fontSize:14,marginBottom:12,color:"#111827"}}>🔑 Vous avez déjà un code ?</div>
+                  <div style={{display:"flex",gap:8}}>
+                    <input value={codeInput} onChange={e=>setCodeInput(e.target.value)} onKeyDown={e=>e.key==="Enter"&&handleCodeSubmit()} placeholder="CIVIC-XXXX-XXXX-XXXX"
+                      style={{flex:1,padding:"10px 12px",borderRadius:8,border:`1.5px solid ${codeStatus==="error"?"#DC2626":codeStatus==="ok"?"#059669":"#D1D5DB"}`,fontSize:12,fontFamily:"monospace",outline:"none"}}/>
+                    <button onClick={handleCodeSubmit} disabled={codeStatus==="checking"||codeStatus==="ok"}
+                      style={{background:"#111827",color:"white",border:"none",borderRadius:8,padding:"10px 16px",cursor:"pointer",fontWeight:700,fontSize:13}}>
+                      {codeStatus==="checking"?"…":"Activer"}
+                    </button>
+                  </div>
+                  {codeStatus&&<div style={{marginTop:8,fontSize:12,color:codeStatus==="ok"?"#059669":"#DC2626",fontWeight:600}}>
+                    {codeStatus==="ok"?"✅ Accès débloqué !":codeStatus==="error"?"❌ Code invalide.":"⏳ Vérification…"}
+                  </div>}
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* LISTEN MODE */}
+          {screen==="listen" && listenCurQ && (
+            <div className="fade">
+              <div style={{background:"linear-gradient(160deg,#1C1917,#2D1832,#6B21A8)",color:"white",borderRadius:12,padding:"24px",marginBottom:16}}>
+                <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:14}}>
+                  <div style={{padding:"4px 12px",borderRadius:6,background:"rgba(255,255,255,.15)",fontSize:12,fontWeight:600}}>
+                    {listenPlaying?(phaseLabel[listenPhase]||"⏳"):"⏸ En pause"}
+                  </div>
+                  {listenPlaying && <Waveform active={true} color="rgba(255,255,255,.9)" size={16}/>}
+                </div>
+                <div style={{display:"flex",justifyContent:"space-between",fontSize:12,opacity:.8,marginBottom:6}}>
+                  <span>Question {listenIdx+1} / {listenQs.length}</span>
+                  <span>{Math.round(((listenIdx+1)/listenQs.length)*100)}%</span>
+                </div>
+                <div style={{background:"rgba(255,255,255,.2)",borderRadius:4,height:5,marginBottom:18}}>
+                  <div style={{width:`${((listenIdx+1)/listenQs.length)*100}%`,height:"100%",background:"white",borderRadius:4,transition:"width .5s"}}/>
+                </div>
+                <div style={{fontSize:15,fontWeight:600,lineHeight:1.65,marginBottom:8}}>{listenCurQ.q}</div>
+                {(listenPhase==="answer"||listenPhase==="explanation"||listenPhase==="pause") && (
+                  <div style={{background:"rgba(255,255,255,.15)",borderRadius:8,padding:"10px 14px",marginBottom:10}}>
+                    <div style={{fontSize:11,opacity:.7,marginBottom:3}}>✅ Bonne réponse</div>
+                    <div style={{fontWeight:700,fontSize:14}}>{listenCurQ.c[listenCurQ.a]}</div>
+                  </div>
+                )}
+                {(listenPhase==="explanation"||listenPhase==="pause") && (
+                  <div style={{background:"rgba(255,255,255,.1)",borderRadius:8,padding:"10px 14px",fontSize:12,lineHeight:1.75}}>💡 {listenCurQ.e}</div>
+                )}
+                <div style={{display:"flex",justifyContent:"center",alignItems:"center",gap:14,marginTop:20}}>
+                  <button onClick={()=>skipTo(Math.max(0,listenIdx-1))} style={{background:"rgba(255,255,255,.15)",border:"none",color:"white",borderRadius:8,width:40,height:40,cursor:"pointer",fontSize:16}}>⏮</button>
+                  <button onClick={toggleListenPause} style={{background:"white",border:"none",color:"#6B21A8",borderRadius:8,width:56,height:56,cursor:"pointer",fontSize:22,fontWeight:700,boxShadow:"0 4px 16px rgba(0,0,0,.2)"}}>
+                    {listenPlaying?"⏸":"▶"}
+                  </button>
+                  <button onClick={()=>skipTo(Math.min(listenQs.length-1,listenIdx+1))} style={{background:"rgba(255,255,255,.15)",border:"none",color:"white",borderRadius:8,width:40,height:40,cursor:"pointer",fontSize:16}}>⏭</button>
+                </div>
+                <div style={{display:"flex",justifyContent:"center",gap:6,marginTop:12}}>
+                  {SPEEDS.map(s=><button key={s.v} onClick={()=>setSpeed(s.v)} style={{padding:"4px 10px",borderRadius:4,border:"none",background:speed===s.v?"white":"rgba(255,255,255,.15)",color:speed===s.v?"#6B21A8":"white",fontSize:11,fontWeight:600,cursor:"pointer"}}>{s.label}</button>)}
+                </div>
+              </div>
+              {/* Playlist */}
+              <div style={{background:"white",borderRadius:12,border:"1px solid #E5E7EB",padding:"16px"}}>
+                <div style={{fontWeight:600,fontSize:13,marginBottom:10,color:"#111827"}}>Playlist — {listenQs.length} questions</div>
+                <div style={{maxHeight:320,overflowY:"auto",display:"flex",flexDirection:"column",gap:4}}>
+                  {listenQs.map((q,i)=>{
+                    const th=THEMES.find(t=>t.id===q.theme);
+                    const isCur=i===listenIdx,isPast=i<listenIdx;
+                    return (
+                      <div key={i} onClick={()=>skipTo(i)} style={{display:"flex",alignItems:"center",gap:8,padding:"8px 10px",borderRadius:6,background:isCur?"#EFF6FF":isPast?"#F9FAFB":"white",border:`1px solid ${isCur?"#2563EB":"#F3F4F6"}`,cursor:"pointer"}}>
+                        <div style={{width:22,height:22,borderRadius:4,background:isCur?"#2563EB":isPast?"#D1D5DB":"#F3F4F6",color:isCur||isPast?"white":"#9CA3AF",display:"flex",alignItems:"center",justifyContent:"center",fontSize:9,fontWeight:700,flexShrink:0}}>
+                          {isCur&&listenPlaying?<Waveform active={true} color="white" size={9}/>:i+1}
+                        </div>
+                        <div style={{flex:1,minWidth:0}}>
+                          <div style={{fontSize:11,fontWeight:isCur?600:400,color:isCur?"#2563EB":isPast?"#9CA3AF":"#374151",whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{q.q}</div>
+                          <div style={{fontSize:10,color:th?.color,marginTop:1}}>{th?.icon} {th?.label}</div>
+                        </div>
+                        {isPast&&<span style={{color:"#059669",fontSize:12}}>✓</span>}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* QUIZ */}
+          {screen==="quiz" && quizQs.length>0 && (()=>{
+            const q=quizQs[qIdx];
+            const t=getT(q.origIdx??ALL_QUESTIONS.findIndex(x=>x.q===q.q));
+            const th=THEMES.find(x=>x.id===q.theme);
+            return (
+              <div className="fade">
+                {/* Quiz header */}
+                <div style={{background:"white",borderRadius:10,border:"1px solid #E5E7EB",padding:"14px 18px",marginBottom:14}}>
+                  <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:8}}>
+                    <div style={{fontSize:12,color:th?.color,fontWeight:600}}>{th?.icon} {th?.label}</div>
+                    <div style={{display:"flex",alignItems:"center",gap:12}}>
+                      <button onClick={() => { const n=!autoReadQuiz; setAutoReadQuiz(n); if(!n){quizSpeakAbortRef.current=true;synthRef.current?.cancel();setIsSpeakingQuiz(false);setReadingChoiceIdx(null);} }}
+                        style={{display:"flex",alignItems:"center",gap:5,background:autoReadQuiz?"#2563EB":"#F3F4F6",border:"none",color:autoReadQuiz?"white":"#6B7280",borderRadius:6,padding:"4px 10px",cursor:"pointer",fontSize:11,fontWeight:600}}>
+                        🎙 {autoReadQuiz?"Voix ON":"Voix OFF"}
+                      </button>
+                      <span style={{fontSize:13,fontWeight:600,color:"#374151"}}>{qIdx+1}/{quizQs.length}</span>
+                      <span style={{fontSize:13,color:"#059669",fontWeight:600}}>✓{totalScore}</span>
+                      <span style={{fontSize:13,color:"#DC2626",fontWeight:600}}>✗{totalAnswered-totalScore}</span>
+                    </div>
+                  </div>
+                  {/* Progress bar */}
+                  <div style={{background:"#F3F4F6",borderRadius:4,height:5}}>
+                    <div style={{width:`${(qIdx/quizQs.length)*100}%`,height:"100%",background:th?.color||"#2563EB",borderRadius:4,transition:"width .5s ease"}}/>
+                  </div>
+                  {/* Timer */}
+                  {isMockExam && mockTimeLeft!==null && (()=>{
+                    const m=Math.floor(mockTimeLeft/60), s=mockTimeLeft%60, urgent=mockTimeLeft<300;
+                    return (
+                      <div style={{display:"flex",alignItems:"center",justifyContent:"center",gap:8,marginTop:10,padding:"8px 14px",borderRadius:8,background:urgent?"#FEF2F2":"#F9FAFB",border:`1px solid ${urgent?"#FCA5A5":"#E5E7EB"}`}}>
+                        <span style={{fontSize:14}}>{urgent?"⚠️":"⏱️"}</span>
+                        <span style={{fontWeight:700,fontSize:15,color:urgent?"#DC2626":"#374151",fontFamily:"monospace",letterSpacing:2}}>{String(m).padStart(2,"0")}:{String(s).padStart(2,"0")}</span>
+                        <span style={{fontSize:11,color:urgent?"#DC2626":"#6B7280"}}>{urgent?"Dépêchez-vous !":"restant"}</span>
+                      </div>
+                    );
+                  })()}
+                </div>
+
+                {/* Question card */}
+                <div key={qIdx} className="fade" style={{background:"white",borderRadius:10,border:"1px solid #E5E7EB",padding:"24px",marginBottom:14}}>
+                  <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",gap:12,marginBottom:t?6:20}}>
+                    <div style={{fontSize:17,fontWeight:600,lineHeight:1.6,flex:1,color:"#111827"}}>{q.q}</div>
+                    <button onClick={readCurrentQuiz} style={{background:isSpeakingQuiz?"#2563EB":"#F3F4F6",border:"none",color:isSpeakingQuiz?"white":"#6B7280",borderRadius:8,width:38,height:38,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",flexShrink:0}}>
+                      {isSpeakingQuiz
+                        ? <svg width="12" height="12" viewBox="0 0 14 14" fill="currentColor"><rect x="2" y="2" width="4" height="10" rx="1"/><rect x="8" y="2" width="4" height="10" rx="1"/></svg>
+                        : <svg width="14" height="14" viewBox="0 0 20 20" fill="currentColor"><path d="M10 1a4 4 0 0 1 4 4v5a4 4 0 0 1-8 0V5a4 4 0 0 1 4-4zm-6 9a6 6 0 0 0 12 0h-2a4 4 0 0 1-8 0H4zm6 7v-2h-1v2H7v1h6v-1h-2z"/></svg>
+                      }
+                    </button>
+                  </div>
+                  {t && <div style={{fontSize:13,color:"#6B7280",fontStyle:"italic",marginBottom:18,lineHeight:1.6,borderLeft:"3px solid #D1D5DB",paddingLeft:10,direction:isRTL?"rtl":"ltr"}}>{t.q}</div>}
+
+                  <div style={{display:"flex",flexDirection:"column",gap:8}}>
+                    {q.c.map((ch,idx)=>{
+                      let extraCls = "choice-btn";
+                      const showResult = feedbackMode==="immediate" ? answered : false;
+                      if(showResult){if(idx===q.a)extraCls+=" choice-correct";else if(idx===selected)extraCls+=" choice-wrong";}
+                      const letterBg = showResult&&idx===q.a?"#059669":showResult&&idx===selected&&idx!==q.a?"#DC2626":readingChoiceIdx===idx?"#2563EB":"#F3F4F6";
+                      const letterTx = (showResult&&(idx===q.a||(idx===selected&&idx!==q.a)))||readingChoiceIdx===idx?"white":"#6B7280";
+                      const letter = showResult&&idx===q.a?"✓":showResult&&idx===selected&&idx!==q.a?"✗":readingChoiceIdx===idx?<Waveform active={true} color="white" size={10}/>:String.fromCharCode(65+idx);
+                      return (
+                        <button key={idx} className={extraCls} onClick={()=>handleAnswer(idx)} disabled={answered}
+                          style={{display:"flex",alignItems:"flex-start",gap:12,padding:"13px 16px",textAlign:"left",fontSize:14,lineHeight:1.5,fontFamily:"inherit"}}>
+                          <span style={{width:26,height:26,borderRadius:6,background:letterBg,color:letterTx,display:"flex",alignItems:"center",justifyContent:"center",fontSize:12,fontWeight:700,flexShrink:0,marginTop:1,transition:"all .15s"}}>{letter}</span>
+                          <div>
+                            <div style={{color:showResult&&idx===q.a?"#059669":"#111827",fontWeight:showResult&&idx===q.a?600:400}}>{ch}</div>
+                            {t?.c?.[idx]&&lang!=="fr"&&<div style={{fontSize:11.5,color:"#9CA3AF",fontStyle:"italic",marginTop:2,direction:isRTL?"rtl":"ltr"}}>{t.c[idx]}</div>}
+                          </div>
+                        </button>
+                      );
+                    })}
+                  </div>
+
+                  {/* Explanation (immediate mode only) */}
+                  {answered && feedbackMode==="immediate" && (
+                    <div className="fade" style={{marginTop:16,padding:"14px 16px",background:selected===q.a?"#ECFDF5":"#FEF9C3",borderRadius:8,borderLeft:`3px solid ${selected===q.a?"#059669":"#D97706"}`}}>
+                      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:6}}>
+                        <div style={{fontWeight:600,color:selected===q.a?"#059669":"#D97706",fontSize:13}}>
+                          {selected===q.a?"✓ Bonne réponse !":"✗ Réponse incorrecte"}
+                        </div>
+                        <button onClick={()=>{
+                          if(isSpeakingQuiz){quizSpeakAbortRef.current=true;synthRef.current?.cancel();setIsSpeakingQuiz(false);return;}
+                          quizSpeakAbortRef.current=false;synthRef.current?.cancel();setIsSpeakingQuiz(true);
+                          const txt=`La bonne réponse est : ${q.c[q.a]}. ${q.e}`;
+                          const utt=new SpeechSynthesisUtterance(txt); utt.lang="fr-FR"; utt.rate=speed;
+                          utt.onend=()=>setIsSpeakingQuiz(false); utt.onerror=()=>setIsSpeakingQuiz(false);
+                          setTimeout(()=>synthRef.current?.speak(utt),50);
+                        }} style={{background:"none",border:"none",cursor:"pointer",color:"#6B7280",padding:4,display:"flex",alignItems:"center",gap:4,fontSize:11,fontWeight:500}}>
+                          {isSpeakingQuiz?"⏹ Stop":"🔊 Écouter"}
+                        </button>
+                      </div>
+                      <div style={{fontSize:13,color:"#374151",lineHeight:1.7}}>{q.e}</div>
+                      {t?.e&&lang!=="fr"&&<div style={{marginTop:8,fontSize:12.5,color:"#6B7280",fontStyle:"italic",lineHeight:1.7,direction:isRTL?"rtl":"ltr",borderTop:"1px solid rgba(0,0,0,.06)",paddingTop:8}}>{t.e}</div>}
+                    </div>
+                  )}
+                </div>
+
+                {answered && (
+                  <div style={{display:"flex",justifyContent:"flex-end"}}>
+                    <button onClick={nextQ} style={{background:"#111827",color:"white",border:"none",borderRadius:8,padding:"12px 28px",cursor:"pointer",fontSize:14,fontWeight:700}}>
+                      {qIdx+1>=quizQs.length?"Voir les résultats →":"Suivant →"}
+                    </button>
+                  </div>
+                )}
+              </div>
+            );
+          })()}
+
+          {/* FRENCH PRACTICE */}
+          {screen==="french" && (
+            <FrenchPractice isPremium={isPremium} onBack={()=>{stopAll();setScreen("home");}}/>
+          )}
+
+          {/* RESULTS */}
+          {screen==="results" && (
+            <div className="fade">
+              {/* Score banner */}
+              <div style={{background:passed?"linear-gradient(145deg,#1B4332,#2D6A4F)":"linear-gradient(145deg,#7F1D1D,#DC2626)",color:"white",textAlign:"center",padding:"40px 24px",borderRadius:12,marginBottom:20}}>
+                <div style={{fontSize:48,marginBottom:8}}>{passed?"🎉":"📚"}</div>
+                <div style={{fontSize:60,fontWeight:700,lineHeight:1,letterSpacing:-2}}>{totalScore}<span style={{fontSize:24,opacity:.6}}> / {quizQs.length}</span></div>
+                <div style={{fontSize:28,fontWeight:700,marginTop:8}}>{Math.round((totalScore/quizQs.length)*100)}%</div>
+                <div style={{marginTop:14,fontSize:13,fontWeight:600,background:"rgba(255,255,255,.15)",display:"inline-flex",padding:"7px 18px",borderRadius:6}}>
+                  {passed?`✓ Score minimum atteint (${passMark}/${quizQs.length})`:`Il manque ${passMark-totalScore} point(s) pour 80 %`}
+                </div>
+              </div>
+
+              {/* Detailed review (end mode or wrong answers) */}
+              {(feedbackMode==="end" || wrongAnswers.length>0) && (
+                <div style={{background:"white",borderRadius:12,border:"1px solid #E5E7EB",padding:"24px",marginBottom:16}}>
+                  <div style={{fontWeight:700,fontSize:15,color:"#111827",marginBottom:16}}>Révision complète des réponses</div>
+                  {(feedbackMode==="end" ? quizQs.map((_,i)=>({q:quizQs[i],correct:scores[i]})) : wrongAnswers.map(q=>({q,correct:false}))).map((item,i)=>{
+                    const wq = feedbackMode==="end" ? item.q : item.q;
+                    const correct = feedbackMode==="end" ? item.correct : false;
+                    return (
+                      <div key={i} style={{marginBottom:16,paddingBottom:16,borderBottom:"1px solid #F3F4F6"}}>
+                        <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:8}}>
+                          <div style={{fontSize:12,color:"#6B7280"}}>Question {i+1}</div>
+                          <span style={{background:correct?"#DCFCE7":"#FEE2E2",color:correct?"#166534":"#991B1B",borderRadius:4,padding:"2px 8px",fontSize:11,fontWeight:600}}>
+                            {correct?"✓ Correcte":"✗ Incorrecte"}
+                          </span>
+                        </div>
+                        <div style={{fontWeight:600,fontSize:13,color:"#111827",marginBottom:8}}>{wq.q}</div>
+                        {!correct && feedbackMode==="end" && (
+                          <div style={{fontSize:12,color:"#DC2626",marginBottom:4}}>Votre réponse : {wq.c?.[selected]||"—"}</div>
+                        )}
+                        <div style={{fontSize:12,color:"#059669",fontWeight:600,marginBottom:8}}>Bonne réponse : {wq.c?.[wq.a]}</div>
+                        <div style={{fontSize:12,color:"#6B7280",lineHeight:1.7,background:"#F9FAFB",borderRadius:6,padding:"10px 12px"}}>
+                          <strong>Explication : </strong>{wq.e}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+
+              {/* Premium upsell */}
+              {!isPremium && (
+                <div style={{background:"#111827",color:"white",borderRadius:12,padding:"24px",textAlign:"center",marginBottom:16}}>
+                  <div style={{fontWeight:700,fontSize:16,marginBottom:6}}>🚀 Débloquez les {ALL_QUESTIONS.length} questions</div>
+                  <div style={{fontSize:13,opacity:.8,marginBottom:16}}>Mode écoute, 11 langues, analyses détaillées — 5,00 € une seule fois.</div>
+                  <a href={STRIPE_LINK} target="_blank" rel="noopener noreferrer" style={{display:"inline-block",background:"#2563EB",color:"white",borderRadius:8,padding:"11px 24px",fontWeight:700,fontSize:14,textDecoration:"none"}}>
+                    Accès complet →
+                  </a>
+                </div>
+              )}
+
+              <div style={{display:"flex",gap:10,justifyContent:"center",flexWrap:"wrap"}}>
+                <button onClick={() => startQuiz(currentQuizTheme)} style={{background:"#111827",color:"white",border:"none",borderRadius:8,padding:"12px 24px",cursor:"pointer",fontSize:13,fontWeight:700}}>🔄 Recommencer</button>
+                {isPremium&&<button onClick={()=>startListen("all")} style={{background:"white",color:"#111827",border:"1.5px solid #E5E7EB",borderRadius:8,padding:"12px 24px",cursor:"pointer",fontSize:13,fontWeight:600}}>🎧 Mode écoute</button>}
+                <button onClick={()=>{stopAll();setScreen(activeLevel?"level":"home");}} style={{background:"white",color:"#111827",border:"1.5px solid #E5E7EB",borderRadius:8,padding:"12px 24px",cursor:"pointer",fontSize:13,fontWeight:600}}>🏠 Accueil</button>
+              </div>
+            </div>
+          )}
+
+          {/* PROFILE */}
+          {screen==="profile" && (
+            <div className="fade">
+              <h2 style={{margin:"0 0 20px",fontSize:20,fontWeight:700,color:"#111827"}}>Profil</h2>
+              <div style={{background:"white",borderRadius:12,border:"1px solid #E5E7EB",padding:"24px",marginBottom:16}}>
+                <div style={{fontWeight:600,fontSize:14,marginBottom:16,color:"#111827"}}>Statut</div>
+                <div style={{display:"flex",alignItems:"center",gap:12}}>
+                  <div style={{width:48,height:48,borderRadius:"50%",background:"#F3F4F6",display:"flex",alignItems:"center",justifyContent:"center",fontSize:22}}>👤</div>
+                  <div>
+                    <div style={{fontWeight:600,fontSize:14,color:"#111827"}}>{isPremium?"Compte Premium":"Compte Gratuit"}</div>
+                    <div style={{fontSize:12,color:"#6B7280"}}>{isPremium?"Accès complet à toutes les questions":"10 questions par thème"}</div>
+                  </div>
+                  {isPremium && <div style={{marginLeft:"auto",background:"#FEF9C3",color:"#854D0E",borderRadius:6,padding:"4px 10px",fontSize:11,fontWeight:700}}>⭐ Premium</div>}
+                </div>
+              </div>
+              {!isPremium && (
+                <div style={{background:"white",borderRadius:12,border:"1px solid #E5E7EB",padding:"24px",marginBottom:16}}>
+                  <div style={{fontWeight:600,fontSize:14,marginBottom:12,color:"#111827"}}>🔑 Code d'activation</div>
+                  <div style={{display:"flex",gap:8}}>
+                    <input value={codeInput} onChange={e=>setCodeInput(e.target.value)} onKeyDown={e=>e.key==="Enter"&&handleCodeSubmit()} placeholder="CIVIC-XXXX-XXXX-XXXX"
+                      style={{flex:1,padding:"10px 12px",borderRadius:8,border:`1.5px solid ${codeStatus==="error"?"#DC2626":codeStatus==="ok"?"#059669":"#D1D5DB"}`,fontSize:12,fontFamily:"monospace",outline:"none"}}/>
+                    <button onClick={handleCodeSubmit} disabled={codeStatus==="checking"||codeStatus==="ok"}
+                      style={{background:"#111827",color:"white",border:"none",borderRadius:8,padding:"10px 16px",cursor:"pointer",fontWeight:700,fontSize:13}}>
+                      {codeStatus==="checking"?"…":"Activer"}
+                    </button>
+                  </div>
+                  {codeStatus&&<div style={{marginTop:8,fontSize:12,color:codeStatus==="ok"?"#059669":"#DC2626",fontWeight:600}}>
+                    {codeStatus==="ok"?"✅ Accès débloqué !":codeStatus==="error"?"❌ Code invalide.":"⏳ Vérification…"}
+                  </div>}
+                </div>
+              )}
+            </div>
+          )}
+
+        </div>
+      </div>
+    </div>
+  );
 }
