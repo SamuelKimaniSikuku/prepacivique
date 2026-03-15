@@ -1319,8 +1319,17 @@ pool = pool.map(q => {
                 <p style={{margin:0,opacity:.72,fontSize:13,lineHeight:1.6}}>Obligatoire depuis le <strong style={{opacity:1,fontWeight:700}}>1er janvier 2026</strong></p>
               </div>
               
+              <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:8,marginBottom:14}}>
+                {[[`${ALL_QUESTIONS.length}`,"Questions"],["🎧","Écoute"],["11","Langues"],["80%","Seuil"]].map(([v,l])=>(
+                  <div key={l} style={{background:"rgba(255,255,255,.12)",backdropFilter:"blur(8px)",border:"1px solid rgba(255,255,255,.18)",borderRadius:4,padding:"13px 6px",textAlign:"center"}}>
+                    <div style={{fontSize:17,fontWeight:800,fontFamily:"'Playfair Display',serif"}}>{v}</div>
+                    <div style={{fontSize:9,opacity:.75,marginTop:3,fontWeight:600,textTransform:"uppercase",letterSpacing:.8}}>{l}</div>
+                  </div>
+                ))}
+              </div>
+
               {/* ── French Practice Banner ── */}
-              <div onClick={()=>{stopAll();setScreen("french");}} style={{marginTop:14,background:"rgba(107,33,168,.25)",border:"1px solid rgba(167,100,255,.4)",borderRadius:6,padding:"12px 16px",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"space-between",gap:12}}>
+              <div onClick={()=>{stopAll();setScreen("french");}} style={{background:"rgba(107,33,168,.25)",border:"1px solid rgba(167,100,255,.4)",borderRadius:6,padding:"12px 16px",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"space-between",gap:12}}>
                 <div style={{display:"flex",alignItems:"center",gap:10}}>
                   <span style={{fontSize:22}}>🇫🇷</span>
                   <div>
@@ -1329,14 +1338,6 @@ pool = pool.map(q => {
                   </div>
                 </div>
                 <div style={{background:"rgba(255,255,255,.2)",borderRadius:4,padding:"5px 12px",fontSize:12,fontWeight:700,color:"white",whiteSpace:"nowrap",flexShrink:0}}>Commencer →</div>
-              </div>
-<div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:8}}>
-                {[[`${ALL_QUESTIONS.length}`,"Questions"],["🎧","Écoute"],["11","Langues"],["80%","Seuil"]].map(([v,l])=>(
-                  <div key={l} style={{background:"rgba(255,255,255,.12)",backdropFilter:"blur(8px)",border:"1px solid rgba(255,255,255,.18)",borderRadius:4,padding:"13px 6px",textAlign:"center"}}>
-                    <div style={{fontSize:17,fontWeight:800,fontFamily:"'Playfair Display',serif"}}>{v}</div>
-                    <div style={{fontSize:9,opacity:.75,marginTop:3,fontWeight:600,textTransform:"uppercase",letterSpacing:.8}}>{l}</div>
-                  </div>
-                ))}
               </div>
             </div>
 
