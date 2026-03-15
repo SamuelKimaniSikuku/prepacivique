@@ -1,5 +1,4 @@
 import { useState, useEffect, useRef, useCallback } from "react";
-import { isDemo } from "./lib/supabase";
 import { profilesService } from "./services/profiles";
 import { authService } from "./services/auth";
 
