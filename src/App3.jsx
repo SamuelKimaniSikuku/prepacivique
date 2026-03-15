@@ -507,10 +507,13 @@ function LevelDashboard({ level, stats, onStartQuiz, onPromptQuiz, onStartMockEx
           onMouseLeave={e=>e.currentTarget.style.boxShadow="none"}>
           <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:12}}>
             <div style={{width:40,height:40,background:"#F3F4F6",borderRadius:8,display:"flex",alignItems:"center",justifyContent:"center",fontSize:18}}>📖</div>
-            <span style={{background:"#DCFCE7",color:"#166534",borderRadius:4,padding:"2px 8px",fontSize:11,fontWeight:600}}>1 test gratuit</span>
+            {isPremium
+              ? <span style={{background:"#DCFCE7",color:"#166534",borderRadius:4,padding:"2px 8px",fontSize:11,fontWeight:600}}>✓ Accès complet</span>
+              : <span style={{background:"#FEF9C3",color:"#854D0E",borderRadius:4,padding:"2px 8px",fontSize:11,fontWeight:600}}>🆓 10 questions d'essai</span>
+            }
           </div>
           <div style={{fontWeight:700,fontSize:15,color:"#0F1923",marginBottom:4}}>Pratiquer par sections</div>
-          <div style={{fontSize:12,color:"#6B7280"}}>Entraînez-vous sur les 5 thèmes de l'examen</div>
+          <div style={{fontSize:12,color:"#6B7280"}}>{isPremium ? "Accès aux 441 questions officielles" : "Entraînez-vous sur les 5 thèmes de l'examen"}</div>
         </div>
 
         {/* Mock exam */}
@@ -556,16 +559,19 @@ function LevelDashboard({ level, stats, onStartQuiz, onPromptQuiz, onStartMockEx
         </div>
 
         {/* Quiz All */}
-        <div onClick={() => onPromptQuiz(null, lv.themes)}
-          style={{background:"linear-gradient(135deg,#1C1917,#C41E3A)",borderRadius:10,border:"none",padding:"22px",cursor:"pointer",color:"white"}}
+        <div onClick={() => { if(!checkPremium("quiz")) return; onPromptQuiz(null, lv.themes); }}
+          style={{background:"linear-gradient(135deg,#1C1917,#C41E3A)",borderRadius:10,border:"none",padding:"22px",cursor:"pointer",color:"white",position:"relative"}}
           onMouseEnter={e=>e.currentTarget.style.boxShadow="0 4px 20px rgba(196,30,58,.35)"}
           onMouseLeave={e=>e.currentTarget.style.boxShadow="none"}>
           <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:12}}>
             <div style={{width:40,height:40,background:"rgba(255,255,255,.15)",borderRadius:8,display:"flex",alignItems:"center",justifyContent:"center",fontSize:18}}>🎯</div>
-            <span style={{background:"rgba(255,255,255,.15)",color:"white",borderRadius:4,padding:"2px 8px",fontSize:11,fontWeight:600}}>{levelQuestions.length} questions</span>
+            <div style={{display:"flex",gap:5,alignItems:"center"}}>
+              <span style={{background:"rgba(255,255,255,.15)",color:"white",borderRadius:4,padding:"2px 8px",fontSize:11,fontWeight:600}}>{levelQuestions.length} questions</span>
+              {!isPremium && <span style={{fontSize:14}}>🔒</span>}
+            </div>
           </div>
           <div style={{fontWeight:700,fontSize:15,marginBottom:4}}>Quiz complet</div>
-          <div style={{fontSize:12,opacity:.8}}>Choisir le nombre de questions · sans minuterie</div>
+          <div style={{fontSize:12,opacity:.8}}>{isPremium ? "Choisir le nombre de questions · sans minuterie" : "Fonctionnalité Premium — débloquez l'accès complet"}</div>
         </div>
       </div>
 
