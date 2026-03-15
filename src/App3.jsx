@@ -1,6 +1,4 @@
 import { useState, useEffect, useRef, useCallback } from "react";
-import { profilesService } from "./services/profiles";
-import { authService } from "./services/auth";
 
 // ══════════════════════════════════════════════════════════════
 // BADDIE — Fully Integrated Travel App
