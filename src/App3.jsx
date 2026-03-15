@@ -499,7 +499,7 @@ function LevelDashboard({ level, stats, onStartQuiz, onPromptQuiz, onStartMockEx
       </div>
 
       {/* Action cards */}
-      <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(220px,1fr))",gap:14,marginBottom:24}}>
+      <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(200px,1fr))",gap:14,marginBottom:24}}>
         {/* Practice */}
         <div onClick={() => onPromptQuiz(null, lv.themes)}
           style={{background:"white",borderRadius:10,border:"2px solid #0F1923",padding:"22px",cursor:"pointer",transition:"all .2s"}}
@@ -529,17 +529,17 @@ function LevelDashboard({ level, stats, onStartQuiz, onPromptQuiz, onStartMockEx
           <div style={{fontSize:12,color:"#6B7280"}}>Simulez l'examen officiel (40 questions, 45 min)</div>
         </div>
 
-        {/* Listen */}
-        <div onClick={() => onStartListen(null)}
+        {/* Listen - Réviser erreurs */}
+        <div onClick={() => { if(!checkPremium("listen")) return; onStartListen(null, lv.themes); }}
           style={{background:"white",borderRadius:10,border:"1px solid #E5E7EB",padding:"22px",cursor:"pointer"}}
           onMouseEnter={e=>e.currentTarget.style.boxShadow="0 4px 16px rgba(0,0,0,.08)"}
           onMouseLeave={e=>e.currentTarget.style.boxShadow="none"}>
           <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:12}}>
-            <div style={{width:40,height:40,background:"#F3F4F6",borderRadius:8,display:"flex",alignItems:"center",justifyContent:"center",fontSize:18}}>🎧</div>
+            <div style={{width:40,height:40,background:"#FEF3EE",borderRadius:8,display:"flex",alignItems:"center",justifyContent:"center",fontSize:18}}>🎧</div>
             {!isPremium && <span style={{fontSize:12}}>🔒</span>}
           </div>
-          <div style={{fontWeight:700,fontSize:15,color:"#0F1923",marginBottom:4}}>Réviser mes erreurs</div>
-          <div style={{fontSize:12,color:"#6B7280"}}>Mode écoute · Questions + réponses + explications</div>
+          <div style={{fontWeight:700,fontSize:15,color:"#0F1923",marginBottom:4}}>Écouter ce niveau</div>
+          <div style={{fontSize:12,color:"#6B7280"}}>Questions + réponses + explications audio pour ce niveau</div>
         </div>
 
         {/* Play All */}
@@ -552,7 +552,7 @@ function LevelDashboard({ level, stats, onStartQuiz, onPromptQuiz, onStartMockEx
             <span style={{background:"rgba(255,255,255,.15)",color:"white",borderRadius:4,padding:"2px 8px",fontSize:11,fontWeight:600}}>{levelQuestions.length} questions</span>
           </div>
           <div style={{fontWeight:700,fontSize:15,marginBottom:4}}>Tout écouter</div>
-          <div style={{fontSize:12,opacity:.8}}>Écouter toutes les questions · réponses · explications en audio</div>
+          <div style={{fontSize:12,opacity:.8}}>Audio complet — questions · réponses · explications</div>
         </div>
 
         {/* Quiz All */}
@@ -565,7 +565,7 @@ function LevelDashboard({ level, stats, onStartQuiz, onPromptQuiz, onStartMockEx
             <span style={{background:"rgba(255,255,255,.15)",color:"white",borderRadius:4,padding:"2px 8px",fontSize:11,fontWeight:600}}>{levelQuestions.length} questions</span>
           </div>
           <div style={{fontWeight:700,fontSize:15,marginBottom:4}}>Quiz complet</div>
-          <div style={{fontSize:12,opacity:.8}}>Toutes les questions de ce niveau en mode quiz</div>
+          <div style={{fontSize:12,opacity:.8}}>Choisir le nombre de questions · sans minuterie</div>
         </div>
       </div>
 
