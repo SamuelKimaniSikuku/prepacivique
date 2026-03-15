@@ -1144,6 +1144,7 @@ export default function App() {
                 level={activeLevel}
                 stats={globalStats}
                 onStartQuiz={(themeId) => promptQuizStart(themeId)}
+                onPromptQuiz={promptQuizStart}
                 onStartMockExam={startMockExam}
                 onStartListen={startListen}
                 isPremium={isPremium}
