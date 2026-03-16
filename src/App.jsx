@@ -305,15 +305,46 @@ const VALID_CODE_HASHES = new Set([
   "b568ed77950ba49b36fae944d33c4346c63e38c4d61e298cf155cbe4b83be25a",
   "329997db2105901f6961e6dd73d064b764ed07f015a2aa3cc05a5e1cf6b169f5",
   "bcc29087ef9e9dbbd8bd1c359d95d5294ba55f713a70a90f5af97dca5f0efd76",
+  "0a96c757ba003c4d63c778317c3bf9aac187b18960b32488ddb31b782a64789c",
+  "038eb898172c0c938ca19bafdf16d6d81c562840d9d0922769878b9aafb641ac",
+  "e55063e5f68d80b3ca0eb4f7498888b8c06d138ca77614f15d7b873787755c6f",
+  "ae49faecf3bb1fc0d889e9bfcfbe9e810870ffd75973e7d1ab5e673547c64619",
+  "ec28575f12a2c526dad0c98d8f9fdf33f1e787ac60ff71f4e2ac8694787ec80b",
+  "56ea26ed6e25c06518d1deb81bbf3958dbb95903b50494a16c744261df1ae5f5",
+  "1602d9c8db3855930431efdc7a16abfbdbf16b84b35fdf294b6472f80c9dc30e",
+  "6721e8639c6a21a69dfbc1d43ffed6b9c54200a14962e7b95378aad5e70620a3",
+  "9409084aeccf7c6a57f5790d3afb75ea272fc2afad44c46efeacb6919a95f589",
+  "81dc864c61ca2151d01c6ba0a15cfa89a300cefeb51489cb6da8b8b0d2a3e79b",
+  "b87154c085c1d3e195814338054764d18fc91920a21594572349dd17140bca24",
+  "8809b6ddb3a5f9ff8d6355239b1b0cdd2f644bd13445dde22f8ce24ccfab5b2e",
+  "7c0d0fdb258b877af9677c229b5874127ae15d4b43130ab2e264aef5b8130f89",
 ]);
 
 async function validateCode(raw) {
   try {
-    const normalized = raw.toUpperCase().replace(/[^A-Z0-9]/g, "");
-    const buf = new TextEncoder().encode(normalized);
-    const hashBuf = await crypto.subtle.digest("SHA-256", buf);
-    const hex = Array.from(new Uint8Array(hashBuf)).map(b => b.toString(16).padStart(2,"0")).join("");
-    return VALID_CODE_HASHES.has(hex);
+    const normalized = raw.trim().toUpperCase();
+    const res = await fetch(
+      `${SUPABASE_URL}/rest/v1/activation_codes?code=eq.${encodeURIComponent(normalized)}&used=eq.false&select=id,code&limit=1`,
+      { headers: { "apikey": SUPABASE_KEY, "Authorization": `Bearer ${SUPABASE_KEY}` } }
+    );
+    if (!res.ok) return false;
+    const data = await res.json();
+    if (!data || data.length === 0) return false;
+    // Mark code as used
+    await fetch(
+      `${SUPABASE_URL}/rest/v1/activation_codes?id=eq.${data[0].id}`,
+      {
+        method: "PATCH",
+        headers: {
+          "apikey": SUPABASE_KEY,
+          "Authorization": `Bearer ${SUPABASE_KEY}`,
+          "Content-Type": "application/json",
+          "Prefer": "return=minimal"
+        },
+        body: JSON.stringify({ used: true, used_at: new Date().toISOString() })
+      }
+    );
+    return true;
   } catch { return false; }
 }
 
