@@ -91,7 +91,7 @@ export default function FrenchPractice({ isPremium, onBack }) {
         <h2 style={{margin:"0 0 8px",fontSize:22,fontWeight:800,lineHeight:1.25,fontFamily:"'Playfair Display',serif"}}>Préparez votre certification<br/>de langue française</h2>
         <p style={{margin:"0 0 20px",opacity:.75,fontSize:13,lineHeight:1.65}}>DILF · DELF · DALF · TCF · TEF — du niveau A1.1 au C2</p>
         <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:8}}>
-          {[["70+","Questions"],["7","Niveaux"],["CEFR","Certifié"],["🆓","Gratuit"]].map(([v,l])=>(
+          {[["429+","Questions"],["7","Niveaux"],["CEFR","Certifié"],["🆓","Gratuit"]].map(([v,l])=>(
             <div key={l} style={{background:"rgba(255,255,255,.12)",borderRadius:4,padding:"11px 6px",textAlign:"center",border:"1px solid rgba(255,255,255,.15)"}}>
               <div style={{fontSize:16,fontWeight:800}}>{v}</div>
               <div style={{fontSize:9,opacity:.75,marginTop:2,textTransform:"uppercase",letterSpacing:.7,fontWeight:600}}>{l}</div>
