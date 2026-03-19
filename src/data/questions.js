@@ -1,5295 +1,746 @@
-const QUESTIONS = [
-  {
-    "theme": "valeurs",
-    "q": "Quelle est la devise de la République française ?",
-    "c": [
-      "Travail, Famille, Patrie",
-      "Liberté, Égalité, Fraternité",
-      "Honneur, Patrie, Valeur, Discipline",
-      "Justice, Égalité, Solidarité"
-    ],
-    "a": 1,
-    "e": "La devise officielle est Liberté, Égalité, Fraternité, inscrite dans la Constitution de 1958."
-  },
-  {
-    "theme": "valeurs",
-    "q": "Que commémore la fête nationale du 14 juillet ?",
-    "c": [
-      "La proclamation de la Ière République en 1792",
-      "La prise de la Bastille en 1789",
-      "La Déclaration des droits de l'homme et du citoyen",
-      "La fête de la Fédération de 1790 uniquement"
-    ],
-    "a": 1,
-    "e": "Le 14 juillet commémore la prise de la Bastille en 1789."
-  },
-  {
-    "theme": "valeurs",
-    "q": "En quelle année la loi de séparation des Églises et de l'État a-t-elle été votée ?",
-    "c": [
-      "1881",
-      "1946",
-      "1905",
-      "1958"
-    ],
-    "a": 2,
-    "e": "La loi du 9 décembre 1905 établit la séparation des Églises et de l'État."
-  },
-  {
-    "theme": "valeurs",
-    "q": "Que garantit le principe de laïcité ?",
-    "c": [
-      "La prédominance des valeurs chrétiennes dans l'espace public",
-      "L'interdiction de porter tout signe religieux en public",
-      "La liberté de conscience et la neutralité de l'État",
-      "Le financement équitable de tous les cultes reconnus"
-    ],
-    "a": 2,
-    "e": "La laïcité garantit la liberté de conscience et la neutralité de l'État vis-à-vis des religions."
-  },
-  {
-    "theme": "valeurs",
-    "q": "Lequel de ces symboles représente la République française ?",
-    "c": [
-      "La tour Eiffel",
-      "Marianne",
-      "Le coq gaulois",
-      "La fleur de lys"
-    ],
-    "a": 1,
-    "e": "Marianne est le symbole humain de la République française."
-  },
-  {
-    "theme": "valeurs",
-    "q": "Quelles sont les couleurs du drapeau français ?",
-    "c": [
-      "Rouge, blanc, vert",
-      "Bleu, blanc, rouge",
-      "Rouge, blanc, bleu",
-      "Blanc, rouge, bleu"
-    ],
-    "a": 1,
-    "e": "Le drapeau tricolore français est bleu, blanc, rouge."
-  },
-  {
-    "theme": "valeurs",
-    "q": "Quel est l'hymne national français ?",
-    "c": [
-      "Le Chant du Départ",
-      "La Marseillaise",
-      "Le Requiem de Berlioz",
-      "La Brabançonne"
-    ],
-    "a": 1,
-    "e": "La Marseillaise, composée en 1792, est l'hymne national depuis 1879."
-  },
-  {
-    "theme": "valeurs",
-    "q": "Qui a composé La Marseillaise ?",
-    "c": [
-      "Victor Hugo en 1848",
-      "Rouget de Lisle",
-      "Georges Danton en 1790",
-      "Hector Berlioz en 1830"
-    ],
-    "a": 1,
-    "e": "Claude Joseph Rouget de Lisle a composé La Marseillaise en 1792."
-  },
-  {
-    "theme": "valeurs",
-    "q": "Que symbolise Marianne ?",
-    "c": [
-      "La monarchie constitutionnelle française",
-      "La République et la liberté",
-      "La noblesse de robe d'Ancien Régime",
-      "L'unité nationale au-delà des partis"
-    ],
-    "a": 1,
-    "e": "Marianne symbolise la République française, la liberté et la raison."
-  },
-  {
-    "theme": "valeurs",
-    "q": "Quel principe garantit l'égalité devant la loi sans distinction d'origine ?",
-    "c": [
-      "Le fédéralisme républicain",
-      "L'universalisme républicain",
-      "La discrimination positive",
-      "La citoyenneté différenciée"
-    ],
-    "a": 1,
-    "e": "L'universalisme républicain garantit que la loi s'applique à tous sans distinction."
-  },
-  {
-    "theme": "valeurs",
-    "q": "Combien d'articles compte la Déclaration des droits de l'homme de 1789 ?",
-    "c": [
-      "10",
-      "17",
-      "24",
-      "30"
-    ],
-    "a": 1,
-    "e": "La DDHC de 1789 compte 17 articles."
-  },
-  {
-    "theme": "valeurs",
-    "q": "Quel article de la DDHC affirme que les hommes naissent libres et égaux en droits ?",
-    "c": [
-      "Article 1",
-      "Article 4",
-      "Article 6",
-      "Article 11"
-    ],
-    "a": 0,
-    "e": "L'article 1er de la DDHC : 'Les hommes naissent et demeurent libres et égaux en droits.'"
-  },
-  {
-    "theme": "valeurs",
-    "q": "Que dit l'article 4 de la DDHC sur la liberté ?",
-    "c": [
-      "La liberté consiste à voter",
-      "La liberté consiste à pouvoir faire tout ce qui ne nuit pas à autrui",
-      "La liberté est absolue",
-      "La liberté est accordée par l'État"
-    ],
-    "a": 1,
-    "e": "L'article 4 de la DDHC définit la liberté comme le droit de faire tout ce qui ne nuit pas à autrui."
-  },
-  {
-    "theme": "valeurs",
-    "q": "Quel document a proclamé les droits naturels et imprescriptibles de l'homme ?",
-    "c": [
-      "La Constitution de 1958",
-      "La Déclaration des droits de l'homme de 1789",
-      "La loi de 1905",
-      "L'ordonnance de 1944"
-    ],
-    "a": 1,
-    "e": "La DDHC de 1789 proclame les droits naturels et imprescriptibles."
-  },
-  {
-    "theme": "valeurs",
-    "q": "Dans quels établissements l'affichage de signes religieux ostensibles est-il interdit ?",
-    "c": [
-      "Universités",
-      "Lycées, collèges et écoles publics",
-      "Tous les lieux publics",
-      "Mairies uniquement"
-    ],
-    "a": 1,
-    "e": "La loi de 2004 interdit le port de signes religieux ostensibles dans les écoles, collèges et lycées publics."
-  },
-  {
-    "theme": "valeurs",
-    "q": "Quelle loi interdit le port de signes religieux ostensibles à l'école publique ?",
-    "c": [
-      "Loi du 9 décembre 1905",
-      "Loi du 15 mars 2004",
-      "Loi du 11 octobre 2010",
-      "Loi du 9 juillet 2010"
-    ],
-    "a": 1,
-    "e": "La loi du 15 mars 2004 interdit le port de signes religieux ostensibles dans les écoles publiques."
-  },
-  {
-    "theme": "valeurs",
-    "q": "La loi du 11 octobre 2010 interdit quoi ?",
-    "c": [
-      "Le voile islamique dans les écoles",
-      "La dissimulation du visage dans l'espace public",
-      "Les réunions religieuses",
-      "Le port de la kippa"
-    ],
-    "a": 1,
-    "e": "La loi du 11 octobre 2010 interdit la dissimulation du visage dans l'espace public."
-  },
-  {
-    "theme": "valeurs",
-    "q": "Que signifie la notion de 'souveraineté nationale' ?",
-    "c": [
-      "Le roi est souverain",
-      "La Nation est souveraine, le pouvoir émane du peuple",
-      "Chaque région est souveraine",
-      "L'État est souverain sur les individus"
-    ],
-    "a": 1,
-    "e": "La souveraineté nationale signifie que le pouvoir appartient à la Nation."
-  },
-  {
-    "theme": "valeurs",
-    "q": "Qu'est-ce que le référendum ?",
-    "c": [
-      "Une élection de représentants",
-      "Un vote direct du peuple sur une question",
-      "Une consultation des experts",
-      "Un vote du Parlement"
-    ],
-    "a": 1,
-    "e": "Le référendum est une procédure par laquelle les citoyens votent directement sur une question précise."
-  },
-  {
-    "theme": "valeurs",
-    "q": "Quelle valeur républicaine impose de traiter tous les citoyens de la même façon devant la loi ?",
-    "c": [
-      "La liberté",
-      "L'égalité",
-      "La fraternité",
-      "La laïcité"
-    ],
-    "a": 1,
-    "e": "L'égalité impose que tous les citoyens soient traités de la même façon devant la loi."
-  },
-  {
-    "theme": "valeurs",
-    "q": "La France est-elle un État fédéral ?",
-    "c": [
-      "Oui, depuis 1958",
-      "Non, c'est un État unitaire",
-      "Oui, depuis 1982",
-      "Non, mais elle le deviendra"
-    ],
-    "a": 1,
-    "e": "La France est un État unitaire et indivisible, pas un État fédéral."
-  },
-  {
-    "theme": "valeurs",
-    "q": "Qu'est-ce que le suffrage universel ?",
-    "c": [
-      "Le droit de vote réservé aux hommes",
-      "Le droit de vote pour tous les citoyens sans condition de fortune",
-      "Le vote des seuls propriétaires",
-      "Le vote des seuls diplômés"
-    ],
-    "a": 1,
-    "e": "Le suffrage universel donne le droit de vote à tous les citoyens sans condition de fortune ou de diplôme."
-  },
-  {
-    "theme": "valeurs",
-    "q": "Depuis quelle année le suffrage universel masculin est-il en vigueur en France ?",
-    "c": [
-      "1789",
-      "1848",
-      "1870",
-      "1944"
-    ],
-    "a": 1,
-    "e": "Le suffrage universel masculin a été instauré en France en 1848, sous la IIe République."
-  },
-  {
-    "theme": "valeurs",
-    "q": "Quel est le principe d'égalité républicaine dans l'accès aux services publics ?",
-    "c": [
-      "Les riches sont mieux servis",
-      "Tous les usagers sont traités de la même façon",
-      "Certaines régions ont plus de droits",
-      "Les fonctionnaires décident des priorités"
-    ],
-    "a": 1,
-    "e": "Le principe d'égalité impose que tous les usagers accèdent aux services publics dans les mêmes conditions."
-  },
-  {
-    "theme": "valeurs",
-    "q": "Quelle est la valeur juridique du Préambule de la Constitution de 1958 ?",
-    "c": [
-      "Aucune",
-      "Valeur constitutionnelle reconnue depuis 1971",
-      "Valeur législative seulement",
-      "Valeur indicative"
-    ],
-    "a": 1,
-    "e": "Depuis la décision du Conseil constitutionnel de 1971, le Préambule a valeur constitutionnelle."
-  },
-  {
-    "theme": "valeurs",
-    "q": "Que signifie 'État de droit' ?",
-    "c": [
-      "Un État gouverné par des juristes",
-      "Un État où tous, y compris le gouvernement, sont soumis à la loi",
-      "Un État sans religion",
-      "Un État riche"
-    ],
-    "a": 1,
-    "e": "L'État de droit signifie que tous, y compris les gouvernants, sont soumis à la loi."
-  },
-  {
-    "theme": "valeurs",
-    "q": "Quel philosophe a influencé la notion de 'contrat social' ?",
-    "c": [
-      "Voltaire",
-      "Jean-Jacques Rousseau",
-      "Montesquieu",
-      "Denis Diderot"
-    ],
-    "a": 1,
-    "e": "Jean-Jacques Rousseau a développé la théorie du contrat social dans son ouvrage 'Du Contrat social' (1762)."
-  },
-  {
-    "theme": "valeurs",
-    "q": "Quelle loi punit le négationnisme en France ?",
-    "c": [
-      "Loi Pleven de 1972",
-      "Loi Gayssot de 1990",
-      "Loi Taubira de 2001",
-      "Loi Lellouche de 2003"
-    ],
-    "a": 1,
-    "e": "La loi Gayssot de 1990 punit la contestation des crimes contre l'humanité reconnus par les tribunaux internationaux."
-  },
-  {
-    "theme": "valeurs",
-    "q": "Qu'est-ce que la présomption d'innocence ?",
-    "c": [
-      "Toute personne est coupable jusqu'à preuve du contraire",
-      "Toute personne est considérée innocente tant que sa culpabilité n'est pas prouvée",
-      "Les témoins sont toujours honnêtes",
-      "Les policiers ne peuvent arrêter personne"
-    ],
-    "a": 1,
-    "e": "La présomption d'innocence : toute personne est innocente jusqu'à ce que sa culpabilité soit établie."
-  },
-  {
-    "theme": "valeurs",
-    "q": "Quelle institution veille au respect des droits fondamentaux en France ?",
-    "c": [
-      "Le Conseil d'État",
-      "Le Conseil constitutionnel",
-      "La Cour des comptes",
-      "Le Sénat"
-    ],
-    "a": 1,
-    "e": "Le Conseil constitutionnel contrôle que les lois respectent les droits fondamentaux."
-  },
-  {
-    "theme": "valeurs",
-    "q": "Qu'est-ce que la dignité humaine dans le contexte républicain ?",
-    "c": [
-      "Le respect dû aux fonctionnaires",
-      "Le droit inaliénable au respect de sa personne",
-      "Le droit à la richesse",
-      "Le droit au luxe"
-    ],
-    "a": 1,
-    "e": "La dignité humaine est le droit fondamental de tout être humain à être respecté dans son intégrité."
-  },
-  {
-    "theme": "valeurs",
-    "q": "La liberté d'expression en France est-elle absolue ?",
-    "c": [
-      "Oui, sans aucune limite",
-      "Non, elle est limitée par la loi (diffamation, incitation à la haine)",
-      "Oui, mais seulement pour les journalistes",
-      "Non, elle est très restreinte"
-    ],
-    "a": 1,
-    "e": "La liberté d'expression a des limites légales : diffamation, injure, incitation à la haine, négationnisme."
-  },
-  {
-    "theme": "valeurs",
-    "q": "Qu'est-ce que la liberté syndicale ?",
-    "c": [
-      "Le droit de créer un syndicat d'État",
-      "Le droit fondamental de tout travailleur d'adhérer ou non à un syndicat",
-      "Un droit réservé aux fonctionnaires",
-      "Un droit limité au secteur privé"
-    ],
-    "a": 1,
-    "e": "Le Préambule de 1946 reconnaît la liberté syndicale comme un droit fondamental de tout travailleur."
-  },
-  {
-    "theme": "valeurs",
-    "q": "Que signifie 'ius soli' ?",
-    "c": [
-      "La nationalité par le sang",
-      "La nationalité par la naissance sur le territoire",
-      "La nationalité par mariage",
-      "La naturalisation par décret"
-    ],
-    "a": 1,
-    "e": "Le 'ius soli' donne la nationalité à toute personne née sur le territoire national."
-  },
-  {
-    "theme": "valeurs",
-    "q": "Que signifie 'ius sanguinis' ?",
-    "c": [
-      "La nationalité par naissance sur le territoire",
-      "La nationalité par la filiation (parenté)",
-      "La nationalité par mariage",
-      "La nationalité par achat"
-    ],
-    "a": 1,
-    "e": "Le 'ius sanguinis' donne la nationalité par filiation : on est français si ses parents sont français."
-  },
-  {
-    "theme": "valeurs",
-    "q": "Après combien d'années de résidence peut-on demander la naturalisation ?",
-    "c": [
-      "2 ans",
-      "5 ans",
-      "10 ans",
-      "15 ans"
-    ],
-    "a": 1,
-    "e": "La naturalisation peut être demandée après 5 ans de résidence régulière (réduit à 2 ans dans certains cas)."
-  },
-  {
-    "theme": "valeurs",
-    "q": "Quel niveau de français est requis pour la naturalisation ?",
-    "c": [
-      "Aucun",
-      "Niveau A2",
-      "Niveau B1",
-      "Niveau C1"
-    ],
-    "a": 2,
-    "e": "Le niveau B1 à l'oral du Cadre européen de référence est requis pour la naturalisation."
-  },
-  {
-    "theme": "valeurs",
-    "q": "Quel organisme gère le Contrat d'intégration républicaine ?",
-    "c": [
-      "La mairie",
-      "L'OFII",
-      "La préfecture seule",
-      "Le consulat"
-    ],
-    "a": 1,
-    "e": "L'OFII (Office français de l'immigration et de l'intégration) gère le CIR et organise les formations."
-  },
-  {
-    "theme": "valeurs",
-    "q": "Que couvre la formation civique du CIR ?",
-    "c": [
-      "L'histoire uniquement",
-      "La laïcité, l'égalité hommes-femmes, les droits et devoirs",
-      "Le droit du travail uniquement",
-      "La géographie de la France"
-    ],
-    "a": 1,
-    "e": "La formation porte sur la laïcité, l'égalité hommes-femmes, les institutions, les droits et devoirs civiques."
-  },
-  {
-    "theme": "valeurs",
-    "q": "Les mariages forcés sont-ils légaux en France ?",
-    "c": [
-      "Oui, dans certaines conditions",
-      "Non, ils sont interdits et punis par la loi",
-      "Oui, avec l'accord des parents",
-      "Non, mais peu appliqué"
-    ],
-    "a": 1,
-    "e": "Les mariages forcés sont expressément interdits et punis par la loi française."
-  },
-  {
-    "theme": "valeurs",
-    "q": "La polygamie est-elle autorisée en droit français ?",
-    "c": [
-      "Oui, pour certaines religions",
-      "Non, elle est interdite et peut empêcher l'obtention de titres",
-      "Oui, pour les étrangers",
-      "Non, mais tolérée"
-    ],
-    "a": 1,
-    "e": "La polygamie est interdite en France. Elle peut empêcher l'obtention d'un titre de séjour et de la nationalité."
-  },
-  {
-    "theme": "valeurs",
-    "q": "La France reconnaît-elle officiellement des communautés ethniques ou religieuses ?",
-    "c": [
-      "Oui, depuis 2005",
-      "Non, l'universalisme républicain s'y oppose",
-      "Oui, dans certaines régions",
-      "Oui, depuis la loi de 1905"
-    ],
-    "a": 1,
-    "e": "La République française ne reconnaît pas de communautés ethniques ou religieuses ; elle ne connaît que des citoyens."
-  },
-  {
-    "theme": "valeurs",
-    "q": "Qu'est-ce que la Charte de l'environnement de 2004 ?",
-    "c": [
-      "Un texte sans portée",
-      "Un texte constitutionnel garantissant le droit à un environnement sain",
-      "Un règlement de l'UE",
-      "Un accord international"
-    ],
-    "a": 1,
-    "e": "La Charte de l'environnement de 2004 a valeur constitutionnelle depuis 2005."
-  },
-  {
-    "theme": "valeurs",
-    "q": "Qu'est-ce que le principe de précaution ?",
-    "c": [
-      "Interdire toute innovation",
-      "Prendre des mesures préventives face à un risque incertain mais potentiellement grave",
-      "Protéger uniquement les espèces menacées",
-      "Réduire les dépenses de santé"
-    ],
-    "a": 1,
-    "e": "Le principe de précaution impose des mesures face à des risques potentiellement graves et incertains."
-  },
-  {
-    "theme": "valeurs",
-    "q": "Qu'est-ce que la parité en politique ?",
-    "c": [
-      "La représentation égale des religions",
-      "L'égal accès des femmes et des hommes aux mandats politiques",
-      "Le partage du pouvoir entre régions",
-      "La représentation des minorités"
-    ],
-    "a": 1,
-    "e": "La parité vise à assurer une représentation égale des femmes et des hommes dans les instances politiques."
-  },
-  {
-    "theme": "valeurs",
-    "q": "Quelle est la loi qui impose la parité dans les listes électorales ?",
-    "c": [
-      "Loi de 1995",
-      "Loi du 6 juin 2000",
-      "Loi de 2005",
-      "Loi de 2010"
-    ],
-    "a": 1,
-    "e": "La loi du 6 juin 2000 impose la parité dans les listes électorales (alternance femme-homme)."
-  },
-  {
-    "theme": "valeurs",
-    "q": "Quel est le rôle du Défenseur des droits ?",
-    "c": [
-      "Juger les violations des droits",
-      "Défendre les droits des citoyens face aux administrations et lutter contre les discriminations",
-      "Gérer les plaintes",
-      "Contrôler les médias"
-    ],
-    "a": 1,
-    "e": "Le Défenseur des droits protège les droits des citoyens dans leurs relations avec les services publics."
-  },
-  {
-    "theme": "valeurs",
-    "q": "Que signifie 'valeurs républicaines' dans le cadre du CIR ?",
-    "c": [
-      "L'adhésion aux partis républicains",
-      "L'adhésion aux principes de liberté, égalité, fraternité et laïcité",
-      "L'apprentissage de l'histoire uniquement",
-      "Le service militaire"
-    ],
-    "a": 1,
-    "e": "Les valeurs républicaines comprennent liberté, égalité, fraternité, laïcité et dignité humaine."
-  },
-  {
-    "theme": "institutions",
-    "q": "Quelle est la durée du mandat du Président de la République française ?",
-    "c": [
-      "4 ans",
-      "5 ans",
-      "6 ans",
-      "7 ans"
-    ],
-    "a": 1,
-    "e": "Depuis la réforme de 2000, le mandat présidentiel est de 5 ans, renouvelable une fois."
-  },
-  {
-    "theme": "institutions",
-    "q": "Quel est le nombre maximum de mandats présidentiels consécutifs ?",
-    "c": [
-      "1",
-      "2",
-      "3",
-      "Illimité"
-    ],
-    "a": 1,
-    "e": "Le Président peut exercer au maximum deux mandats consécutifs de 5 ans depuis la révision de 2008."
-  },
-  {
-    "theme": "institutions",
-    "q": "Qui nomme le Premier ministre en France ?",
-    "c": [
-      "L'Assemblée nationale",
-      "Le Sénat",
-      "Le Président de la République",
-      "Le Conseil constitutionnel"
-    ],
-    "a": 2,
-    "e": "Le Premier ministre est nommé par le Président de la République."
-  },
-  {
-    "theme": "institutions",
-    "q": "Combien de chambres compte le Parlement français ?",
-    "c": [
-      "1",
-      "2",
-      "3",
-      "4"
-    ],
-    "a": 1,
-    "e": "Le Parlement français est bicaméral : Assemblée nationale et Sénat."
-  },
-  {
-    "theme": "institutions",
-    "q": "Combien de députés siègent à l'Assemblée nationale ?",
-    "c": [
-      "470",
-      "491",
-      "577",
-      "600"
-    ],
-    "a": 2,
-    "e": "L'Assemblée nationale est composée de 577 députés élus pour 5 ans."
-  },
-  {
-    "theme": "institutions",
-    "q": "Combien de sénateurs siègent au Sénat ?",
-    "c": [
-      "270",
-      "348",
-      "400",
-      "500"
-    ],
-    "a": 1,
-    "e": "Le Sénat compte 348 sénateurs élus pour 6 ans au suffrage indirect."
-  },
-  {
-    "theme": "institutions",
-    "q": "Comment sont élus les sénateurs ?",
-    "c": [
-      "Au suffrage universel direct",
-      "Au suffrage universel indirect, par les grands électeurs",
-      "Par le Président",
-      "Par l'Assemblée nationale"
-    ],
-    "a": 1,
-    "e": "Les sénateurs sont élus au suffrage indirect par les 'grands électeurs' (élus locaux et nationaux)."
-  },
-  {
-    "theme": "institutions",
-    "q": "Qui peut dissoudre l'Assemblée nationale ?",
-    "c": [
-      "Le Premier ministre",
-      "Le Président du Sénat",
-      "Le Président de la République",
-      "Le Conseil constitutionnel"
-    ],
-    "a": 2,
-    "e": "Selon l'article 12 de la Constitution, seul le Président de la République peut dissoudre l'Assemblée nationale."
-  },
-  {
-    "theme": "institutions",
-    "q": "Quel est le rôle principal de l'Assemblée nationale ?",
-    "c": [
-      "Représenter les collectivités locales",
-      "Voter les lois et contrôler le gouvernement",
-      "Nommer les juges",
-      "Représenter les syndicats"
-    ],
-    "a": 1,
-    "e": "L'Assemblée nationale vote les lois, adopte le budget, contrôle le gouvernement et peut le renverser."
-  },
-  {
-    "theme": "institutions",
-    "q": "Quel est le rôle principal du Sénat ?",
-    "c": [
-      "Représenter les électeurs directement",
-      "Représenter les collectivités territoriales et participer à la législation",
-      "Voter uniquement le budget",
-      "Nommer les ministres"
-    ],
-    "a": 1,
-    "e": "Le Sénat représente les collectivités territoriales et participe à l'élaboration des lois."
-  },
-  {
-    "theme": "institutions",
-    "q": "Qui préside le Conseil des ministres ?",
-    "c": [
-      "Le Premier ministre",
-      "Le Président de la République",
-      "Le Président de l'Assemblée",
-      "Le Président du Sénat"
-    ],
-    "a": 1,
-    "e": "Le Conseil des ministres est présidé par le Président de la République."
-  },
-  {
-    "theme": "institutions",
-    "q": "Quel organisme vérifie la constitutionnalité des lois ?",
-    "c": [
-      "Le Conseil d'État",
-      "La Cour de cassation",
-      "Le Conseil constitutionnel",
-      "Le Sénat"
-    ],
-    "a": 2,
-    "e": "Le Conseil constitutionnel contrôle la conformité des lois à la Constitution."
-  },
-  {
-    "theme": "institutions",
-    "q": "Qu'est-ce qu'une QPC ?",
-    "c": [
-      "Une question posée au gouvernement",
-      "Un mécanisme permettant à tout justiciable de contester la constitutionnalité d'une loi",
-      "Une question référendaire",
-      "Un recours administratif"
-    ],
-    "a": 1,
-    "e": "La QPC (Question prioritaire de constitutionnalité) permet à tout citoyen de contester la constitutionnalité d'une loi."
-  },
-  {
-    "theme": "institutions",
-    "q": "Combien de membres compte le Conseil constitutionnel ?",
-    "c": [
-      "5",
-      "7",
-      "9",
-      "11"
-    ],
-    "a": 2,
-    "e": "Le Conseil constitutionnel compte 9 membres nommés pour 9 ans."
-  },
-  {
-    "theme": "institutions",
-    "q": "Quel est le rôle du Conseil d'État ?",
-    "c": [
-      "Juger les criminels",
-      "Conseiller le gouvernement et juger les litiges administratifs",
-      "Contrôler les lois",
-      "Gérer les finances publiques"
-    ],
-    "a": 1,
-    "e": "Le Conseil d'État est à la fois conseiller juridique du gouvernement et juge suprême de l'ordre administratif."
-  },
-  {
-    "theme": "institutions",
-    "q": "Quel est le rôle de la Cour de cassation ?",
-    "c": [
-      "Juger les crimes les plus graves",
-      "Contrôler l'application du droit par les juridictions judiciaires",
-      "Contrôler les actes administratifs",
-      "Juger les étrangers"
-    ],
-    "a": 1,
-    "e": "La Cour de cassation est la plus haute juridiction de l'ordre judiciaire."
-  },
-  {
-    "theme": "institutions",
-    "q": "Combien de régions compte la France entière ?",
-    "c": [
-      "13",
-      "18",
-      "20",
-      "22"
-    ],
-    "a": 1,
-    "e": "La France compte 18 régions : 13 en métropole et 5 régions d'outre-mer."
-  },
-  {
-    "theme": "institutions",
-    "q": "Combien de départements d'outre-mer compte la France ?",
-    "c": [
-      "3",
-      "4",
-      "5",
-      "6"
-    ],
-    "a": 2,
-    "e": "La France compte 5 départements et régions d'outre-mer : Guadeloupe, Martinique, Guyane, La Réunion, Mayotte."
-  },
-  {
-    "theme": "institutions",
-    "q": "Quel est le rôle du Préfet ?",
-    "c": [
-      "Gérer la région",
-      "Représenter l'État dans le département et la région",
-      "Présider le conseil régional",
-      "Gérer la police municipale"
-    ],
-    "a": 1,
-    "e": "Le Préfet représente l'État dans le département et la région, et est nommé par le gouvernement."
-  },
-  {
-    "theme": "institutions",
-    "q": "Que signifie la décentralisation en France ?",
-    "c": [
-      "Le transfert du pouvoir à des États fédérés",
-      "Le transfert de compétences de l'État central aux collectivités territoriales",
-      "L'abandon de toute organisation centrale",
-      "La privatisation des services publics"
-    ],
-    "a": 1,
-    "e": "La décentralisation est le transfert de compétences de l'État aux collectivités territoriales."
-  },
-  {
-    "theme": "institutions",
-    "q": "Quel acte majeur a lancé la décentralisation en France ?",
-    "c": [
-      "Loi du 2 mars 1982 (loi Deferre)",
-      "Réforme de 1958",
-      "Loi du 7 janvier 1983",
-      "Loi du 13 août 2004"
-    ],
-    "a": 0,
-    "e": "La loi du 2 mars 1982, dite loi Deferre, a lancé la décentralisation en supprimant la tutelle de l'État sur les collectivités."
-  },
-  {
-    "theme": "institutions",
-    "q": "Comment est élu le Président de la République en France ?",
-    "c": [
-      "Par l'Assemblée nationale",
-      "Au suffrage universel direct à deux tours",
-      "Par le Parlement réuni en Congrès",
-      "Par le Sénat"
-    ],
-    "a": 1,
-    "e": "Le Président est élu au suffrage universel direct à deux tours depuis 1962."
-  },
-  {
-    "theme": "institutions",
-    "q": "Quel est le mode d'élection des députés ?",
-    "c": [
-      "Proportionnel à un tour",
-      "Uninominal majoritaire à deux tours",
-      "Par liste proportionnelle",
-      "Par désignation"
-    ],
-    "a": 1,
-    "e": "Les députés sont élus au scrutin uninominal majoritaire à deux tours dans chaque circonscription."
-  },
-  {
-    "theme": "institutions",
-    "q": "Combien de membres permanents compte le Conseil de sécurité de l'ONU ?",
-    "c": [
-      "3",
-      "5",
-      "7",
-      "10"
-    ],
-    "a": 1,
-    "e": "Le Conseil de sécurité compte 5 membres permanents avec droit de veto."
-  },
-  {
-    "theme": "institutions",
-    "q": "La France est-elle membre permanent du Conseil de sécurité de l'ONU ?",
-    "c": [
-      "Non",
-      "Oui, avec droit de veto",
-      "Oui, sans droit de veto",
-      "Non, en rotation"
-    ],
-    "a": 1,
-    "e": "La France est membre permanent du Conseil de sécurité de l'ONU avec droit de veto depuis 1945."
-  },
-  {
-    "theme": "institutions",
-    "q": "Combien d'États font partie de l'Union européenne en 2025 ?",
-    "c": [
-      "25",
-      "26",
-      "27",
-      "28"
-    ],
-    "a": 2,
-    "e": "Depuis le Brexit en 2020, l'Union européenne compte 27 États membres."
-  },
-  {
-    "theme": "institutions",
-    "q": "Quel État a quitté l'Union Européenne en 2020 ?",
-    "c": [
-      "La Norvège",
-      "La Suisse",
-      "Le Royaume-Uni",
-      "La Turquie"
-    ],
-    "a": 2,
-    "e": "Le Royaume-Uni a officiellement quitté l'Union européenne le 31 janvier 2020."
-  },
-  {
-    "theme": "institutions",
-    "q": "En quelle année le traité de Maastricht a-t-il été signé ?",
-    "c": [
-      "1985",
-      "1989",
-      "1992",
-      "1997"
-    ],
-    "a": 2,
-    "e": "Le traité de Maastricht a été signé le 7 février 1992."
-  },
-  {
-    "theme": "institutions",
-    "q": "À quel âge peut-on devenir électeur en France ?",
-    "c": [
-      "16 ans",
-      "18 ans",
-      "21 ans",
-      "25 ans"
-    ],
-    "a": 1,
-    "e": "Le droit de vote est accordé à 18 ans en France, depuis la loi du 5 juillet 1974."
-  },
-  {
-    "theme": "institutions",
-    "q": "Qui dirige l'action du gouvernement ?",
-    "c": [
-      "Le Président de la République",
-      "Le Président de l'Assemblée nationale",
-      "Le Premier ministre",
-      "Le Président du Sénat"
-    ],
-    "a": 2,
-    "e": "Selon l'article 21 de la Constitution, le Premier ministre dirige l'action du gouvernement."
-  },
-  {
-    "theme": "institutions",
-    "q": "Combien y a-t-il de régions en France métropolitaine ?",
-    "c": [
-      "12",
-      "13",
-      "14",
-      "18"
-    ],
-    "a": 1,
-    "e": "Depuis la réforme territoriale de 2016, la France métropolitaine compte 13 régions."
-  },
-  {
-    "theme": "institutions",
-    "q": "Qui assure l'intérim du Président en cas de décès ?",
-    "c": [
-      "Le Premier ministre",
-      "Le Président du Sénat",
-      "Le Président de l'Assemblée nationale",
-      "Le doyen des ministres"
-    ],
-    "a": 1,
-    "e": "En cas de décès ou d'empêchement, le Président du Sénat assure l'intérim."
-  },
-  {
-    "theme": "institutions",
-    "q": "Où est le siège du Parlement européen ?",
-    "c": [
-      "Bruxelles",
-      "Luxembourg",
-      "Strasbourg",
-      "Francfort"
-    ],
-    "a": 2,
-    "e": "Le siège officiel du Parlement européen est à Strasbourg, en France."
-  },
-  {
-    "theme": "institutions",
-    "q": "Où siège la Commission européenne ?",
-    "c": [
-      "Strasbourg",
-      "Luxembourg",
-      "Bruxelles",
-      "Francfort"
-    ],
-    "a": 2,
-    "e": "La Commission européenne siège principalement à Bruxelles."
-  },
-  {
-    "theme": "institutions",
-    "q": "Comment est élu le Parlement européen ?",
-    "c": [
-      "Par les gouvernements nationaux",
-      "Au suffrage universel direct dans chaque État membre",
-      "Par les maires",
-      "Par les parlements nationaux"
-    ],
-    "a": 1,
-    "e": "Le Parlement européen est élu au suffrage universel direct par les citoyens européens depuis 1979."
-  },
-  {
-    "theme": "institutions",
-    "q": "Où siège la Banque centrale européenne ?",
-    "c": [
-      "Bruxelles",
-      "Paris",
-      "Francfort",
-      "Amsterdam"
-    ],
-    "a": 2,
-    "e": "La Banque centrale européenne (BCE) est installée à Francfort, en Allemagne."
-  },
-  {
-    "theme": "institutions",
-    "q": "Qu'est-ce que l'espace Schengen ?",
-    "c": [
-      "L'Union européenne élargie",
-      "Un espace de libre circulation des personnes sans contrôle aux frontières intérieures",
-      "L'espace économique européen",
-      "La zone de libre-échange"
-    ],
-    "a": 1,
-    "e": "L'espace Schengen regroupe des pays européens où les contrôles aux frontières intérieures sont supprimés."
-  },
-  {
-    "theme": "institutions",
-    "q": "Quel est le rôle de la CJUE ?",
-    "c": [
-      "Juger les crimes internationaux",
-      "Assurer le respect et l'interprétation uniforme du droit européen",
-      "Juger les conflits entre entreprises",
-      "Gérer les politiques commerciales"
-    ],
-    "a": 1,
-    "e": "La Cour de justice de l'UE assure l'interprétation uniforme et le respect du droit de l'UE."
-  },
-  {
-    "theme": "institutions",
-    "q": "Où siège le Conseil de l'Europe ?",
-    "c": [
-      "Bruxelles",
-      "Genève",
-      "Strasbourg",
-      "Vienne"
-    ],
-    "a": 2,
-    "e": "Le Conseil de l'Europe a son siège à Strasbourg, France."
-  },
-  {
-    "theme": "institutions",
-    "q": "La France est-elle membre de l'OTAN ?",
-    "c": [
-      "Non",
-      "Oui, depuis 1949 (commandement intégré réintégré en 2009)",
-      "Oui, depuis 1966",
-      "Non, elle s'est retirée en 1966"
-    ],
-    "a": 1,
-    "e": "La France est membre fondateur de l'OTAN (1949). Elle a réintégré le commandement militaire intégré en 2009."
-  },
-  {
-    "theme": "institutions",
-    "q": "Où siège l'Assemblée nationale ?",
-    "c": [
-      "Le Palais du Luxembourg",
-      "Le Palais Bourbon",
-      "L'Hôtel de Ville",
-      "Le Palais Royal"
-    ],
-    "a": 1,
-    "e": "L'Assemblée nationale siège au Palais Bourbon, Paris 7e."
-  },
-  {
-    "theme": "institutions",
-    "q": "Où siège le Sénat ?",
-    "c": [
-      "Le Palais Bourbon",
-      "Le Palais du Luxembourg",
-      "L'Élysée",
-      "Le Palais Royal"
-    ],
-    "a": 1,
-    "e": "Le Sénat siège au Palais du Luxembourg, Paris 6e."
-  },
-  {
-    "theme": "institutions",
-    "q": "Qu'est-ce que la Cour des comptes ?",
-    "c": [
-      "Un tribunal pour les dettes",
-      "La juridiction qui contrôle la gestion des finances publiques",
-      "Un tribunal commercial",
-      "La Cour qui juge les fonctionnaires"
-    ],
-    "a": 1,
-    "e": "La Cour des comptes contrôle et certifie les comptes publics et évalue les politiques publiques."
-  },
-  {
-    "theme": "institutions",
-    "q": "Qu'est-ce que le Conseil économique, social et environnemental (CESE) ?",
-    "c": [
-      "Une chambre du Parlement",
-      "Un organe consultatif représentant la société civile",
-      "Un tribunal administratif",
-      "Un comité de ministres"
-    ],
-    "a": 1,
-    "e": "Le CESE est une assemblée consultative représentant les organisations socioprofessionnelles et la société civile."
-  },
-  {
-    "theme": "institutions",
-    "q": "Qu'est-ce que l'article 49-3 de la Constitution ?",
-    "c": [
-      "La procédure de dissolution",
-      "L'article permettant au gouvernement d'adopter un texte sans vote sauf motion de censure",
-      "L'article sur le référendum",
-      "L'article sur la QPC"
-    ],
-    "a": 1,
-    "e": "L'article 49-3 permet au gouvernement d'adopter un texte sans vote de l'Assemblée, sauf motion de censure adoptée."
-  },
-  {
-    "theme": "institutions",
-    "q": "Qu'est-ce que la Cour de justice de la République ?",
-    "c": [
-      "Tribunal international",
-      "Juridiction jugeant les membres du gouvernement pour les crimes dans l'exercice de leurs fonctions",
-      "Tribunal pour étrangers",
-      "Tribunal militaire"
-    ],
-    "a": 1,
-    "e": "La CJR juge les membres du gouvernement pour les crimes et délits commis dans l'exercice de leurs fonctions."
-  },
-  {
-    "theme": "institutions",
-    "q": "Qu'est-ce que la 'navette parlementaire' ?",
-    "c": [
-      "Un transport pour les parlementaires",
-      "L'examen alternatif d'un texte par l'Assemblée et le Sénat jusqu'à accord",
-      "Une procédure d'urgence",
-      "Un vote par correspondance"
-    ],
-    "a": 1,
-    "e": "La navette parlementaire est la procédure par laquelle un texte est examiné alternativement par chaque chambre."
-  },
-  {
-    "theme": "institutions",
-    "q": "Où se situe le Palais de l'Élysée ?",
-    "c": [
-      "Paris 7e",
-      "Paris 8e",
-      "Paris 1er",
-      "Paris 16e"
-    ],
-    "a": 1,
-    "e": "Le Palais de l'Élysée, résidence officielle du Président, est dans le 8e arrondissement de Paris."
-  },
-  {
-    "theme": "institutions",
-    "q": "Où réside officiellement le Premier ministre ?",
-    "c": [
-      "L'Élysée",
-      "L'Hôtel Matignon",
-      "Le Palais Bourbon",
-      "Le Luxembourg"
-    ],
-    "a": 1,
-    "e": "Le Premier ministre réside à l'Hôtel Matignon, Paris 7e."
-  },
-  {
-    "theme": "institutions",
-    "q": "Qu'est-ce que le principe de séparation des pouvoirs selon Montesquieu ?",
-    "c": [
-      "Les pouvoirs doivent être concentrés",
-      "Les pouvoirs législatif, exécutif et judiciaire doivent être séparés",
-      "Les régions doivent être indépendantes",
-      "Les militaires et civils séparés"
-    ],
-    "a": 1,
-    "e": "Montesquieu a théorisé dans L'Esprit des lois (1748) la séparation des trois pouvoirs."
-  },
-  {
-    "theme": "droits",
-    "q": "Quel est l'âge de la majorité civile en France ?",
-    "c": [
-      "16 ans",
-      "17 ans",
-      "18 ans",
-      "21 ans"
-    ],
-    "a": 2,
-    "e": "La majorité civile est fixée à 18 ans en France depuis la loi du 5 juillet 1974."
-  },
-  {
-    "theme": "droits",
-    "q": "Quel est l'âge de la majorité numérique en France ?",
-    "c": [
-      "13 ans",
-      "15 ans",
-      "16 ans",
-      "18 ans"
-    ],
-    "a": 1,
-    "e": "Depuis 2023, la majorité numérique est fixée à 15 ans."
-  },
-  {
-    "theme": "droits",
-    "q": "Que dit l'article 1er de la Constitution française ?",
-    "c": [
-      "Tout Français a droit au travail",
-      "La France est une République indivisible, laïque, démocratique et sociale",
-      "Le peuple est souverain",
-      "La loi est l'expression de la volonté générale"
-    ],
-    "a": 1,
-    "e": "La France est une République indivisible, laïque, démocratique et sociale."
-  },
-  {
-    "theme": "droits",
-    "q": "La vente d'alcool en France est interdite aux personnes de moins de :",
-    "c": [
-      "16 ans",
-      "17 ans",
-      "18 ans",
-      "21 ans"
-    ],
-    "a": 2,
-    "e": "Depuis la loi HPST de 2009, la vente d'alcool est interdite aux mineurs de moins de 18 ans."
-  },
-  {
-    "theme": "droits",
-    "q": "Quelle est la durée légale du temps de travail par semaine en France ?",
-    "c": [
-      "32 heures",
-      "35 heures",
-      "39 heures",
-      "40 heures"
-    ],
-    "a": 1,
-    "e": "La durée légale du travail est fixée à 35 heures par semaine depuis la loi Aubry II de 2000."
-  },
-  {
-    "theme": "droits",
-    "q": "Est-il obligatoire de porter secours à une personne en danger ?",
-    "c": [
-      "Non, c'est facultatif",
-      "Oui, sous peine de sanctions pénales",
-      "Oui, uniquement pour les professionnels",
-      "Non, mais conseillé"
-    ],
-    "a": 1,
-    "e": "L'article 223-6 du Code pénal oblige toute personne à porter secours à autrui en danger."
-  },
-  {
-    "theme": "droits",
-    "q": "Quel numéro d'urgence permet d'appeler la police en France ?",
-    "c": [
-      "15",
-      "17",
-      "18",
-      "112"
-    ],
-    "a": 1,
-    "e": "Le 17 est le numéro de la Police nationale. Le 15 est le SAMU, le 18 les Pompiers."
-  },
-  {
-    "theme": "droits",
-    "q": "Quel numéro d'urgence permet d'appeler le SAMU ?",
-    "c": [
-      "15",
-      "17",
-      "18",
-      "112"
-    ],
-    "a": 0,
-    "e": "Le 15 est le numéro du SAMU, disponible 24h/24."
-  },
-  {
-    "theme": "droits",
-    "q": "Quel est l'âge minimum légal pour se marier en France ?",
-    "c": [
-      "15 ans",
-      "16 ans",
-      "18 ans",
-      "21 ans"
-    ],
-    "a": 2,
-    "e": "Depuis la loi du 21 novembre 2006, l'âge minimum légal pour se marier est de 18 ans."
-  },
-  {
-    "theme": "droits",
-    "q": "Qu'est-ce que le PACS ?",
-    "c": [
-      "Un contrat de travail",
-      "Un contrat entre deux personnes pour organiser leur vie commune",
-      "Un contrat de mariage religieux",
-      "Un accord entre entreprises"
-    ],
-    "a": 1,
-    "e": "Le PACS est un contrat conclu entre deux personnes majeures pour organiser leur vie commune."
-  },
-  {
-    "theme": "droits",
-    "q": "Depuis quelle année le mariage entre personnes de même sexe est-il légal en France ?",
-    "c": [
-      "2007",
-      "2010",
-      "2013",
-      "2015"
-    ],
-    "a": 2,
-    "e": "La loi Taubira du 17 mai 2013 a ouvert le mariage et l'adoption aux couples de même sexe."
-  },
-  {
-    "theme": "droits",
-    "q": "Quel droit protège le domicile d'une personne contre les perquisitions arbitraires ?",
-    "c": [
-      "L'inviolabilité du domicile",
-      "La liberté d'aller et venir",
-      "La propriété privée",
-      "Le secret des correspondances"
-    ],
-    "a": 0,
-    "e": "L'inviolabilité du domicile protège contre les perquisitions sans autorisation judiciaire."
-  },
-  {
-    "theme": "droits",
-    "q": "Quel est le droit au logement opposable (DALO) ?",
-    "c": [
-      "Le droit de choisir son logement",
-      "Le droit de saisir la justice pour obtenir un logement décent",
-      "Un droit pour les propriétaires",
-      "Un droit pour les sans-abri seulement"
-    ],
-    "a": 1,
-    "e": "La loi DALO de 2007 permet aux personnes sans logement décent de saisir un tribunal administratif."
-  },
-  {
-    "theme": "droits",
-    "q": "Qu'est-ce que la trêve hivernale ?",
-    "c": [
-      "Une trêve militaire",
-      "La période (1er nov au 31 mars) pendant laquelle les expulsions locatives sont interdites",
-      "Un congé spécial",
-      "Une aide chauffage"
-    ],
-    "a": 1,
-    "e": "Pendant la trêve hivernale (1er novembre - 31 mars), les expulsions de locataires sont suspendues."
-  },
-  {
-    "theme": "droits",
-    "q": "Quelle est la durée minimale des congés payés annuels en France ?",
-    "c": [
-      "3 semaines",
-      "4 semaines",
-      "5 semaines",
-      "6 semaines"
-    ],
-    "a": 2,
-    "e": "Tout salarié a droit à 5 semaines (25 jours ouvrables) de congés payés par an."
-  },
-  {
-    "theme": "droits",
-    "q": "Qu'est-ce que le harcèlement moral au travail ?",
-    "c": [
-      "Une plaisanterie",
-      "Des agissements répétés dégradant les conditions de travail, sanctionnés pénalement",
-      "Des critiques normales",
-      "Un conflit entre collègues"
-    ],
-    "a": 1,
-    "e": "Le harcèlement moral est défini par l'article L. 1152-1 du Code du travail."
-  },
-  {
-    "theme": "droits",
-    "q": "Quelle est la peine pour traite des êtres humains en France ?",
-    "c": [
-      "2 ans",
-      "Jusqu'à 20 ans de réclusion",
-      "Une simple amende",
-      "5 ans"
-    ],
-    "a": 1,
-    "e": "La traite des êtres humains est punie d'emprisonnement pouvant aller jusqu'à 20 ans."
-  },
-  {
-    "theme": "droits",
-    "q": "Quel texte affirme que tous les hommes naissent libres et égaux en droits ?",
-    "c": [
-      "La Constitution de 1958",
-      "La Déclaration des droits de l'homme et du citoyen de 1789",
-      "Le Code civil",
-      "Le Préambule de 1946"
-    ],
-    "a": 1,
-    "e": "L'article 1er de la DDHC de 1789 affirme que les hommes naissent libres et égaux."
-  },
-  {
-    "theme": "droits",
-    "q": "Être juré d'assises est :",
-    "c": [
-      "Un droit mais pas une obligation",
-      "Une obligation civique",
-      "Réservé aux juristes",
-      "Interdit aux étrangers résidents"
-    ],
-    "a": 1,
-    "e": "Être juré d'assises est une obligation civique pour tout citoyen français tiré au sort."
-  },
-  {
-    "theme": "droits",
-    "q": "Qu'est-ce que le droit de grève dans le secteur privé ?",
-    "c": [
-      "Il n'existe pas",
-      "Un droit reconnu au salarié de cesser le travail collectivement",
-      "Un droit soumis à autorisation",
-      "Un droit uniquement pour les syndicats"
-    ],
-    "a": 1,
-    "e": "Le droit de grève est reconnu au salarié du privé sans préavis obligatoire."
-  },
-  {
-    "theme": "droits",
-    "q": "Un employeur peut-il licencier un salarié pour fait de grève ?",
-    "c": [
-      "Oui, toujours",
-      "Non, sauf en cas de faute lourde du gréviste",
-      "Oui, après mise en demeure",
-      "Non, dans aucun cas"
-    ],
-    "a": 1,
-    "e": "Il est interdit de licencier un gréviste, sauf en cas de faute lourde."
-  },
-  {
-    "theme": "droits",
-    "q": "Quel est le droit à la formation professionnelle ?",
-    "c": [
-      "Un droit uniquement pour les chômeurs",
-      "Le droit de tout salarié à accéder à des formations via le CPF",
-      "Un droit réservé aux entreprises",
-      "Un programme facultatif"
-    ],
-    "a": 1,
-    "e": "Tout salarié dispose d'un Compte personnel de formation (CPF) pour financer des formations."
-  },
-  {
-    "theme": "droits",
-    "q": "Qu'est-ce que la légitime défense ?",
-    "c": [
-      "Le droit de se battre à tout moment",
-      "Le droit de riposter proportionnément à une agression injuste et actuelle",
-      "Le droit de se venger",
-      "Un droit réservé aux policiers"
-    ],
-    "a": 1,
-    "e": "La légitime défense exonère de responsabilité pénale la riposte proportionnée à une agression."
-  },
-  {
-    "theme": "droits",
-    "q": "Qu'est-ce que la responsabilité civile ?",
-    "c": [
-      "L'obligation d'aller en prison",
-      "L'obligation de réparer le préjudice causé à autrui par sa faute",
-      "L'obligation de payer des impôts",
-      "L'obligation de voter"
-    ],
-    "a": 1,
-    "e": "La responsabilité civile oblige à réparer le dommage causé par sa faute (article 1240 du Code civil)."
-  },
-  {
-    "theme": "droits",
-    "q": "Qu'est-ce que le droit d'asile ?",
-    "c": [
-      "Le droit d'entrer librement en France",
-      "Le droit de demander une protection internationale à une personne fuyant des persécutions",
-      "Un droit pour tous les migrants",
-      "Un visa humanitaire"
-    ],
-    "a": 1,
-    "e": "Le droit d'asile est la protection accordée aux personnes fuyant des persécutions dans leur pays."
-  },
-  {
-    "theme": "droits",
-    "q": "Quelle institution accorde le statut de réfugié en France ?",
-    "c": [
-      "La préfecture",
-      "L'OFPRA",
-      "Le ministère de l'Intérieur",
-      "La CNDA"
-    ],
-    "a": 1,
-    "e": "L'OFPRA instruit les demandes d'asile et accorde ou refuse le statut de réfugié."
-  },
-  {
-    "theme": "droits",
-    "q": "Quel organisme protège les données personnelles en France ?",
-    "c": [
-      "L'ANSSI",
-      "La CNIL",
-      "Le Défenseur des droits",
-      "La DGSI"
-    ],
-    "a": 1,
-    "e": "La CNIL est l'autorité de contrôle indépendante chargée de veiller à la protection des données personnelles."
-  },
-  {
-    "theme": "droits",
-    "q": "Qu'est-ce que le RGPD ?",
-    "c": [
-      "Un règlement sur les armes",
-      "Le Règlement général sur la protection des données européen",
-      "Une règle de copropriété",
-      "Un règlement fiscal"
-    ],
-    "a": 1,
-    "e": "Le RGPD (2018) est le règlement européen harmonisant la protection des données personnelles."
-  },
-  {
-    "theme": "droits",
-    "q": "Qu'est-ce que la liberté de la presse garantit ?",
-    "c": [
-      "Des avantages fiscaux",
-      "Le droit de publier librement, de protéger ses sources, sans censure préalable",
-      "Des subventions",
-      "L'immunité totale"
-    ],
-    "a": 1,
-    "e": "La liberté de la presse garantit le droit d'informer sans censure préalable."
-  },
-  {
-    "theme": "droits",
-    "q": "Qu'est-ce que l'assurance responsabilité civile obligatoire ?",
-    "c": [
-      "Une obligation pour les seules entreprises",
-      "L'assurance obligatoire pour les propriétaires de véhicules à moteur",
-      "Une assurance habitation",
-      "Un contrat entre employeurs"
-    ],
-    "a": 1,
-    "e": "L'assurance responsabilité civile automobile est obligatoire pour tout propriétaire de véhicule."
-  },
-  {
-    "theme": "droits",
-    "q": "Quelle est la durée de congé maternité pour le premier enfant ?",
-    "c": [
-      "10 semaines",
-      "14 semaines",
-      "16 semaines",
-      "20 semaines"
-    ],
-    "a": 2,
-    "e": "Le congé maternité pour le premier enfant est de 16 semaines (6 semaines avant + 10 après)."
-  },
-  {
-    "theme": "droits",
-    "q": "Un patient peut-il refuser des soins ?",
-    "c": [
-      "Non, le médecin a toujours le dernier mot",
-      "Oui, tout patient majeur et capable peut refuser tout soin",
-      "Non, en urgence vitale",
-      "Oui, uniquement pour les soins non urgents"
-    ],
-    "a": 1,
-    "e": "Tout patient majeur et lucide a le droit de refuser tout soin selon le principe d'autonomie."
-  },
-  {
-    "theme": "droits",
-    "q": "Qu'est-ce que la loi Informatique et Libertés de 1978 ?",
-    "c": [
-      "Une loi sur la presse",
-      "La loi qui protège les données personnelles et a créé la CNIL",
-      "Une loi sur internet",
-      "La loi sur la propriété intellectuelle"
-    ],
-    "a": 1,
-    "e": "La loi du 6 janvier 1978 protège les données personnelles et a créé la CNIL."
-  },
-  {
-    "theme": "histoire",
-    "q": "En quelle année a débuté la Révolution française ?",
-    "c": [
-      "1776",
-      "1787",
-      "1789",
-      "1792"
-    ],
-    "a": 2,
-    "e": "La Révolution française a débuté en 1789, marquée par la prise de la Bastille le 14 juillet."
-  },
-  {
-    "theme": "histoire",
-    "q": "En quelle année Napoléon Ier est-il devenu empereur ?",
-    "c": [
-      "1799",
-      "1802",
-      "1804",
-      "1807"
-    ],
-    "a": 2,
-    "e": "Napoléon Bonaparte est devenu Napoléon Premier le 2 décembre 1804."
-  },
-  {
-    "theme": "histoire",
-    "q": "Depuis quelle année l'école publique est-elle gratuite en France ?",
-    "c": [
-      "1848",
-      "1871",
-      "1881",
-      "1905"
-    ],
-    "a": 2,
-    "e": "La loi Jules Ferry de 1881 a rendu l'école primaire publique gratuite, obligatoire et laïque."
-  },
-  {
-    "theme": "histoire",
-    "q": "En 1944, qu'est-ce qui a changé pour les femmes en France ?",
-    "c": [
-      "Droit au travail",
-      "Droit de vote",
-      "Droit à l'éducation",
-      "Égalité salariale"
-    ],
-    "a": 1,
-    "e": "L'ordonnance du 21 avril 1944 a accordé le droit de vote aux femmes."
-  },
-  {
-    "theme": "histoire",
-    "q": "Sous quel président a été abolie la peine de mort en France ?",
-    "c": [
-      "Giscard d'Estaing",
-      "François Mitterrand",
-      "Jacques Chirac",
-      "Georges Pompidou"
-    ],
-    "a": 1,
-    "e": "La peine de mort a été abolie le 9 octobre 1981, sous Mitterrand, à l'initiative de Robert Badinter."
-  },
-  {
-    "theme": "histoire",
-    "q": "En quelle année l'euro est-il devenu la monnaie officielle de la France ?",
-    "c": [
-      "1999",
-      "2000",
-      "2001",
-      "2002"
-    ],
-    "a": 3,
-    "e": "L'euro est devenu la monnaie fiduciaire en France le 1er janvier 2002."
-  },
-  {
-    "theme": "histoire",
-    "q": "Quelle est la plus haute montagne de France ?",
-    "c": [
-      "Le Puy de Dôme",
-      "Le Mont Ventoux",
-      "Le Mont-Blanc",
-      "La Meije"
-    ],
-    "a": 2,
-    "e": "Le Mont-Blanc (4 808 m) est le plus haut sommet de France et d'Europe occidentale."
-  },
-  {
-    "theme": "histoire",
-    "q": "Que célèbre-t-on le 8 mai ?",
-    "c": [
-      "La fête du travail",
-      "La victoire des Alliés en Europe en 1945",
-      "L'armistice de 1918",
-      "La libération de Paris"
-    ],
-    "a": 1,
-    "e": "Le 8 mai commémore la capitulation de l'Allemagne nazie et la victoire des Alliés en Europe."
-  },
-  {
-    "theme": "histoire",
-    "q": "Qui a peint La Liberté guidant le peuple ?",
-    "c": [
-      "Claude Monet",
-      "Auguste Renoir",
-      "Eugène Delacroix",
-      "Paul Cézanne"
-    ],
-    "a": 2,
-    "e": "La Liberté guidant le peuple (1830) est une peinture d'Eugène Delacroix."
-  },
-  {
-    "theme": "histoire",
-    "q": "Depuis quand l'esclavage a-t-il été définitivement aboli en France ?",
-    "c": [
-      "1794",
-      "1815",
-      "1848",
-      "1865"
-    ],
-    "a": 2,
-    "e": "L'esclavage a été définitivement aboli le 27 avril 1848, à l'initiative de Victor Schoelcher."
-  },
-  {
-    "theme": "histoire",
-    "q": "Quel est le principal fleuve traversant Paris ?",
-    "c": [
-      "La Loire",
-      "Le Rhône",
-      "La Seine",
-      "La Garonne"
-    ],
-    "a": 2,
-    "e": "La Seine traverse Paris et se jette dans la Manche."
-  },
-  {
-    "theme": "histoire",
-    "q": "De quand date l'appel à la résistance du général de Gaulle ?",
-    "c": [
-      "17 juin 1940",
-      "18 juin 1940",
-      "1er juillet 1940",
-      "11 novembre 1940"
-    ],
-    "a": 1,
-    "e": "Le 18 juin 1940, de Gaulle a lancé depuis Londres son appel à la résistance."
-  },
-  {
-    "theme": "histoire",
-    "q": "Qui a mené la conquête de la Gaule pour Rome ?",
-    "c": [
-      "Auguste",
-      "Cicéron",
-      "Jules César",
-      "Pompée"
-    ],
-    "a": 2,
-    "e": "Jules César a conquis la Gaule entre 58 et 51 av. J.-C."
-  },
-  {
-    "theme": "histoire",
-    "q": "Qui est Clovis ?",
-    "c": [
-      "Un général romain",
-      "Le premier roi franc, baptisé chrétien vers 496",
-      "Un roi gaulois",
-      "Un pape médiéval"
-    ],
-    "a": 1,
-    "e": "Clovis Ier est le premier roi franc chrétien. Il est souvent considéré comme le premier roi de France."
-  },
-  {
-    "theme": "histoire",
-    "q": "En quelle année Charlemagne a-t-il été couronné Empereur d'Occident ?",
-    "c": [
-      "768",
-      "800",
-      "814",
-      "987"
-    ],
-    "a": 1,
-    "e": "Charlemagne a été couronné empereur d'Occident par le pape Léon III à Rome le 25 décembre 800."
-  },
-  {
-    "theme": "histoire",
-    "q": "Quel roi a été le premier des Capétiens ?",
-    "c": [
-      "Charlemagne",
-      "Pépin le Bref",
-      "Hugues Capet",
-      "Philippe Auguste"
-    ],
-    "a": 2,
-    "e": "Hugues Capet a été élu roi de France en 987, fondant la dynastie capétienne."
-  },
-  {
-    "theme": "histoire",
-    "q": "Qui est Jeanne d'Arc ?",
-    "c": [
-      "Une reine de France",
-      "Une héroïne qui a participé à la libération d'Orléans en 1429 et a été brûlée en 1431",
-      "Une sainte uniquement",
-      "Une reine d'Angleterre"
-    ],
-    "a": 1,
-    "e": "Jeanne d'Arc (vers 1412-1431) a contribué à la victoire française lors de la guerre de Cent Ans."
-  },
-  {
-    "theme": "histoire",
-    "q": "Qui était le Roi-Soleil ?",
-    "c": [
-      "Henri IV",
-      "Louis XIII",
-      "Louis XIV",
-      "Louis XV"
-    ],
-    "a": 2,
-    "e": "Louis XIV (1638-1715), surnommé le Roi-Soleil, a fait construire Versailles."
-  },
-  {
-    "theme": "histoire",
-    "q": "Quel roi de France a été guillotiné pendant la Révolution ?",
-    "c": [
-      "Louis XIII",
-      "Louis XIV",
-      "Louis XV",
-      "Louis XVI"
-    ],
-    "a": 3,
-    "e": "Louis XVI a été guillotiné le 21 janvier 1793."
-  },
-  {
-    "theme": "histoire",
-    "q": "En quelle année la Première République a-t-elle été proclamée ?",
-    "c": [
-      "1789",
-      "1792",
-      "1795",
-      "1799"
-    ],
-    "a": 1,
-    "e": "La Première République française a été proclamée le 21 septembre 1792."
-  },
-  {
-    "theme": "histoire",
-    "q": "Quand Napoléon a-t-il été vaincu à Waterloo ?",
-    "c": [
-      "1812",
-      "1813",
-      "1815",
-      "1816"
-    ],
-    "a": 2,
-    "e": "La bataille de Waterloo (18 juin 1815) a mis fin aux Cent-Jours de Napoléon."
-  },
-  {
-    "theme": "histoire",
-    "q": "Quel événement a mis fin à la IIIe République ?",
-    "c": [
-      "La révolution de 1936",
-      "L'armistice de 1940 et les pleins pouvoirs votés à Pétain",
-      "La libération de Paris",
-      "La Commune de Paris"
-    ],
-    "a": 1,
-    "e": "La IIIe République a pris fin en juillet 1940 quand le Parlement a voté les pleins pouvoirs à Pétain."
-  },
-  {
-    "theme": "histoire",
-    "q": "En quelle année la Ve République a-t-elle été fondée ?",
-    "c": [
-      "1946",
-      "1954",
-      "1958",
-      "1962"
-    ],
-    "a": 2,
-    "e": "La Constitution de la Ve République a été approuvée le 28 septembre 1958."
-  },
-  {
-    "theme": "histoire",
-    "q": "En quelle année l'Algérie a-t-elle accédé à l'indépendance ?",
-    "c": [
-      "1956",
-      "1960",
-      "1962",
-      "1965"
-    ],
-    "a": 2,
-    "e": "L'Algérie a accédé à l'indépendance le 5 juillet 1962."
-  },
-  {
-    "theme": "histoire",
-    "q": "Qu'est-ce que le régime de Vichy ?",
-    "c": [
-      "Un régime républicain",
-      "Le gouvernement collaborationniste sous Pétain (1940-1944)",
-      "Un régime communiste",
-      "Un gouvernement en exil"
-    ],
-    "a": 1,
-    "e": "Le régime de Vichy a collaboré avec l'occupant nazi de 1940 à 1944."
-  },
-  {
-    "theme": "histoire",
-    "q": "Quand Paris a-t-il été libéré ?",
-    "c": [
-      "6 juin 1944",
-      "25 août 1944",
-      "8 mai 1945",
-      "11 novembre 1944"
-    ],
-    "a": 1,
-    "e": "Paris a été libéré le 25 août 1944."
-  },
-  {
-    "theme": "histoire",
-    "q": "Qu'est-ce que le Débarquement du 6 juin 1944 ?",
-    "c": [
-      "Le débarquement en Afrique du Nord",
-      "L'opération Overlord : débarquement allié en Normandie",
-      "Le débarquement en Provence",
-      "Le débarquement en Italie"
-    ],
-    "a": 1,
-    "e": "L'opération Overlord est le débarquement allié sur les côtes normandes, tournant de la Seconde Guerre mondiale."
-  },
-  {
-    "theme": "histoire",
-    "q": "Qu'est-ce que les 'Trente Glorieuses' ?",
-    "c": [
-      "La période de la Révolution",
-      "Les 30 ans de croissance économique de 1945 à 1975",
-      "Les 30 premières années de la IIIe République",
-      "La période napoléonienne"
-    ],
-    "a": 1,
-    "e": "Les Trente Glorieuses sont la période de forte croissance économique et sociale de 1945 à 1975."
-  },
-  {
-    "theme": "histoire",
-    "q": "Quand le mur de Berlin est-il tombé ?",
-    "c": [
-      "1987",
-      "1989",
-      "1991",
-      "1993"
-    ],
-    "a": 1,
-    "e": "Le mur de Berlin est tombé le 9 novembre 1989."
-  },
-  {
-    "theme": "histoire",
-    "q": "Quel est le plus long fleuve de France ?",
-    "c": [
-      "La Seine",
-      "La Garonne",
-      "Le Rhône",
-      "La Loire"
-    ],
-    "a": 3,
-    "e": "La Loire (1 006 km) est le plus long fleuve de France."
-  },
-  {
-    "theme": "histoire",
-    "q": "Quelle est la population approximative de la France en 2024 ?",
-    "c": [
-      "57 millions",
-      "62 millions",
-      "68 millions",
-      "75 millions"
-    ],
-    "a": 2,
-    "e": "La France compte environ 68 millions d'habitants en 2024."
-  },
-  {
-    "theme": "histoire",
-    "q": "En quelle année la France a-t-elle gagné la Coupe du monde de football pour la première fois ?",
-    "c": [
-      "1984",
-      "1990",
-      "1998",
-      "2006"
-    ],
-    "a": 2,
-    "e": "La France a remporté sa première Coupe du monde en 1998, en battant le Brésil 3-0."
-  },
-  {
-    "theme": "histoire",
-    "q": "Quel est le monument le plus visité de Paris ?",
-    "c": [
-      "Le Louvre",
-      "Le musée d'Orsay",
-      "La tour Eiffel",
-      "Notre-Dame de Paris"
-    ],
-    "a": 2,
-    "e": "La tour Eiffel, construite en 1889, est le monument le plus visité."
-  },
-  {
-    "theme": "histoire",
-    "q": "En quelle année Notre-Dame de Paris a-t-elle été touchée par un incendie ?",
-    "c": [
-      "2015",
-      "2017",
-      "2019",
-      "2021"
-    ],
-    "a": 2,
-    "e": "L'incendie de Notre-Dame de Paris s'est déclaré le 15 avril 2019."
-  },
-  {
-    "theme": "histoire",
-    "q": "Qui est Louis Pasteur ?",
-    "c": [
-      "Un explorateur",
-      "Un chimiste et biologiste, père de la microbiologie et inventeur de la pasteurisation",
-      "Un peintre",
-      "Un philosophe"
-    ],
-    "a": 1,
-    "e": "Louis Pasteur (1822-1895) a révolutionné la médecine : pasteurisation, vaccins."
-  },
-  {
-    "theme": "histoire",
-    "q": "Qui est Victor Hugo ?",
-    "c": [
-      "Un peintre romantique",
-      "Le grand écrivain romantique français auteur des Misérables",
-      "Un général napoléonien",
-      "Un philosophe des Lumières"
-    ],
-    "a": 1,
-    "e": "Victor Hugo (1802-1885) est l'auteur des Misérables, Notre-Dame de Paris, Hernani."
-  },
-  {
-    "theme": "histoire",
-    "q": "Qui est Édith Piaf ?",
-    "c": [
-      "Une actrice",
-      "La chanteuse française surnommée La Môme Piaf, icône culturelle mondiale",
-      "Une danseuse",
-      "Une compositrice classique"
-    ],
-    "a": 1,
-    "e": "Édith Piaf (1915-1963) est la plus célèbre chanteuse française (La Vie en rose, Non je ne regrette rien)."
-  },
-  {
-    "theme": "histoire",
-    "q": "Qui est Simone de Beauvoir ?",
-    "c": [
-      "Une chanteuse",
-      "La philosophe existentialiste et militante féministe, auteure du Deuxième Sexe",
-      "Une peintre",
-      "Une actrice"
-    ],
-    "a": 1,
-    "e": "Simone de Beauvoir (1908-1986) est l'auteure du Deuxième Sexe (1949), texte fondateur du féminisme."
-  },
-  {
-    "theme": "histoire",
-    "q": "Quel est le rôle du Moulin Rouge à Paris ?",
-    "c": [
-      "Un moulin à farine",
-      "Un cabaret fondé en 1889, célèbre pour le french cancan",
-      "Un musée d'art",
-      "Un théâtre national"
-    ],
-    "a": 1,
-    "e": "Le Moulin Rouge, ouvert en 1889 à Montmartre, est un cabaret mondial célèbre pour ses spectacles."
-  },
-  {
-    "theme": "histoire",
-    "q": "Qui est Molière ?",
-    "c": [
-      "Un philosophe",
-      "Le plus grand dramaturge comique français du XVIIe s., auteur du Misanthrope et Tartuffe",
-      "Un peintre",
-      "Un poète romantique"
-    ],
-    "a": 1,
-    "e": "Molière (Jean-Baptiste Poquelin, 1622-1673) est le maître de la comédie française."
-  },
-  {
-    "theme": "histoire",
-    "q": "Quel philosophe des Lumières est l'auteur de L'Esprit des lois ?",
-    "c": [
-      "Voltaire",
-      "Rousseau",
-      "Montesquieu",
-      "Diderot"
-    ],
-    "a": 2,
-    "e": "Montesquieu a publié L'Esprit des lois en 1748."
-  },
-  {
-    "theme": "histoire",
-    "q": "En quelle année l'Exposition universelle de Paris a-t-elle conduit à la construction de la Tour Eiffel ?",
-    "c": [
-      "1878",
-      "1889",
-      "1900",
-      "1937"
-    ],
-    "a": 1,
-    "e": "La tour Eiffel a été construite pour l'Exposition universelle de 1889."
-  },
-  {
-    "theme": "histoire",
-    "q": "Quel compositeur français est l'auteur de Boléro ?",
-    "c": [
-      "Claude Debussy",
-      "Erik Satie",
-      "Maurice Ravel",
-      "Hector Berlioz"
-    ],
-    "a": 2,
-    "e": "Maurice Ravel (1875-1937) a composé le Boléro (1928)."
-  },
-  {
-    "theme": "histoire",
-    "q": "Quelle défaite militaire a entraîné la chute du Second Empire ?",
-    "c": [
-      "La Marne",
-      "La bataille de Sedan (1870)",
-      "Verdun",
-      "Trafalgar"
-    ],
-    "a": 1,
-    "e": "La défaite de Sedan (2 septembre 1870) a entraîné la chute de Napoléon III."
-  },
-  {
-    "theme": "histoire",
-    "q": "Qu'est-ce que la Commune de Paris (1871) ?",
-    "c": [
-      "L'administration municipale",
-      "Un gouvernement révolutionnaire instauré à Paris en 1871 et écrasé par les Versaillais",
-      "Un quartier de Paris",
-      "Un mouvement artistique"
-    ],
-    "a": 1,
-    "e": "La Commune de Paris (18 mars - 28 mai 1871) était un gouvernement révolutionnaire socialiste."
-  },
-  {
-    "theme": "histoire",
-    "q": "En quelle année a débuté la Première Guerre mondiale ?",
-    "c": [
-      "1912",
-      "1914",
-      "1916",
-      "1918"
-    ],
-    "a": 1,
-    "e": "La Première Guerre mondiale a débuté le 28 juillet 1914."
-  },
-  {
-    "theme": "histoire",
-    "q": "Quel traité a mis fin officiellement à la Première Guerre mondiale ?",
-    "c": [
-      "Traité de Paris",
-      "Traité de Versailles (1919)",
-      "Traité de Vienne",
-      "Traité de Berlin"
-    ],
-    "a": 1,
-    "e": "Le traité de Versailles, signé le 28 juin 1919, a mis fin à la Première Guerre mondiale."
-  },
-  {
-    "theme": "societe",
-    "q": "L'instruction des enfants est obligatoire de :",
-    "c": [
-      "6 à 18 ans",
-      "4 à 16 ans",
-      "3 à 16 ans",
-      "5 à 17 ans"
-    ],
-    "a": 2,
-    "e": "Depuis 2019, l'instruction est obligatoire de 3 à 16 ans en France."
-  },
-  {
-    "theme": "societe",
-    "q": "Qu'est-ce que le SMIC ?",
-    "c": [
-      "Salaire moyen interprofessionnel conventionnel",
-      "Salaire minimum interprofessionnel de croissance",
-      "Système minimal d'indemnisation du chômage",
-      "Salaire médian indexé sur la croissance"
-    ],
-    "a": 1,
-    "e": "Le SMIC est le salaire horaire minimum légal en France."
-  },
-  {
-    "theme": "societe",
-    "q": "L'avortement est-il possible en France ?",
-    "c": [
-      "Non, sauf en cas de danger vital pour la mère",
-      "Oui, jusqu'à 14 semaines de grossesse",
-      "Oui, jusqu'à 12 semaines de grossesse",
-      "Oui, jusqu'à 18 semaines avec avis médical"
-    ],
-    "a": 1,
-    "e": "L'IVG est légale jusqu'à 14 semaines de grossesse et est remboursée par la Sécurité sociale."
-  },
-  {
-    "theme": "societe",
-    "q": "Où faut-il déclarer la naissance d'un enfant ?",
-    "c": [
-      "Au tribunal d'instance dans les 5 jours",
-      "À la mairie",
-      "Au commissariat de police du lieu de naissance",
-      "À la caisse d'allocations familiales"
-    ],
-    "a": 1,
-    "e": "Toute naissance doit être déclarée à la mairie du lieu de naissance dans les 5 jours."
-  },
-  {
-    "theme": "societe",
-    "q": "À quoi sert la carte Vitale ?",
-    "c": [
-      "À justifier de son domicile auprès des administrations",
-      "À obtenir des réductions dans les pharmacies partenaires",
-      "À bénéficier du remboursement des frais de santé",
-      "À s'inscrire auprès d'un médecin traitant"
-    ],
-    "a": 2,
-    "e": "La carte Vitale facilite le remboursement des frais de santé par la Sécurité sociale."
-  },
-  {
-    "theme": "societe",
-    "q": "Depuis le 1er juillet 2021, quelle est la durée du congé paternité ?",
-    "c": [
-      "11 jours calendaires",
-      "14 jours ouvrables",
-      "25 jours",
-      "28 jours calendaires"
-    ],
-    "a": 2,
-    "e": "Depuis le 1er juillet 2021, le congé de paternité est de 25 jours calendaires."
-  },
-  {
-    "theme": "societe",
-    "q": "Jusqu'à quel âge l'école est-elle obligatoire en France ?",
-    "c": [
-      "14 ans",
-      "15 ans",
-      "16 ans",
-      "18 ans"
-    ],
-    "a": 2,
-    "e": "La scolarité obligatoire s'étend de 3 à 16 ans en France."
-  },
-  {
-    "theme": "societe",
-    "q": "Travailler sans être déclaré est :",
-    "c": [
-      "Toléré si le salaire reste en dessous du SMIC",
-      "Une infraction pénale, le travail dissimulé",
-      "Autorisé pour les emplois de moins de 3 mois",
-      "Sanctionné uniquement par une amende administrative"
-    ],
-    "a": 1,
-    "e": "Le travail dissimulé est une infraction pénale pouvant entraîner des poursuites judiciaires."
-  },
-  {
-    "theme": "societe",
-    "q": "En cas de divorce, qui exerce l'autorité parentale ?",
-    "c": [
-      "Le parent gardien",
-      "Les deux parents conjointement",
-      "Le juge décide toujours",
-      "L'État"
-    ],
-    "a": 1,
-    "e": "L'autorité parentale est exercée conjointement par les deux parents même après le divorce."
-  },
-  {
-    "theme": "societe",
-    "q": "Est-ce possible de punir physiquement ses enfants en France ?",
-    "c": [
-      "Oui, si léger",
-      "Non, interdit par la loi depuis 2019",
-      "Oui, droit parental",
-      "Non, mais sans sanction"
-    ],
-    "a": 1,
-    "e": "La loi du 10 juillet 2019 interdit expressément toute punition corporelle envers un enfant."
-  },
-  {
-    "theme": "societe",
-    "q": "Quel est le taux de TVA normal en France ?",
-    "c": [
-      "10%",
-      "18%",
-      "20%",
-      "22%"
-    ],
-    "a": 2,
-    "e": "Le taux normal de TVA en France est de 20%."
-  },
-  {
-    "theme": "societe",
-    "q": "Quel est le taux de TVA réduit appliqué aux produits alimentaires de base ?",
-    "c": [
-      "2,1%",
-      "5,5%",
-      "7%",
-      "10%"
-    ],
-    "a": 1,
-    "e": "Les produits alimentaires de base sont soumis au taux réduit de TVA de 5,5%."
-  },
-  {
-    "theme": "societe",
-    "q": "Qu'est-ce que la Sécurité sociale ?",
-    "c": [
-      "Une police privée",
-      "Un système public de protection contre les risques sociaux",
-      "Un service bancaire",
-      "Un organisme militaire"
-    ],
-    "a": 1,
-    "e": "La Sécurité sociale, créée en 1945, protège contre la maladie, la maternité, la vieillesse, les accidents."
-  },
-  {
-    "theme": "societe",
-    "q": "Quel est le rôle du médecin traitant en France ?",
-    "c": [
-      "Il gère les urgences",
-      "Il assure le suivi de base et coordonne les soins (accès au spécialiste)",
-      "Il pratique uniquement des opérations",
-      "Il prescrit sans consultation"
-    ],
-    "a": 1,
-    "e": "Le médecin traitant est le pivot du parcours de soins."
-  },
-  {
-    "theme": "societe",
-    "q": "Qu'est-ce que le baccalauréat ?",
-    "c": [
-      "Un diplôme universitaire",
-      "Le diplôme de fin d'études secondaires, ouvrant l'accès à l'enseignement supérieur",
-      "Un concours d'entrée",
-      "Un diplôme professionnel"
-    ],
-    "a": 1,
-    "e": "Le baccalauréat est obtenu en terminale et ouvre l'accès à l'enseignement supérieur."
-  },
-  {
-    "theme": "societe",
-    "q": "Qu'est-ce que le RSA ?",
-    "c": [
-      "Une allocation pour les handicapés",
-      "Un revenu minimum garanti aux personnes sans ressources ou ressources insuffisantes",
-      "Un revenu pour les retraités",
-      "Un prêt de l'État"
-    ],
-    "a": 1,
-    "e": "Le RSA garantit un niveau minimum de ressources."
-  },
-  {
-    "theme": "societe",
-    "q": "Qu'est-ce que l'APL ?",
-    "c": [
-      "Une aide pour acheter un logement",
-      "Une aide versée par la CAF pour réduire le loyer",
-      "Un prêt immobilier",
-      "Une subvention pour rénover"
-    ],
-    "a": 1,
-    "e": "L'APL est une aide versée par la CAF directement déduite du loyer des bénéficiaires."
-  },
-  {
-    "theme": "societe",
-    "q": "Qu'est-ce que la CAF ?",
-    "c": [
-      "Un organisme bancaire",
-      "L'organisme de sécurité sociale gérant les prestations familiales",
-      "Un syndicat",
-      "Une association caritative"
-    ],
-    "a": 1,
-    "e": "La CAF verse les prestations familiales : allocations familiales, APL, RSA, etc."
-  },
-  {
-    "theme": "societe",
-    "q": "Qu'est-ce que Parcoursup ?",
-    "c": [
-      "Un réseau social",
-      "La plateforme nationale d'admission dans l'enseignement supérieur après le bac",
-      "Un site d'emploi",
-      "Une application éducative"
-    ],
-    "a": 1,
-    "e": "Parcoursup (depuis 2018) est la plateforme de vœux et d'admission dans l'enseignement supérieur."
-  },
-  {
-    "theme": "societe",
-    "q": "Qu'est-ce que le service civique ?",
-    "c": [
-      "Un service militaire",
-      "Un engagement volontaire d'intérêt général pour les 16-25 ans, indemnisé",
-      "Un stage professionnel",
-      "Un service de secourisme"
-    ],
-    "a": 1,
-    "e": "Le service civique est un engagement volontaire pour des missions d'intérêt général."
-  },
-  {
-    "theme": "societe",
-    "q": "Qu'est-ce que la loi 1901 sur les associations ?",
-    "c": [
-      "Une loi sur le travail",
-      "La loi régissant la création et le fonctionnement des associations sans but lucratif",
-      "Une loi sur les syndicats",
-      "Une loi sur les partis politiques"
-    ],
-    "a": 1,
-    "e": "La loi du 1er juillet 1901 régit les associations sans but lucratif."
-  },
-  {
-    "theme": "societe",
-    "q": "Qu'est-ce que le contrat à durée indéterminée (CDI) ?",
-    "c": [
-      "Un contrat temporaire",
-      "Le contrat de travail sans limitation de durée, le plus protecteur",
-      "Un contrat d'apprentissage",
-      "Un contrat saisonnier"
-    ],
-    "a": 1,
-    "e": "Le CDI est la forme normale du contrat de travail, sans terme fixé."
-  },
-  {
-    "theme": "societe",
-    "q": "Qu'est-ce que le contrat à durée déterminée (CDD) ?",
-    "c": [
-      "Un CDI avec période d'essai",
-      "Un contrat de travail à terme précis, limité aux cas prévus par la loi",
-      "Un contrat de stage",
-      "Un contrat de prestation"
-    ],
-    "a": 1,
-    "e": "Le CDD est un contrat temporaire. Il ne peut être utilisé que dans des cas limités."
-  },
-  {
-    "theme": "societe",
-    "q": "Qu'est-ce que le CAP ?",
-    "c": [
-      "Un baccalauréat professionnel",
-      "Le premier diplôme professionnel préparé en lycée ou apprentissage",
-      "Un BEP",
-      "Un brevet des collèges"
-    ],
-    "a": 1,
-    "e": "Le CAP est un diplôme professionnel de niveau 3 préparant à un métier précis."
-  },
-  {
-    "theme": "societe",
-    "q": "Quel est le taux de TVA sur la restauration en France ?",
-    "c": [
-      "5,5%",
-      "10%",
-      "20%",
-      "2,1%"
-    ],
-    "a": 1,
-    "e": "La restauration sur place est soumise au taux intermédiaire de TVA de 10%."
-  },
-  {
-    "theme": "societe",
-    "q": "Qu'est-ce que l'URSSAF ?",
-    "c": [
-      "Un syndicat",
-      "L'organisme qui collecte les cotisations sociales des employeurs et travailleurs",
-      "Une caisse de retraite",
-      "Un organisme de formation"
-    ],
-    "a": 1,
-    "e": "L'URSSAF collecte les cotisations sociales et contributions dues par les employeurs."
-  },
-  {
-    "theme": "societe",
-    "q": "Qu'est-ce que le prélèvement à la source de l'impôt sur le revenu ?",
-    "c": [
-      "Un versement annuel",
-      "Un prélèvement mensuel directement sur le salaire ou la pension",
-      "Un impôt différé",
-      "Une retenue pour le chômage"
-    ],
-    "a": 1,
-    "e": "Depuis 2019, l'impôt sur le revenu est prélevé directement chaque mois à la source."
-  },
-  {
-    "theme": "societe",
-    "q": "Qu'est-ce que le don d'organes en France depuis 2017 ?",
-    "c": [
-      "Un don volontaire obligatoire",
-      "Le principe est le consentement présumé : toute personne est donneur sauf si elle s'y est opposée",
-      "Un acte payant",
-      "Un droit uniquement pour les adultes"
-    ],
-    "a": 1,
-    "e": "Depuis 2017, toute personne est présumée donneuse sauf si elle s'est inscrite sur le registre des refus."
-  },
-  {
-    "theme": "societe",
-    "q": "Qu'est-ce que l'AAH (Allocation aux adultes handicapés) ?",
-    "c": [
-      "Une aide pour les parents d'enfants handicapés",
-      "Une aide financière pour les adultes handicapés ne pouvant pas travailler",
-      "Un arrêt maladie prolongé",
-      "Une pension d'invalidité"
-    ],
-    "a": 1,
-    "e": "L'AAH est une aide pour les adultes ayant un taux d'incapacité d'au moins 80%."
-  },
-  {
-    "theme": "societe",
-    "q": "Qu'est-ce que l'APA (Allocation personnalisée d'autonomie) ?",
-    "c": [
-      "Une aide au logement",
-      "Une aide pour les personnes âgées de 60 ans et plus en perte d'autonomie",
-      "Un revenu minimum",
-      "Une aide pour les chômeurs"
-    ],
-    "a": 1,
-    "e": "L'APA aide les personnes de 60 ans et plus ayant des difficultés à accomplir les actes de la vie quotidienne."
-  },
-  {
-    "theme": "societe",
-    "q": "Qu'est-ce que la MDPH ?",
-    "c": [
-      "Un hôpital spécialisé",
-      "Le guichet unique gérant les droits et prestations pour les personnes handicapées",
-      "Un tribunal spécial",
-      "Un service de placement en établissement"
-    ],
-    "a": 1,
-    "e": "La MDPH est le guichet unique pour toutes les demandes liées au handicap."
-  },
-  {
-    "theme": "societe",
-    "q": "Qu'est-ce que l'encadrement des loyers ?",
-    "c": [
-      "L'interdiction de louer",
-      "Un dispositif plafonnant les loyers dans certaines zones tendues",
-      "Un loyer fixé par l'État",
-      "Un système de location sociale"
-    ],
-    "a": 1,
-    "e": "L'encadrement des loyers plafonne les loyers dans les zones tendues (Paris, Lille, Lyon...)."
-  },
-  {
-    "theme": "societe",
-    "q": "Quel est le principal impôt payé par les particuliers en France ?",
-    "c": [
-      "La TVA",
-      "L'impôt sur le revenu (IR)",
-      "La CSG",
-      "La taxe foncière"
-    ],
-    "a": 1,
-    "e": "L'impôt sur le revenu est le principal impôt direct payé par les particuliers, sur une base progressive."
-  },
-  {
-    "theme": "societe",
-    "q": "Qu'est-ce que le logement social (HLM) ?",
-    "c": [
-      "Un logement privé moins cher",
-      "Un logement à loyer modéré géré par des organismes publics, destiné aux ménages modestes",
-      "Un logement de fonctionnaire",
-      "Un logement gratuit"
-    ],
-    "a": 1,
-    "e": "Le logement HLM est destiné aux personnes ayant des revenus inférieurs aux plafonds fixés."
-  },
-  {
-    "theme": "valeurs",
-    "q": "Quelle est la signification du terme 'laïcité' en France ?",
-    "c": [
-      "Interdiction des religions",
-      "Neutralité de l'État et liberté de conscience",
-      "Athéisme officiel",
-      "Religion d'État catholique"
-    ],
-    "a": 1,
-    "e": "La laïcité garantit la neutralité de l'État et la liberté de conscience pour tous."
-  },
-  {
-    "theme": "valeurs",
-    "q": "Qu'est-ce que la liberté de réunion ?",
-    "c": [
-      "Droit de se rassembler violemment",
-      "Droit de se rassembler pacifiquement",
-      "Droit de bloquer les routes",
-      "Droit de former des groupes armés"
-    ],
-    "a": 1,
-    "e": "La liberté de réunion est le droit de se rassembler pacifiquement."
-  },
-  {
-    "theme": "valeurs",
-    "q": "Quel principe interdit à l'État de favoriser une religion ?",
-    "c": [
-      "L'égalité",
-      "L'universalisme",
-      "La laïcité",
-      "La neutralité"
-    ],
-    "a": 2,
-    "e": "La laïcité interdit à l'État de favoriser ou de défavoriser une religion particulière."
-  },
-  {
-    "theme": "valeurs",
-    "q": "La France reconnaît-elle le droit à l'objection de conscience ?",
-    "c": [
-      "Non",
-      "Oui, pour le service militaire (aujourd'hui suspendu)",
-      "Oui, en toutes circonstances",
-      "Non, jamais"
-    ],
-    "a": 1,
-    "e": "L'objection de conscience était reconnue pour le service militaire, suspendu depuis 2001."
-  },
-  {
-    "theme": "valeurs",
-    "q": "Qu'est-ce que le civisme ?",
-    "c": [
-      "La connaissance de la Constitution",
-      "Le respect des règles et devoirs envers la communauté",
-      "Le service militaire",
-      "Le paiement des impôts uniquement"
-    ],
-    "a": 1,
-    "e": "Le civisme est l'ensemble des comportements qui témoignent du respect envers la communauté."
-  },
-  {
-    "theme": "valeurs",
-    "q": "Que signifie 'République démocratique' ?",
-    "c": [
-      "Le peuple élit un roi",
-      "Le peuple est souverain et gouverne",
-      "Les riches gouvernent",
-      "Les juges gouvernent"
-    ],
-    "a": 1,
-    "e": "République démocratique signifie que le pouvoir émane du peuple."
-  },
-  {
-    "theme": "valeurs",
-    "q": "Que signifie 'République sociale' dans la Constitution ?",
-    "c": [
-      "L'État gère toutes les entreprises",
-      "L'État garantit la solidarité nationale",
-      "Tous les biens sont communs",
-      "Le socialisme est officiel"
-    ],
-    "a": 1,
-    "e": "République sociale signifie que l'État garantit des droits sociaux et la solidarité."
-  },
-  {
-    "theme": "valeurs",
-    "q": "Qu'est-ce que la souveraineté populaire ?",
-    "c": [
-      "Le roi est souverain",
-      "Le pouvoir appartient au peuple",
-      "Les élus sont souverains",
-      "L'armée est souveraine"
-    ],
-    "a": 1,
-    "e": "La souveraineté populaire signifie que le pouvoir réside dans le peuple."
-  },
-  {
-    "theme": "valeurs",
-    "q": "Quel est l'objectif de l'éducation civique à l'école ?",
-    "c": [
-      "Former des soldats",
-      "Former des citoyens responsables",
-      "Enseigner uniquement l'histoire",
-      "Former des fonctionnaires"
-    ],
-    "a": 1,
-    "e": "L'éducation civique vise à former des citoyens responsables, capables de participer à la démocratie."
-  },
-  {
-    "theme": "valeurs",
-    "q": "Qu'est-ce que le 'vivre ensemble' dans la République ?",
-    "c": [
-      "Uniformité culturelle totale",
-      "Respect mutuel et respect des règles communes",
-      "Parler la même langue régionale",
-      "Abandon de toute identité culturelle"
-    ],
-    "a": 1,
-    "e": "Vivre ensemble implique le respect mutuel et l'acceptation des règles communes."
-  },
-  {
-    "theme": "valeurs",
-    "q": "Quel document protège les droits fondamentaux en Europe ?",
-    "c": [
-      "La DDHC de 1789",
-      "La Convention européenne des droits de l'homme (CEDH)",
-      "Le traité de Maastricht",
-      "La Constitution française"
-    ],
-    "a": 1,
-    "e": "La CEDH, signée en 1950, protège les droits fondamentaux dans les États membres du Conseil de l'Europe."
-  },
-  {
-    "theme": "valeurs",
-    "q": "Où siège la Cour européenne des droits de l'homme ?",
-    "c": [
-      "Bruxelles",
-      "Genève",
-      "Strasbourg",
-      "La Haye"
-    ],
-    "a": 2,
-    "e": "La Cour européenne des droits de l'homme siège à Strasbourg, France."
-  },
-  {
-    "theme": "valeurs",
-    "q": "Qu'est-ce que le droit à la dignité humaine ?",
-    "c": [
-      "Un privilège",
-      "Un droit inaliénable au respect de sa personne",
-      "Un droit payant",
-      "Un droit pour les riches"
-    ],
-    "a": 1,
-    "e": "La dignité humaine est le droit fondamental de tout être humain à être respecté."
-  },
-  {
-    "theme": "valeurs",
-    "q": "Qui peut modifier la Constitution française ?",
-    "c": [
-      "Le seul Président",
-      "Le Parlement en Congrès ou le peuple par référendum",
-      "Le Premier ministre",
-      "Le Conseil constitutionnel"
-    ],
-    "a": 1,
-    "e": "La Constitution peut être révisée par le Parlement réuni en Congrès (article 89) ou par référendum."
-  },
-  {
-    "theme": "valeurs",
-    "q": "Quelle disposition constitutionnelle est intangible ?",
-    "c": [
-      "La durée du mandat présidentiel",
-      "La forme républicaine du gouvernement",
-      "La liste des droits",
-      "La composition du Sénat"
-    ],
-    "a": 1,
-    "e": "L'article 89 interdit de réviser la forme républicaine du gouvernement."
-  },
-  {
-    "theme": "valeurs",
-    "q": "Qu'est-ce que la fraternité dans la devise républicaine ?",
-    "c": [
-      "Appartenance à une même famille",
-      "La solidarité entre tous les membres de la société",
-      "L'aide uniquement aux Français",
-      "La charité religieuse"
-    ],
-    "a": 1,
-    "e": "La fraternité exprime la solidarité nationale et l'entraide entre tous."
-  },
-  {
-    "theme": "valeurs",
-    "q": "Que représente le Panthéon à Paris ?",
-    "c": [
-      "Le siège du gouvernement",
-      "Le mausolée des grands hommes de la Nation",
-      "L'Académie française",
-      "Un musée"
-    ],
-    "a": 1,
-    "e": "Le Panthéon est le mausolée des personnalités illustres ayant servi la Nation française."
-  },
-  {
-    "theme": "valeurs",
-    "q": "Quel principe interdit de juger deux fois pour le même fait ?",
-    "c": [
-      "La présomption d'innocence",
-      "Non bis in idem",
-      "L'habeas corpus",
-      "La rétroactivité"
-    ],
-    "a": 1,
-    "e": "Le principe 'non bis in idem' garantit que nul ne peut être poursuivi deux fois pour les mêmes faits."
-  },
-  {
-    "theme": "valeurs",
-    "q": "Qu'est-ce que la Charte de l'environnement de 2004 garantit ?",
-    "c": [
-      "Le droit à la nature sauvage",
-      "Le droit à un environnement sain et le devoir de protéger l'environnement",
-      "Le droit à la chasse",
-      "Le droit de construire"
-    ],
-    "a": 1,
-    "e": "La Charte de l'environnement (valeur constitutionnelle depuis 2005) garantit le droit à un environnement sain."
-  },
-  {
-    "theme": "valeurs",
-    "q": "Quelle est la date de la fête nationale française ?",
-    "c": [
-      "1er juillet",
-      "4 juillet",
-      "14 juillet",
-      "25 août"
-    ],
-    "a": 2,
-    "e": "Le 14 juillet est la fête nationale française, commémorant la prise de la Bastille en 1789."
-  },
-  {
-    "theme": "valeurs",
-    "q": "Qu'est-ce que le droit d'association ?",
-    "c": [
-      "Le droit de former des partis politiques uniquement",
-      "Le droit de se regrouper librement pour défendre une cause",
-      "Le droit à la famille",
-      "Un droit réservé aux syndicats"
-    ],
-    "a": 1,
-    "e": "Le droit d'association, garanti par la loi de 1901, permet à toute personne de créer ou rejoindre une association."
-  },
-  {
-    "theme": "valeurs",
-    "q": "Quel est l'anniversaire de la Déclaration universelle des droits de l'homme ?",
-    "c": [
-      "14 juillet",
-      "10 décembre",
-      "26 août",
-      "4 novembre"
-    ],
-    "a": 1,
-    "e": "La Déclaration universelle des droits de l'homme a été adoptée le 10 décembre 1948."
-  },
-  {
-    "theme": "valeurs",
-    "q": "Qu'est-ce que la liberté de conscience ?",
-    "c": [
-      "Le droit d'agir sans respecter la loi",
-      "Le droit d'avoir ses propres convictions religieuses ou philosophiques",
-      "Le droit de ne pas voter",
-      "Le droit de refuser tout service"
-    ],
-    "a": 1,
-    "e": "La liberté de conscience est le droit pour chacun d'avoir ses propres convictions sans ingérence de l'État."
-  },
-  {
-    "theme": "valeurs",
-    "q": "Depuis quand la peine de mort est-elle abolie en France ?",
-    "c": [
-      "1946",
-      "1958",
-      "1981",
-      "2000"
-    ],
-    "a": 2,
-    "e": "La peine de mort a été abolie en France le 9 octobre 1981."
-  },
-  {
-    "theme": "valeurs",
-    "q": "Qu'est-ce que l'antisémitisme en droit français ?",
-    "c": [
-      "Une opinion politique",
-      "Une idéologie raciste contre les Juifs, punie par la loi",
-      "Un mouvement religieux",
-      "Une philosophie"
-    ],
-    "a": 1,
-    "e": "L'antisémitisme est puni par la loi française (incitation à la haine, discrimination)."
-  },
-  {
-    "theme": "valeurs",
-    "q": "Quel est le principe de non-rétroactivité de la loi pénale ?",
-    "c": [
-      "Une loi peut s'appliquer aux faits passés",
-      "Une loi pénale plus sévère ne s'applique pas aux faits commis avant son entrée en vigueur",
-      "Les lois s'appliquent dès la publication",
-      "Les lois pénales s'appliquent à tous les faits"
-    ],
-    "a": 1,
-    "e": "Le principe de non-rétroactivité protège : on ne peut être jugé plus sévèrement qu'au moment des faits."
-  },
-  {
-    "theme": "valeurs",
-    "q": "Le service militaire est-il obligatoire en France en 2026 ?",
-    "c": [
-      "Oui, pour tous les hommes à 18 ans",
-      "Non, il a été suspendu en 2001",
-      "Oui, pour hommes et femmes",
-      "Non, sauf en guerre"
-    ],
-    "a": 1,
-    "e": "Le service militaire obligatoire a été suspendu en 2001. La JDC est cependant obligatoire."
-  },
-  {
-    "theme": "valeurs",
-    "q": "Qu'est-ce que la Journée défense et citoyenneté (JDC) ?",
-    "c": [
-      "Un jour de congé",
-      "Une journée obligatoire pour les 16-25 ans sur la défense nationale",
-      "Une cérémonie militaire",
-      "Une journée de commémoration"
-    ],
-    "a": 1,
-    "e": "La JDC est obligatoire pour tous les Français entre 16 et 25 ans."
-  },
-  {
-    "theme": "valeurs",
-    "q": "La France est-elle officiellement catholique ?",
-    "c": [
-      "Oui, le catholicisme est religion d'État",
-      "Non, la loi de 1905 a mis fin à tout culte officiel",
-      "Oui, depuis le Concordat de 1801",
-      "Non, mais le catholicisme est favorisé"
-    ],
-    "a": 1,
-    "e": "Non, la France est laïque depuis 1905. L'État ne reconnaît aucune religion officielle."
-  },
-  {
-    "theme": "valeurs",
-    "q": "Qu'est-ce que le Concordat en Alsace-Moselle ?",
-    "c": [
-      "Un traité militaire",
-      "Un régime local maintenant financement des cultes et enseignement religieux",
-      "Un accord commercial",
-      "Un statut fiscal particulier"
-    ],
-    "a": 1,
-    "e": "En Alsace-Moselle, le Concordat de 1801 n'a pas été abrogé par la loi de 1905, ce régime particulier subsiste."
-  },
-  {
-    "theme": "institutions",
-    "q": "Qu'est-ce que la motion de censure ?",
-    "c": [
-      "Une critique de la politique",
-      "Un vote de l'Assemblée pour renverser le gouvernement",
-      "Un veto du Président",
-      "Une dissolution"
-    ],
-    "a": 1,
-    "e": "La motion de censure, si adoptée à la majorité absolue, oblige le gouvernement à démissionner."
-  },
-  {
-    "theme": "institutions",
-    "q": "Quel article prévoit la motion de censure ?",
-    "c": [
-      "Article 12",
-      "Article 34",
-      "Article 49",
-      "Article 52"
-    ],
-    "a": 2,
-    "e": "L'article 49 de la Constitution prévoit la mise en jeu de la responsabilité du gouvernement."
-  },
-  {
-    "theme": "institutions",
-    "q": "Qu'est-ce qu'une loi organique ?",
-    "c": [
-      "Une loi sur l'environnement",
-      "Une loi qui précise l'organisation des pouvoirs publics, soumise au Conseil constitutionnel",
-      "Une loi ordinaire",
-      "Une loi régionale"
-    ],
-    "a": 1,
-    "e": "Les lois organiques précisent l'organisation des pouvoirs publics et sont obligatoirement soumises au Conseil constitutionnel."
-  },
-  {
-    "theme": "institutions",
-    "q": "Qu'est-ce qu'une ordonnance (article 38) ?",
-    "c": [
-      "Une décision de justice",
-      "Un acte du gouvernement dans un domaine législatif, après habilitation du Parlement",
-      "Un décret ministériel",
-      "Un arrêté municipal"
-    ],
-    "a": 1,
-    "e": "L'ordonnance est prise par le gouvernement sur habilitation parlementaire dans un domaine normalement législatif."
-  },
-  {
-    "theme": "institutions",
-    "q": "Quelle est la durée du mandat des conseillers municipaux ?",
-    "c": [
-      "4 ans",
-      "5 ans",
-      "6 ans",
-      "7 ans"
-    ],
-    "a": 2,
-    "e": "Les conseillers municipaux sont élus pour 6 ans."
-  },
-  {
-    "theme": "institutions",
-    "q": "Qu'est-ce qu'un EPCI ?",
-    "c": [
-      "Une entreprise publique",
-      "Un regroupement de communes pour mutualiser des compétences",
-      "Un organisme d'État",
-      "Un syndicat"
-    ],
-    "a": 1,
-    "e": "Un EPCI (Établissement public de coopération intercommunale) regroupe plusieurs communes pour exercer des compétences en commun."
-  },
-  {
-    "theme": "institutions",
-    "q": "Qu'est-ce que la Cour de justice de l'UE ?",
-    "c": [
-      "Un tribunal pénal international",
-      "La juridiction garantissant l'interprétation uniforme du droit européen",
-      "Un tribunal commercial",
-      "Un comité consultatif"
-    ],
-    "a": 1,
-    "e": "La CJUE (Luxembourg) garantit l'interprétation uniforme et le respect du droit de l'UE."
-  },
-  {
-    "theme": "institutions",
-    "q": "Qu'est-ce que le Conseil de l'Europe ?",
-    "c": [
-      "La même chose que l'UE",
-      "Une organisation internationale (47 membres) distincte de l'UE, veillant aux droits humains",
-      "Une institution de l'UE",
-      "Un organe de l'ONU"
-    ],
-    "a": 1,
-    "e": "Le Conseil de l'Europe (47 membres, Strasbourg) est une organisation distincte de l'UE, axée sur les droits humains."
-  },
-  {
-    "theme": "institutions",
-    "q": "Quel est le traité fondateur de l'UE actuellement en vigueur ?",
-    "c": [
-      "Traité de Rome (1957)",
-      "Traité de Maastricht (1992)",
-      "Traité de Lisbonne (2007/2009)",
-      "Traité de Nice (2001)"
-    ],
-    "a": 2,
-    "e": "Le traité de Lisbonne, entré en vigueur en 2009, est le traité de base de l'UE."
-  },
-  {
-    "theme": "institutions",
-    "q": "Qu'est-ce que le droit de veto au Conseil de sécurité de l'ONU ?",
-    "c": [
-      "Le droit de parler en premier",
-      "Le droit des 5 membres permanents de bloquer toute résolution",
-      "Un droit de vote double",
-      "Un droit de proposer des résolutions"
-    ],
-    "a": 1,
-    "e": "Les 5 membres permanents (France, RU, USA, Russie, Chine) peuvent bloquer toute résolution du Conseil de sécurité."
-  },
-  {
-    "theme": "institutions",
-    "q": "Qui est le Secrétaire général de l'ONU depuis 2017 ?",
-    "c": [
-      "Ban Ki-moon",
-      "António Guterres",
-      "Kofi Annan",
-      "Boutros Boutros-Ghali"
-    ],
-    "a": 1,
-    "e": "António Guterres (Portugal) est Secrétaire général des Nations Unies depuis 2017."
-  },
-  {
-    "theme": "institutions",
-    "q": "Quel est le rôle de la Commission nationale consultative des droits de l'homme (CNCDH) ?",
-    "c": [
-      "Juger les violations des droits",
-      "Conseiller le gouvernement sur les droits de l'homme",
-      "Gérer les plaintes",
-      "Contrôler les médias"
-    ],
-    "a": 1,
-    "e": "La CNCDH est une institution nationale indépendante conseillant sur les droits de l'homme."
-  },
-  {
-    "theme": "institutions",
-    "q": "Qu'est-ce que le Défenseur des droits regroupe ?",
-    "c": [
-      "Médiateur, Défenseur des enfants, HALDE et CNDS",
-      "Médiateur et Conseil d'État",
-      "Cour des comptes et DGSI",
-      "CSM et CNCDH"
-    ],
-    "a": 0,
-    "e": "Depuis 2011, le Défenseur des droits regroupe le Médiateur de la République, le Défenseur des enfants, la HALDE et le CNDS."
-  },
-  {
-    "theme": "institutions",
-    "q": "Qui est le garde des Sceaux ?",
-    "c": [
-      "Le Président du Conseil d'État",
-      "Le ministre de la Justice",
-      "Le Président de la Cour de cassation",
-      "Le Procureur général"
-    ],
-    "a": 1,
-    "e": "Le garde des Sceaux est le ministre de la Justice."
-  },
-  {
-    "theme": "institutions",
-    "q": "Qu'est-ce que le Conseil supérieur de la magistrature (CSM) ?",
-    "c": [
-      "Le syndicat des magistrats",
-      "L'organe qui assure l'indépendance de la justice",
-      "Le tribunal des juges",
-      "Un organe parlementaire"
-    ],
-    "a": 1,
-    "e": "Le CSM veille à l'indépendance de l'autorité judiciaire et propose les nominations des magistrats."
-  },
-  {
-    "theme": "institutions",
-    "q": "Quelle est la différence entre magistrats du siège et du parquet ?",
-    "c": [
-      "Aucune",
-      "Les magistrats du siège jugent (inamovibles) ; le parquet poursuit (hiérarchiquement dépendant)",
-      "Le siège est plus important",
-      "Le parquet est indépendant"
-    ],
-    "a": 1,
-    "e": "Les magistrats du siège (juges) sont inamovibles ; les magistrats du parquet dépendent du ministère de la Justice."
-  },
-  {
-    "theme": "institutions",
-    "q": "Qu'est-ce que l'immunité parlementaire ?",
-    "c": [
-      "Droit de ne jamais être jugés",
-      "Irresponsabilité pour votes et opinions, protection contre l'arrestation sans autorisation",
-      "Avantages fiscaux",
-      "Protection contre les critiques"
-    ],
-    "a": 1,
-    "e": "L'immunité parlementaire comprend l'irresponsabilité (opinions et votes) et l'inviolabilité."
-  },
-  {
-    "theme": "institutions",
-    "q": "Comment les Français de l'étranger sont-ils représentés à l'Assemblée ?",
-    "c": [
-      "Ils ne le sont pas",
-      "Par 11 députés élus dans des circonscriptions pour les Français hors de France",
-      "Par des représentants nommés",
-      "Par le MAE"
-    ],
-    "a": 1,
-    "e": "11 circonscriptions pour les Français établis hors de France permettent d'élire 11 députés."
-  },
-  {
-    "theme": "institutions",
-    "q": "Qu'est-ce que la Commission mixte paritaire (CMP) ?",
-    "c": [
-      "Une commission d'enquête",
-      "7 députés et 7 sénateurs pour trouver un accord sur un texte en désaccord",
-      "Une commission des femmes",
-      "Une commission budgétaire"
-    ],
-    "a": 1,
-    "e": "La CMP réunit 7 députés et 7 sénateurs pour trouver un compromis sur un texte en désaccord."
-  },
-  {
-    "theme": "institutions",
-    "q": "Qu'est-ce que la déconcentration ?",
-    "c": [
-      "Transfert de compétences aux collectivités",
-      "Délégation de pouvoirs à des représentants locaux de l'État",
-      "Privatisation des services",
-      "Suppression de l'État central"
-    ],
-    "a": 1,
-    "e": "La déconcentration délègue des décisions à des agents de l'État dans les territoires (préfets, recteurs...)."
-  },
-  {
-    "theme": "institutions",
-    "q": "Combien de membres compte le Parlement européen (depuis 2024) ?",
-    "c": [
-      "620",
-      "705",
-      "720",
-      "800"
-    ],
-    "a": 2,
-    "e": "Le Parlement européen compte 720 membres (eurodéputés) depuis les élections de 2024."
-  },
-  {
-    "theme": "institutions",
-    "q": "Quel est le mandat des eurodéputés ?",
-    "c": [
-      "4 ans",
-      "5 ans",
-      "6 ans",
-      "7 ans"
-    ],
-    "a": 1,
-    "e": "Les eurodéputés sont élus pour 5 ans."
-  },
-  {
-    "theme": "institutions",
-    "q": "Combien de pays utilisent l'euro en 2025 ?",
-    "c": [
-      "17",
-      "19",
-      "20",
-      "27"
-    ],
-    "a": 2,
-    "e": "En 2025, 20 pays de l'UE utilisent l'euro (zone euro)."
-  },
-  {
-    "theme": "institutions",
-    "q": "Qu'est-ce que la Cour d'assises ?",
-    "c": [
-      "Une juridiction civile",
-      "La juridiction qui juge les crimes avec un jury",
-      "Un tribunal correctionnel",
-      "Une juridiction administrative"
-    ],
-    "a": 1,
-    "e": "La Cour d'assises juge les crimes (faits les plus graves) avec un jury de citoyens."
-  },
-  {
-    "theme": "institutions",
-    "q": "Qu'est-ce que le tribunal correctionnel ?",
-    "c": [
-      "Un tribunal qui juge les crimes",
-      "Un tribunal qui juge les délits",
-      "Un tribunal administratif",
-      "Un tribunal de commerce"
-    ],
-    "a": 1,
-    "e": "Le tribunal correctionnel juge les délits (faits de moyenne gravité)."
-  },
-  {
-    "theme": "institutions",
-    "q": "Qu'est-ce que le Conseil des prud'hommes ?",
-    "c": [
-      "Un tribunal administratif",
-      "Une juridiction réglant les litiges entre employeurs et salariés",
-      "Un tribunal de commerce",
-      "Un tribunal familial"
-    ],
-    "a": 1,
-    "e": "Le Conseil de prud'hommes règle les litiges individuels entre employeurs et salariés."
-  },
-  {
-    "theme": "institutions",
-    "q": "Quel est le rôle du procureur de la République ?",
-    "c": [
-      "Défendre les accusés",
-      "Représenter le ministère public et soutenir l'accusation",
-      "Juger les affaires",
-      "Gérer les prisons"
-    ],
-    "a": 1,
-    "e": "Le procureur dirige la police judiciaire, décide des poursuites et soutient l'accusation."
-  },
-  {
-    "theme": "institutions",
-    "q": "Quel est le rôle de la Police nationale ?",
-    "c": [
-      "Protéger les intérêts financiers",
-      "Assurer la sécurité publique en milieu urbain",
-      "Surveiller les frontières exclusivement",
-      "Protéger les forêts"
-    ],
-    "a": 1,
-    "e": "La Police nationale assure la sécurité publique, notamment en milieu urbain."
-  },
-  {
-    "theme": "institutions",
-    "q": "Quel est le rôle de la Gendarmerie nationale ?",
-    "c": [
-      "Uniquement la surveillance des routes",
-      "Assurer la sécurité publique en zone rurale et périurbaine",
-      "Gérer les prisons",
-      "Surveiller les côtes"
-    ],
-    "a": 1,
-    "e": "La Gendarmerie assure la sécurité en zones rurales et périurbaines."
-  },
-  {
-    "theme": "institutions",
-    "q": "Qu'est-ce que la police municipale ?",
-    "c": [
-      "La même que la Police nationale",
-      "Une police locale sous l'autorité du maire",
-      "Un service de médiation",
-      "Une branche de la Gendarmerie"
-    ],
-    "a": 1,
-    "e": "La police municipale est placée sous l'autorité du maire et s'occupe de la tranquillité locale."
-  },
-  {
-    "theme": "droits",
-    "q": "Qu'est-ce que la liberté d'expression ?",
-    "c": [
-      "Le droit de tout dire sans limite",
-      "Le droit d'exprimer ses opinions dans le respect de la loi",
-      "Le droit de critiquer uniquement le gouvernement",
-      "Le droit à l'anonymat"
-    ],
-    "a": 1,
-    "e": "La liberté d'expression est le droit d'exprimer ses opinions, sous réserve des limites légales."
-  },
-  {
-    "theme": "droits",
-    "q": "Qu'est-ce que la liberté de la presse ?",
-    "c": [
-      "Le droit de publier n'importe quoi",
-      "Le droit d'informer librement dans le respect de la loi",
-      "Le droit de critiquer l'État uniquement",
-      "L'exonération fiscale des journalistes"
-    ],
-    "a": 1,
-    "e": "La liberté de la presse est le droit d'informer et publier librement, dans le respect des lois."
-  },
-  {
-    "theme": "droits",
-    "q": "Qu'est-ce que la prescription en droit pénal ?",
-    "c": [
-      "Une ordonnance médicale",
-      "Le délai au-delà duquel les poursuites ne peuvent plus être engagées",
-      "La fin d'une peine",
-      "La libération conditionnelle"
-    ],
-    "a": 1,
-    "e": "La prescription est le délai au-delà duquel une action pénale ne peut plus être engagée."
-  },
-  {
-    "theme": "droits",
-    "q": "Les crimes contre l'humanité sont-ils prescrits en France ?",
-    "c": [
-      "Oui, après 30 ans",
-      "Oui, après 50 ans",
-      "Non, ils sont imprescriptibles",
-      "Oui, après 20 ans"
-    ],
-    "a": 2,
-    "e": "Les crimes contre l'humanité et les crimes de guerre sont imprescriptibles en droit français."
-  },
-  {
-    "theme": "droits",
-    "q": "Qu'est-ce que l'autorité parentale ?",
-    "c": [
-      "Le droit d'imposer ses choix à ses enfants adultes",
-      "L'ensemble des droits et devoirs des parents pour protéger leurs enfants mineurs",
-      "Un pouvoir exclusif de la mère",
-      "Un droit accordé par le juge"
-    ],
-    "a": 1,
-    "e": "L'autorité parentale est l'ensemble des droits et devoirs confiés aux parents pour leurs enfants mineurs."
-  },
-  {
-    "theme": "droits",
-    "q": "Qu'est-ce que le droit à la scolarité pour les enfants en France ?",
-    "c": [
-      "Un droit optionnel",
-      "L'instruction est obligatoire de 3 à 16 ans pour tout enfant résidant en France",
-      "Un droit uniquement pour les citoyens",
-      "Un service payant"
-    ],
-    "a": 1,
-    "e": "L'instruction est obligatoire de 3 à 16 ans pour tous les enfants résidant en France."
-  },
-  {
-    "theme": "droits",
-    "q": "Qu'est-ce que l'aide juridictionnelle ?",
-    "c": [
-      "Une subvention pour les avocats",
-      "Une prise en charge des frais de justice pour les personnes aux revenus insuffisants",
-      "Un fonds d'urgence",
-      "Un syndicat d'avocats"
-    ],
-    "a": 1,
-    "e": "L'aide juridictionnelle permet aux personnes aux ressources insuffisantes de bénéficier d'un avocat."
-  },
-  {
-    "theme": "droits",
-    "q": "Qu'est-ce que la liberté conditionnelle ?",
-    "c": [
-      "La libération définitive",
-      "La remise en liberté avant la fin de la peine sous conditions",
-      "Un pardon présidentiel",
-      "Une grâce amnistiante"
-    ],
-    "a": 1,
-    "e": "La liberté conditionnelle permet de libérer un détenu avant la fin de sa peine, sous conditions imposées."
-  },
-  {
-    "theme": "droits",
-    "q": "Quel est le délai de prescription pour les crimes en France ?",
-    "c": [
-      "6 ans",
-      "10 ans",
-      "20 ans",
-      "Imprescriptibles"
-    ],
-    "a": 2,
-    "e": "Le délai de prescription pour les crimes est de 20 ans en France."
-  },
-  {
-    "theme": "droits",
-    "q": "Qu'est-ce que le droit de retrait au travail ?",
-    "c": [
-      "Le droit de quitter l'entreprise",
-      "Le droit de se retirer d'une situation présentant un danger grave et imminent",
-      "Le droit de prendre des congés",
-      "Le droit de refuser des heures supp."
-    ],
-    "a": 1,
-    "e": "Le droit de retrait permet à un salarié de quitter son poste face à un danger grave et imminent."
-  },
-  {
-    "theme": "droits",
-    "q": "Qu'est-ce que la loi DALO de 2007 ?",
-    "c": [
-      "Une loi sur l'urbanisme",
-      "La loi instaurant le droit au logement opposable",
-      "Une loi sur la construction",
-      "Une loi fiscale"
-    ],
-    "a": 1,
-    "e": "La loi DALO (2007) permet aux personnes sans logement décent de saisir un tribunal administratif."
-  },
-  {
-    "theme": "droits",
-    "q": "Qu'est-ce que la sécurité sociale au sens large ?",
-    "c": [
-      "Une police privée",
-      "Le système public de protection contre les risques sociaux",
-      "Une assurance facultative",
-      "Un service pour fonctionnaires"
-    ],
-    "a": 1,
-    "e": "La Sécurité sociale (1945) protège contre la maladie, la maternité, la vieillesse, les accidents du travail."
-  },
-  {
-    "theme": "droits",
-    "q": "Qu'est-ce que le droit au repos hebdomadaire légal ?",
-    "c": [
-      "Un repos d'une journée par semaine minimum",
-      "Un repos de deux journées par semaine",
-      "Un repos de 35 heures",
-      "Applicable uniquement le dimanche"
-    ],
-    "a": 0,
-    "e": "Tout salarié a droit à au moins 24 heures de repos consécutives par semaine."
-  },
-  {
-    "theme": "droits",
-    "q": "Qu'est-ce que le Compte personnel de formation (CPF) ?",
-    "c": [
-      "Un compte bancaire",
-      "Un compte crédité annuellement permettant de financer des formations",
-      "Un compte d'épargne retraite",
-      "Une allocation chômage"
-    ],
-    "a": 1,
-    "e": "Le CPF crédite chaque actif d'un montant annuel utilisable pour financer des formations professionnelles."
-  },
-  {
-    "theme": "droits",
-    "q": "Qu'est-ce que le droit d'accès aux soins ?",
-    "c": [
-      "Un droit réservé aux assurés",
-      "Un droit fondamental pour toute personne résidant en France",
-      "Un droit uniquement pour les Français",
-      "Un service payant"
-    ],
-    "a": 1,
-    "e": "Toute personne en France a droit à des soins, notamment via la complémentaire santé solidaire."
-  },
-  {
-    "theme": "droits",
-    "q": "Le travail du dimanche est-il possible en France ?",
-    "c": [
-      "Non, totalement interdit",
-      "Oui, avec des dérogations dans certains secteurs",
-      "Oui, sans restriction",
-      "Non, sauf pour les médecins"
-    ],
-    "a": 1,
-    "e": "Le travail du dimanche est possible dans les secteurs à dérogation permanente ou sur autorisation."
-  },
-  {
-    "theme": "droits",
-    "q": "Qu'est-ce que la tutelle pour un adulte ?",
-    "c": [
-      "La même chose que la curatelle",
-      "Une protection pour les adultes totalement incapables, où le tuteur représente la personne",
-      "Un service hospitalier",
-      "Un contrat de mandataire"
-    ],
-    "a": 1,
-    "e": "La tutelle est la protection la plus complète : le tuteur représente la personne protégée pour tous les actes."
-  },
-  {
-    "theme": "droits",
-    "q": "Qu'est-ce que la curatelle ?",
-    "c": [
-      "Une tutelle pour mineurs",
-      "Une mesure pour adultes dont les facultés sont altérées, leur laissant une certaine autonomie",
-      "Un contrat d'assurance",
-      "Une aide sociale"
-    ],
-    "a": 1,
-    "e": "La curatelle est une protection juridique pour les adultes dont les facultés sont partiellement altérées."
-  },
-  {
-    "theme": "droits",
-    "q": "Qu'est-ce que le PACS par rapport au mariage ?",
-    "c": [
-      "Le PACS est identique au mariage",
-      "Le PACS est un contrat plus souple avec moins d'obligations que le mariage",
-      "Le PACS est plus protecteur que le mariage",
-      "Le PACS est une forme de mariage religieux"
-    ],
-    "a": 1,
-    "e": "Le PACS est un contrat de vie commune plus souple que le mariage, avec moins d'obligations."
-  },
-  {
-    "theme": "droits",
-    "q": "Qu'est-ce que le droit de grève dans les services publics ?",
-    "c": [
-      "Interdit totalement",
-      "Possible avec un préavis de 5 jours et parfois un service minimum",
-      "Sans restriction",
-      "Interdit sauf autorisé"
-    ],
-    "a": 1,
-    "e": "Dans les services publics, la grève nécessite un préavis de 5 jours et peut être soumise à un service minimum."
-  },
-  {
-    "theme": "droits",
-    "q": "Quelle est la durée maximale d'un CDD ?",
-    "c": [
-      "3 mois",
-      "6 mois",
-      "18 mois (24 mois maximum avec renouvellement)",
-      "36 mois"
-    ],
-    "a": 2,
-    "e": "Un CDD peut durer au maximum 18 mois, renouvelable une fois, soit 24 mois au total."
-  },
-  {
-    "theme": "droits",
-    "q": "Qu'est-ce que la discrimination à l'embauche ?",
-    "c": [
-      "Un recrutement sélectif normal",
-      "Le refus d'embaucher basé sur critères prohibés (origine, sexe, âge, handicap...)",
-      "Un test de compétences",
-      "La préférence pour l'expérience"
-    ],
-    "a": 1,
-    "e": "La discrimination à l'embauche est interdite sur les critères prohibés par la loi."
-  },
-  {
-    "theme": "droits",
-    "q": "Qu'est-ce que le droit à l'information en matière de santé ?",
-    "c": [
-      "Le médecin n'informe pas",
-      "Tout patient a le droit d'être informé de son état et des traitements",
-      "Réservé à la famille",
-      "Dépend du médecin"
-    ],
-    "a": 1,
-    "e": "La loi Kouchner de 2002 consacre le droit du patient à l'information médicale complète."
-  },
-  {
-    "theme": "droits",
-    "q": "Qu'est-ce que la loi Gayssot ?",
-    "c": [
-      "Une loi sur les transports",
-      "La loi de 1990 punissant la contestation des crimes contre l'humanité (négationnisme)",
-      "Une loi sur l'éducation",
-      "Une loi sur l'immigration"
-    ],
-    "a": 1,
-    "e": "La loi Gayssot (1990) punit la négation ou la minimisation des crimes contre l'humanité reconnus par les tribunaux."
-  },
-  {
-    "theme": "droits",
-    "q": "À quel âge la responsabilité pénale d'un mineur est-elle engagée ?",
-    "c": [
-      "6 ans",
-      "10 ans",
-      "13 ans",
-      "15 ans"
-    ],
-    "a": 1,
-    "e": "Depuis le Code de la justice pénale des mineurs (2021), les mineurs de 13 ans et plus peuvent être condamnés pénalement."
-  },
-  {
-    "theme": "droits",
-    "q": "Qu'est-ce que le droit de visite et d'hébergement ?",
-    "c": [
-      "Le droit de visiter n'importe qui",
-      "Le droit du parent non-gardien de voir ses enfants selon un calendrier",
-      "Le droit de visiter les prisons",
-      "Un droit hôtelier"
-    ],
-    "a": 1,
-    "e": "Le droit de visite et d'hébergement permet au parent sans garde principale de voir ses enfants."
-  },
-  {
-    "theme": "droits",
-    "q": "Qu'est-ce que la pension alimentaire ?",
-    "c": [
-      "Une aide au logement",
-      "Une somme versée par un parent à l'autre pour l'entretien des enfants",
-      "Un revenu de retraite",
-      "Une aide de l'État"
-    ],
-    "a": 1,
-    "e": "La pension alimentaire est versée par un parent à l'autre pour contribuer à l'entretien des enfants."
-  },
-  {
-    "theme": "droits",
-    "q": "Qu'est-ce que le droit à l'éducation garanti par le Préambule de 1946 ?",
-    "c": [
-      "Un droit pour les riches",
-      "Le droit de l'enfant à recevoir une instruction gratuite et laïque",
-      "Un droit optionnel",
-      "Un service commercial"
-    ],
-    "a": 1,
-    "e": "Le Préambule de 1946 garantit à tout enfant et adulte le droit à l'instruction et à la formation."
-  },
-  {
-    "theme": "droits",
-    "q": "Combien de types de divorces existent en France ?",
-    "c": [
-      "2",
-      "3",
-      "4",
-      "5"
-    ],
-    "a": 2,
-    "e": "Il existe 4 types de divorce : consentement mutuel, accepté, altération du lien conjugal, faute."
-  },
-  {
-    "theme": "histoire",
-    "q": "Qui est Vercingétorix ?",
-    "c": [
-      "Un général romain",
-      "Le chef gaulois qui a capitulé devant César à Alésia en 52 av. J.-C.",
-      "Un roi franc",
-      "Un conquérant viking"
-    ],
-    "a": 1,
-    "e": "Vercingétorix est le chef arverne qui a mené la résistance gauloise et capitulé à Alésia en 52 av. J.-C."
-  },
-  {
-    "theme": "histoire",
-    "q": "Qu'est-ce que l'Édit de Nantes (1598) ?",
-    "c": [
-      "Un traité de paix avec l'Espagne",
-      "Un édit de tolérance religieuse accordé aux Protestants par Henri IV",
-      "Une loi sur l'impôt",
-      "Un accord commercial"
-    ],
-    "a": 1,
-    "e": "L'Édit de Nantes (1598) accordait aux Protestants la liberté de culte, mettant fin aux guerres de Religion."
-  },
-  {
-    "theme": "histoire",
-    "q": "Qui a révoqué l'Édit de Nantes en 1685 ?",
-    "c": [
-      "Richelieu",
-      "Mazarin",
-      "Louis XIV",
-      "Colbert"
-    ],
-    "a": 2,
-    "e": "Louis XIV a révoqué l'Édit de Nantes par l'Édit de Fontainebleau le 22 octobre 1685."
-  },
-  {
-    "theme": "histoire",
-    "q": "Qu'est-ce que le Code civil napoléonien ?",
-    "c": [
-      "Un code militaire",
-      "Un code unifiant les lois civiles françaises, promulgué en 1804",
-      "Un code pénal",
-      "Un code commercial"
-    ],
-    "a": 1,
-    "e": "Le Code civil (1804) a unifié le droit civil français. Il est encore largement en vigueur."
-  },
-  {
-    "theme": "histoire",
-    "q": "Qu'est-ce que la Restauration (1814-1830) ?",
-    "c": [
-      "Le retour de Napoléon",
-      "Le retour de la monarchie avec Louis XVIII puis Charles X",
-      "La proclamation de la République",
-      "Un régime républicain"
-    ],
-    "a": 1,
-    "e": "La Restauration est le retour de la monarchie bourbonienne avec Louis XVIII (1814) et Charles X (1824)."
-  },
-  {
-    "theme": "histoire",
-    "q": "Qui a écrit J'accuse pour défendre Dreyfus ?",
-    "c": [
-      "Victor Hugo",
-      "Émile Zola",
-      "Georges Clemenceau",
-      "Jean Jaurès"
-    ],
-    "a": 1,
-    "e": "Émile Zola a publié 'J'accuse' le 13 janvier 1898 dans L'Aurore."
-  },
-  {
-    "theme": "histoire",
-    "q": "Quelle bataille fut la plus symbolique du front français en 1916 ?",
-    "c": [
-      "La Marne",
-      "L'Yser",
-      "Verdun",
-      "La Somme"
-    ],
-    "a": 2,
-    "e": "La bataille de Verdun (1916) est la plus emblématique de la Première Guerre mondiale côté français."
-  },
-  {
-    "theme": "histoire",
-    "q": "En quelle année la CEE a-t-elle été créée ?",
-    "c": [
-      "1951",
-      "1957",
-      "1962",
-      "1968"
-    ],
-    "a": 1,
-    "e": "La CEE a été créée par le traité de Rome signé le 25 mars 1957."
-  },
-  {
-    "theme": "histoire",
-    "q": "Qu'est-ce que le traité de l'Élysée (1963) ?",
-    "c": [
-      "Un traité de paix",
-      "Le traité scellant la réconciliation et l'amitié franco-allemande",
-      "Un accord commercial",
-      "L'entrée dans l'OTAN"
-    ],
-    "a": 1,
-    "e": "Le traité de l'Élysée (22 janvier 1963) a scellé l'amitié franco-allemande."
-  },
-  {
-    "theme": "histoire",
-    "q": "Qu'est-ce que la Rafle du Vél d'Hiv (1942) ?",
-    "c": [
-      "Une rafle de résistants",
-      "La rafle des 16-17 juillet 1942 par la police française de Juifs de Paris",
-      "Une opération militaire",
-      "Une arrestation politique"
-    ],
-    "a": 1,
-    "e": "La Rafle du Vél d'Hiv (16-17 juillet 1942) a vu la police française arrêter 13 152 Juifs, livrés aux nazis."
-  },
-  {
-    "theme": "histoire",
-    "q": "Qu'est-ce que mai 1968 ?",
-    "c": [
-      "Une révolution réussie",
-      "Une crise sociale marquée par grèves et manifestations étudiantes",
-      "Une guerre civile",
-      "Un coup d'État"
-    ],
-    "a": 1,
-    "e": "Mai 1968 est une période de crise sociale majeure avec grèves massives et manifestations étudiantes."
-  },
-  {
-    "theme": "histoire",
-    "q": "Quel Président a nationalisé de nombreuses entreprises en 1981-1982 ?",
-    "c": [
-      "Pompidou",
-      "Giscard d'Estaing",
-      "François Mitterrand",
-      "Chirac"
-    ],
-    "a": 2,
-    "e": "François Mitterrand a mené de grandes nationalisations bancaires et industrielles en 1981-1982."
-  },
-  {
-    "theme": "histoire",
-    "q": "Quelle est la superficie approximative de la France métropolitaine ?",
-    "c": [
-      "451 000 km²",
-      "551 000 km²",
-      "643 000 km²",
-      "750 000 km²"
-    ],
-    "a": 1,
-    "e": "La France métropolitaine a une superficie d'environ 551 000 km²."
-  },
-  {
-    "theme": "histoire",
-    "q": "Quel est le plus grand aéroport de France ?",
-    "c": [
-      "Lyon-Saint-Exupéry",
-      "Nice",
-      "Paris-Charles de Gaulle",
-      "Paris-Orly"
-    ],
-    "a": 2,
-    "e": "Paris-Charles de Gaulle (Roissy) est le plus grand aéroport de France."
-  },
-  {
-    "theme": "histoire",
-    "q": "Qui est Claude Monet ?",
-    "c": [
-      "Un sculpteur",
-      "Un peintre impressionniste, auteur des Nymphéas",
-      "Un architecte",
-      "Un musicien"
-    ],
-    "a": 1,
-    "e": "Claude Monet (1840-1926) est le chef de file de l'impressionnisme."
-  },
-  {
-    "theme": "histoire",
-    "q": "Qui est Marcel Proust ?",
-    "c": [
-      "Un peintre",
-      "L'auteur d'À la recherche du temps perdu",
-      "Un philosophe existentialiste",
-      "Un compositeur"
-    ],
-    "a": 1,
-    "e": "Marcel Proust (1871-1922) est l'auteur d'À la recherche du temps perdu (1913-1927)."
-  },
-  {
-    "theme": "histoire",
-    "q": "Qui est Albert Camus ?",
-    "c": [
-      "Un peintre surréaliste",
-      "L'écrivain et philosophe auteur de L'Étranger et La Peste, prix Nobel 1957",
-      "Un compositeur",
-      "Un homme politique"
-    ],
-    "a": 1,
-    "e": "Albert Camus (1913-1960), écrivain de l'absurde, a reçu le prix Nobel de littérature en 1957."
-  },
-  {
-    "theme": "histoire",
-    "q": "Quel est le plus grand port de France ?",
-    "c": [
-      "Nantes",
-      "Le Havre",
-      "Marseille",
-      "Dunkerque"
-    ],
-    "a": 1,
-    "e": "Le Havre est le plus grand port à conteneurs de France."
-  },
-  {
-    "theme": "histoire",
-    "q": "En quelle année la France a-t-elle accueilli les Jeux Olympiques à Paris en 2024 ?",
-    "c": [
-      "Pour la 1re fois",
-      "Pour la 2e fois",
-      "Pour la 3e fois",
-      "Pour la 4e fois"
-    ],
-    "a": 2,
-    "e": "Paris a accueilli les JO en 1900, 1924 et 2024 (3e fois)."
-  },
-  {
-    "theme": "histoire",
-    "q": "Quel est le musée le plus visité au monde, situé à Paris ?",
-    "c": [
-      "Le musée d'Orsay",
-      "Le musée du Louvre",
-      "Le Centre Pompidou",
-      "Le Grand Palais"
-    ],
-    "a": 1,
-    "e": "Le musée du Louvre est le musée le plus visité au monde."
-  },
-  {
-    "theme": "histoire",
-    "q": "Qui est Jean-Paul Sartre ?",
-    "c": [
-      "Un romancier du XIXe s.",
-      "Le philosophe existentialiste français, auteur de L'Être et le Néant",
-      "Un physicien",
-      "Un mathématicien"
-    ],
-    "a": 1,
-    "e": "Jean-Paul Sartre (1905-1980) est le chef de file de l'existentialisme français."
-  },
-  {
-    "theme": "histoire",
-    "q": "Quelle ville française est connue pour son festival de cinéma ?",
-    "c": [
-      "Paris",
-      "Cannes",
-      "Lyon",
-      "Nice"
-    ],
-    "a": 1,
-    "e": "Le Festival de Cannes est l'un des plus prestigieux festivals de cinéma au monde."
-  },
-  {
-    "theme": "histoire",
-    "q": "Quelle est la monnaie française avant l'euro ?",
-    "c": [
-      "Le Napoléon",
-      "Le Franc",
-      "L'Écu",
-      "Le Florin"
-    ],
-    "a": 1,
-    "e": "Le franc français était la monnaie nationale jusqu'au 31 décembre 2001."
-  },
-  {
-    "theme": "histoire",
-    "q": "En quelle année Napoléon a-t-il été vaincu une première fois ?",
-    "c": [
-      "1812",
-      "1813",
-      "1814",
-      "1815"
-    ],
-    "a": 2,
-    "e": "Napoléon a abdiqué pour la première fois le 6 avril 1814, avant d'être exilé à l'île d'Elbe."
-  },
-  {
-    "theme": "histoire",
-    "q": "Qu'est-ce que la bataille d'Austerlitz (1805) ?",
-    "c": [
-      "Une victoire de Wellington",
-      "La victoire napoléonienne sur l'Autriche et la Russie, chef-d'œuvre militaire",
-      "Une défaite napoléonienne",
-      "Une bataille de 1914-18"
-    ],
-    "a": 1,
-    "e": "Austerlitz (2 décembre 1805) est surnommée la 'bataille des trois empereurs', victoire brillante de Napoléon."
-  },
-  {
-    "theme": "histoire",
-    "q": "Qui est Auguste Rodin ?",
-    "c": [
-      "Un peintre impressionniste",
-      "Le sculpteur français auteur du Penseur et du Baiser",
-      "Un architecte",
-      "Un musicien"
-    ],
-    "a": 1,
-    "e": "Auguste Rodin (1840-1917) est le père de la sculpture moderne (Le Penseur, Le Baiser)."
-  },
-  {
-    "theme": "societe",
-    "q": "Qu'est-ce que le ticket modérateur ?",
-    "c": [
-      "La cotisation mensuelle à la mutuelle",
-      "La partie des frais non remboursée par la Sécurité sociale",
-      "La franchise médicale annuelle plafonnée",
-      "La participation forfaitaire sur les actes médicaux"
-    ],
-    "a": 1,
-    "e": "Le ticket modérateur est la part des frais médicaux non remboursée par l'assurance maladie."
-  },
-  {
-    "theme": "societe",
-    "q": "Qu'est-ce qu'une mutuelle complémentaire santé ?",
-    "c": [
-      "La Sécurité sociale",
-      "Une assurance complémentaire qui rembourse tout ou partie du ticket modérateur",
-      "Un service hospitalier",
-      "Une association de patients"
-    ],
-    "a": 1,
-    "e": "La mutuelle complète les remboursements de la Sécurité sociale."
-  },
-  {
-    "theme": "societe",
-    "q": "Qu'est-ce que le BTS ?",
-    "c": [
-      "Un diplôme de lycée",
-      "Un diplôme bac+2 de l'enseignement supérieur professionnel",
-      "Un diplôme de licence",
-      "Un certificat d'aptitude"
-    ],
-    "a": 1,
-    "e": "Le BTS est un diplôme bac+2 préparé dans des sections de techniciens supérieurs."
-  },
-  {
-    "theme": "societe",
-    "q": "Qu'est-ce que l'obligation alimentaire ?",
-    "c": [
-      "L'obligation de nourrir ses animaux",
-      "L'obligation légale de subvenir aux besoins de ses ascendants et descendants directs",
-      "L'obligation de nourrir ses voisins",
-      "Un contrat de restauration"
-    ],
-    "a": 1,
-    "e": "L'obligation alimentaire impose aux enfants de subvenir aux besoins de leurs parents dans le besoin, et réciproquement."
-  },
-  {
-    "theme": "societe",
-    "q": "Que rembourse la Sécurité sociale à 100% ?",
-    "c": [
-      "Tous les médicaments",
-      "Les affections de longue durée (ALD), la maternité, les accidents graves",
-      "Aucun soin",
-      "Seulement les hospitalisations"
-    ],
-    "a": 1,
-    "e": "La prise en charge à 100% s'applique aux ALD, à la maternité après 6 mois et à certains accidents."
-  },
-  {
-    "theme": "societe",
-    "q": "Qu'est-ce que le RSA (Revenu de solidarité active) ?",
-    "c": [
-      "Une aide pour les handicapés",
-      "Un revenu minimum garanti aux personnes sans ressources suffisantes",
-      "Un revenu pour les retraités",
-      "Un prêt de l'État"
-    ],
-    "a": 1,
-    "e": "Le RSA garantit un niveau minimum de ressources."
-  },
-  {
-    "theme": "societe",
-    "q": "Qu'est-ce que l'AAH ?",
-    "c": [
-      "Une aide pour les parents d'enfants handicapés",
-      "Une aide financière pour les adultes handicapés ne pouvant pas travailler",
-      "Un arrêt maladie prolongé",
-      "Une pension d'invalidité"
-    ],
-    "a": 1,
-    "e": "L'AAH est une aide pour les adultes ayant un taux d'incapacité d'au moins 80%."
-  },
-  {
-    "theme": "societe",
-    "q": "Qu'est-ce que le logement HLM ?",
-    "c": [
-      "Un logement privé moins cher",
-      "Un logement à loyer modéré pour les ménages modestes",
-      "Un logement de fonctionnaire",
-      "Un logement gratuit"
-    ],
-    "a": 1,
-    "e": "Le logement HLM est destiné aux personnes dont les revenus sont inférieurs aux plafonds."
-  },
-  {
-    "theme": "societe",
-    "q": "Quel est le taux de TVA sur la restauration ?",
-    "c": [
-      "5,5%",
-      "10%",
-      "20%",
-      "2,1%"
-    ],
-    "a": 1,
-    "e": "La restauration sur place est soumise au taux intermédiaire de TVA de 10%."
-  },
-  {
-    "theme": "societe",
-    "q": "Qu'est-ce que le prélèvement à la source ?",
-    "c": [
-      "Un versement annuel",
-      "Un prélèvement mensuel directement sur le salaire ou la pension",
-      "Un impôt différé",
-      "Une retenue pour le chômage"
-    ],
-    "a": 1,
-    "e": "Depuis 2019, l'impôt sur le revenu est prélevé directement chaque mois à la source."
-  },
-  {
-    "theme": "societe",
-    "q": "Qu'est-ce que le don d'organes par consentement présumé ?",
-    "c": [
-      "Un don obligatoire",
-      "Toute personne est donneuse sauf si elle s'y est opposée (registre des refus)",
-      "Un acte payant",
-      "Un droit limité aux adultes"
-    ],
-    "a": 1,
-    "e": "Depuis 2017, toute personne est présumée donneuse sauf si elle est inscrite sur le registre des refus."
-  },
-  {
-    "theme": "societe",
-    "q": "Qu'est-ce que le dépôt de garantie dans une location ?",
-    "c": [
-      "Un cadeau au propriétaire",
-      "Une somme versée à l'entrée dans les lieux, restituée à la fin sauf dégradations",
-      "Un paiement de loyer d'avance",
-      "Une assurance habitation"
-    ],
-    "a": 1,
-    "e": "Le dépôt de garantie est restitué dans les 2 mois suivant la sortie des lieux."
-  },
-  {
-    "theme": "societe",
-    "q": "Qu'est-ce que France Travail (ex-Pôle Emploi) ?",
-    "c": [
-      "Un syndicat",
-      "L'opérateur public du service de l'emploi en France",
-      "Une agence de placement privée",
-      "Un organisme de formation"
-    ],
-    "a": 1,
-    "e": "France Travail (anciennement Pôle Emploi) gère l'inscription des demandeurs d'emploi et verse les allocations chômage."
-  },
-  {
-    "theme": "societe",
-    "q": "Qu'est-ce que le CPF (Compte personnel de formation) ?",
-    "c": [
-      "Un compte bancaire",
-      "Un compte crédité annuellement pour financer des formations professionnelles",
-      "Un compte d'épargne retraite",
-      "Une allocation chômage"
-    ],
-    "a": 1,
-    "e": "Le CPF crédite chaque actif d'un montant annuel utilisable pour financer des formations."
-  },
-  {
-    "theme": "societe",
-    "q": "Qu'est-ce que la CNSA ?",
-    "c": [
-      "Un organisme bancaire",
-      "L'organisme finançant l'aide aux personnes âgées et handicapées pour leur autonomie",
-      "Un syndicat",
-      "Un organisme de retraite"
-    ],
-    "a": 1,
-    "e": "La CNSA finance et régule les aides à domicile et en établissement pour les personnes âgées et handicapées."
-  },
-  {
-    "theme": "societe",
-    "q": "Qu'est-ce que le plan local d'urbanisme (PLU) ?",
-    "c": [
-      "Un programme de travaux",
-      "Le document définissant les règles d'utilisation des sols dans une commune",
-      "Un plan économique",
-      "Un registre de propriété"
-    ],
-    "a": 1,
-    "e": "Le PLU est le principal document d'urbanisme de la commune."
-  },
-  {
-    "theme": "societe",
-    "q": "Qu'est-ce que la politique de la ville ?",
-    "c": [
-      "La gestion des villes",
-      "Une politique ciblant les quartiers défavorisés pour réduire les inégalités",
-      "La politique de transport",
-      "La politique culturelle"
-    ],
-    "a": 1,
-    "e": "La politique de la ville cible les quartiers prioritaires (QPV) pour lutter contre les inégalités."
-  },
-  {
-    "theme": "societe",
-    "q": "Qu'est-ce que le REP (Réseau d'éducation prioritaire) ?",
-    "c": [
-      "Une sélection scolaire",
-      "Un dispositif octroyant des moyens supplémentaires aux écoles de quartiers défavorisés",
-      "Un système de transport scolaire",
-      "Une prime pour les professeurs"
-    ],
-    "a": 1,
-    "e": "Les REP/REP+ reçoivent des moyens supplémentaires pour compenser les inégalités scolaires."
-  },
-  {
-    "theme": "societe",
-    "q": "Qu'est-ce que la CNIL ?",
-    "c": [
-      "Un syndicat",
-      "La Commission nationale de l'informatique et des libertés, protégeant les données personnelles",
-      "Un organe judiciaire",
-      "Un service fiscal"
-    ],
-    "a": 1,
-    "e": "La CNIL veille à la protection des données personnelles en France."
-  },
-  {
-    "theme": "societe",
-    "q": "Qu'est-ce que l'INSEE ?",
-    "c": [
-      "Un syndicat",
-      "L'Institut national de la statistique et des études économiques",
-      "Un organisme fiscal",
-      "Un service de renseignement"
-    ],
-    "a": 1,
-    "e": "L'INSEE produit et diffuse les statistiques officielles de la France."
-  },
-  {
-    "theme": "societe",
-    "q": "Qu'est-ce que le PIB ?",
-    "c": [
-      "Le revenu des ménages",
-      "La valeur totale de la production d'un pays sur une période",
-      "Le niveau de vie des citoyens",
-      "Les exportations uniquement"
-    ],
-    "a": 1,
-    "e": "Le PIB mesure la richesse créée sur un territoire national."
-  },
-  {
-    "theme": "societe",
-    "q": "Qu'est-ce que le bénévolat ?",
-    "c": [
-      "Un travail non déclaré",
-      "Une activité exercée librement et sans rémunération au service d'une cause",
-      "Un emploi aidé",
-      "Un stage non payé"
-    ],
-    "a": 1,
-    "e": "Le bénévolat est une activité librement choisie, exercée sans rémunération."
-  },
-  {
-    "theme": "societe",
-    "q": "Qu'est-ce que la journée de solidarité ?",
-    "c": [
-      "Un jour férié supprimé",
-      "Une journée de travail non rémunérée dont le produit finance la dépendance",
-      "Un congé obligatoire",
-      "Un don aux associations"
-    ],
-    "a": 1,
-    "e": "La journée de solidarité (loi de 2004) finance la CNSA via une journée de travail supplémentaire."
-  },
-  {
-    "theme": "societe",
-    "q": "Qu'est-ce que la trêve hivernale pour les locataires ?",
-    "c": [
-      "Une pause des loyers",
-      "La période (1er nov-31 mars) pendant laquelle les expulsions locatives sont interdites",
-      "Un congé spécial",
-      "Une aide chauffage"
-    ],
-    "a": 1,
-    "e": "Pendant la trêve hivernale, les expulsions de locataires sont suspendues."
-  },
-  {
-    "theme": "societe",
-    "q": "Qu'est-ce qu'un contrat d'apprentissage ?",
-    "c": [
-      "Un contrat pour adultes",
-      "Un contrat alternant formation en entreprise et CFA, pour les 16-29 ans",
-      "Un stage non rémunéré",
-      "Un contrat saisonnier"
-    ],
-    "a": 1,
-    "e": "L'apprentissage alterne formation pratique en entreprise et formation théorique en CFA."
-  },
-  {
-    "theme": "societe",
-    "q": "Qu'est-ce que le CESU ?",
-    "c": [
-      "Un chèque cadeaux",
-      "Un moyen de paiement simplifié pour les services à la personne à domicile",
-      "Un bon d'achat alimentaire",
-      "Un chèque vacances"
-    ],
-    "a": 1,
-    "e": "Le CESU est un titre de paiement simplifiant les démarches pour les emplois à domicile."
-  },
-  {
-    "theme": "societe",
-    "q": "Qu'est-ce que le droit au repos dominical ?",
-    "c": [
-      "Travailler le dimanche est interdit sans exception",
-      "Le dimanche est le jour de repos légal hebdomadaire, avec de nombreuses dérogations",
-      "Tout salarié doit se reposer le dimanche",
-      "Le commerce est interdit le dimanche"
-    ],
-    "a": 1,
-    "e": "Le droit au repos dominical est un principe général soumis à de nombreuses dérogations légales."
-  },
-  {
-    "theme": "societe",
-    "q": "Qu'est-ce que le permis de construire ?",
-    "c": [
-      "Une autorisation de louer",
-      "L'autorisation administrative obligatoire pour construire ou agrandir un bâtiment",
-      "Un certificat de propriété",
-      "Une déclaration fiscale"
-    ],
-    "a": 1,
-    "e": "Le permis de construire est une autorisation préalable obligatoire pour toute construction importante."
-  },
-  {
-    "theme": "histoire",
-    "q": "Quel événement marque le début de la décolonisation française en Asie du Sud-Est ?",
-    "c": [
-      "La bataille de Dien Bien Phu (1954)",
-      "L'indépendance du Vietnam en 1940",
-      "Le traité de Genève de 1950",
-      "Le départ des Japonais"
-    ],
-    "a": 0,
-    "e": "La défaite de Dien Bien Phu (7 mai 1954) a contraint la France à céder l'Indochine."
-  },
-  {
-    "theme": "histoire",
-    "q": "Qui a succédé à de Gaulle à la présidence ?",
-    "c": [
-      "Valéry Giscard d'Estaing",
-      "Georges Pompidou",
-      "Jacques Chirac",
-      "Michel Debré"
-    ],
-    "a": 1,
-    "e": "Georges Pompidou a succédé à Charles de Gaulle après sa démission en 1969."
-  },
-  {
-    "theme": "histoire",
-    "q": "Quel pays a été fondé en 1991 après la dissolution de l'URSS ?",
-    "c": [
-      "La Russie (qui a succédé à l'URSS)",
-      "La Biélorussie",
-      "La Tchéquie",
-      "La Pologne"
-    ],
-    "a": 0,
-    "e": "La Russie a hérité des sièges et institutions de l'URSS, dissoute le 25 décembre 1991."
-  },
-  {
-    "theme": "histoire",
-    "q": "En quelle année la Communauté économique européenne (CEE) a-t-elle été créée ?",
-    "c": [
-      "1951",
-      "1957",
-      "1962",
-      "1968"
-    ],
-    "a": 1,
-    "e": "La CEE a été créée par le traité de Rome signé le 25 mars 1957."
-  },
-  {
-    "theme": "histoire",
-    "q": "Quel traité a fondé la CECA (Communauté européenne du charbon et de l'acier) ?",
-    "c": [
-      "Traité de Rome",
-      "Traité de Paris (1951)",
-      "Traité de Bruxelles",
-      "Traité de Maastricht"
-    ],
-    "a": 1,
-    "e": "La CECA a été fondée par le traité de Paris signé le 18 avril 1951."
-  },
-  {
-    "theme": "histoire",
-    "q": "Qui a lancé l'idée de la réconciliation franco-allemande après 1945 ?",
-    "c": [
-      "De Gaulle et Adenauer",
-      "Churchill et Roosevelt",
-      "Mitterrand et Kohl",
-      "Pompidou et Brandt"
-    ],
-    "a": 0,
-    "e": "De Gaulle et Adenauer ont posé les bases de la réconciliation franco-allemande, symbolisée par le Traité de l'Élysée (1963)."
-  },
-  {
-    "theme": "histoire",
-    "q": "Que commémore le traité de l'Élysée signé en 1963 ?",
-    "c": [
-      "La fin de la guerre",
-      "La réconciliation et l'amitié franco-allemande",
-      "L'entrée de l'Allemagne dans l'OTAN",
-      "La création de l'euro"
-    ],
-    "a": 1,
-    "e": "Le traité de l'Élysée (22 janvier 1963) a scellé l'amitié franco-allemande."
-  },
-  {
-    "theme": "histoire",
-    "q": "Quel président français a dit 'La France a perdu une bataille, mais elle n'a pas perdu la guerre' ?",
-    "c": [
-      "Pétain",
-      "Clemenceau",
-      "De Gaulle",
-      "Blum"
-    ],
-    "a": 2,
-    "e": "Cette phrase est attribuée à de Gaulle, exprimant l'esprit de résistance de la France libre."
-  },
-  {
-    "theme": "histoire",
-    "q": "Quel est le plus grand lac naturel de France métropolitaine ?",
-    "c": [
-      "Le lac d'Annecy",
-      "Le lac du Bourget",
-      "Le lac de Genève",
-      "Le lac de Grand-Lieu"
-    ],
-    "a": 1,
-    "e": "Le lac du Bourget (Savoie) est le plus grand lac naturel de France métropolitaine."
-  },
-  {
-    "theme": "histoire",
-    "q": "Quelle est la plus grande ville de France (par population) ?",
-    "c": [
-      "Lyon",
-      "Marseille",
-      "Paris",
-      "Bordeaux"
-    ],
-    "a": 2,
-    "e": "Paris est la plus grande ville de France avec environ 2,1 millions d'habitants intramuros."
-  },
-  {
-    "theme": "histoire",
-    "q": "Quel est le nom officiel du musée le plus fréquenté au monde, situé à Paris ?",
-    "c": [
-      "Le musée d'Orsay",
-      "Le musée du Louvre",
-      "Le Centre Pompidou",
-      "Le Grand Palais"
-    ],
-    "a": 1,
-    "e": "Le musée du Louvre est le musée le plus visité au monde."
-  },
-  {
-    "theme": "histoire",
-    "q": "Quel roi français est surnommé 'Saint Louis' ?",
-    "c": [
-      "Louis IX",
-      "Louis XI",
-      "Louis XII",
-      "Louis XV"
-    ],
-    "a": 0,
-    "e": "Louis IX (1214-1270) a été canonisé en 1297 sous le nom de Saint Louis."
-  },
-  {
-    "theme": "histoire",
-    "q": "Qu'est-ce que l'Edit de Nantes (1598) ?",
-    "c": [
-      "Un traité de paix avec l'Espagne",
-      "Un édit de tolérance religieuse accordé par Henri IV aux Protestants",
-      "Une loi sur l'impôt",
-      "Un accord commercial"
-    ],
-    "a": 1,
-    "e": "L'Édit de Nantes (1598) accordait aux Protestants la liberté de culte et certaines garanties, mettant fin aux guerres de Religion."
-  },
-  {
-    "theme": "histoire",
-    "q": "Qui a révoqué l'Edit de Nantes ?",
-    "c": [
-      "Richelieu",
-      "Mazarin",
-      "Louis XIV",
-      "Colbert"
-    ],
-    "a": 2,
-    "e": "Louis XIV a révoqué l'Édit de Nantes par l'Édit de Fontainebleau le 22 octobre 1685."
-  },
-  {
-    "theme": "histoire",
-    "q": "Qu'est-ce que la Saint-Barthélemy (1572) ?",
-    "c": [
-      "Une fête religieuse",
-      "Le massacre de milliers de protestants en France",
-      "Une victoire militaire",
-      "Une révolte paysanne"
-    ],
-    "a": 1,
-    "e": "La nuit de la Saint-Barthélemy (23-24 août 1572) a vu le massacre de milliers de Huguenots en France."
-  },
-  {
-    "theme": "histoire",
-    "q": "Qui était Robespierre ?",
-    "c": [
-      "Un général de Napoléon",
-      "Un leader révolutionnaire de la Terreur (1793-1794)",
-      "Un roi constitutionnel",
-      "Un philosophe des Lumières"
-    ],
-    "a": 1,
-    "e": "Maximilien Robespierre a dirigé le Comité de salut public pendant la Terreur, avant d'être guillotiné le 28 juillet 1794."
-  },
-  {
-    "theme": "histoire",
-    "q": "Qu'est-ce que la Terreur pendant la Révolution ?",
-    "c": [
-      "Une guerre civile",
-      "La période de répression révolutionnaire (1793-1794) avec des milliers d'exécutions",
-      "Un régime militaire",
-      "Une invasion étrangère"
-    ],
-    "a": 1,
-    "e": "La Terreur (1793-1794) est une période de répression politique avec environ 17 000 exécutions officielles."
-  },
-  {
-    "theme": "histoire",
-    "q": "Qu'est-ce que le Directoire ?",
-    "c": [
-      "Un régime napoléonien",
-      "Le régime qui a succédé à la Terreur (1795-1799) avant Napoléon",
-      "Un tribunal révolutionnaire",
-      "Un gouvernement de la Restauration"
-    ],
-    "a": 1,
-    "e": "Le Directoire (1795-1799) était un régime de cinq directeurs, renversé par le coup d'État de Napoléon (18 Brumaire)."
-  },
-  {
-    "theme": "histoire",
-    "q": "Quelle était la date du coup d'État de Napoléon Bonaparte ?",
-    "c": [
-      "9 Thermidor an II",
-      "18 Brumaire an VIII (9 novembre 1799)",
-      "14 juillet 1789",
-      "2 décembre 1804"
-    ],
-    "a": 1,
-    "e": "Le coup d'État du 18 Brumaire (9 novembre 1799) a renversé le Directoire et porté Napoléon au pouvoir."
-  },
-  {
-    "theme": "histoire",
-    "q": "Quelle est la date de la première abdication de Napoléon ?",
-    "c": [
-      "1813",
-      "1814",
-      "1815",
-      "1816"
-    ],
-    "a": 1,
-    "e": "Napoléon a abdiqué une première fois le 6 avril 1814, avant de s'exiler à l'île d'Elbe."
-  },
-  {
-    "theme": "histoire",
-    "q": "Quel roi est renversé par la révolution de Juillet 1830 ?",
-    "c": [
-      "Louis XVIII",
-      "Charles X",
-      "Louis-Philippe",
-      "Napoléon III"
-    ],
-    "a": 1,
-    "e": "Charles X est renversé par les 'Trois Glorieuses' (27-29 juillet 1830), remplacé par Louis-Philippe d'Orléans."
-  },
-  {
-    "theme": "histoire",
-    "q": "Qu'est-ce que la Monarchie de Juillet (1830-1848) ?",
-    "c": [
-      "Un régime républicain",
-      "Le règne de Louis-Philippe Ier, régime libéral et constitutionnel",
-      "Un régime militaire",
-      "Un empire"
-    ],
-    "a": 1,
-    "e": "La Monarchie de Juillet est le règne de Louis-Philippe (1830-1848), régime parlementaire libéral."
-  },
-  {
-    "theme": "histoire",
-    "q": "Qui est Victor Schoelcher ?",
-    "c": [
-      "Un général napoléonien",
-      "L'abolitionniste français qui a obtenu l'abolition définitive de l'esclavage en 1848",
-      "Un politicien de la IIIe République",
-      "Un philosophe des Lumières"
-    ],
-    "a": 1,
-    "e": "Victor Schoelcher, sous-secrétaire d'État aux colonies, a rédigé le décret d'abolition de l'esclavage du 27 avril 1848."
-  },
-  {
-    "theme": "histoire",
-    "q": "Qui a écrit le Contrat social ?",
-    "c": [
-      "Voltaire",
-      "Diderot",
-      "Rousseau",
-      "Montesquieu"
-    ],
-    "a": 2,
-    "e": "Jean-Jacques Rousseau a publié Du Contrat social en 1762."
-  },
-  {
-    "theme": "histoire",
-    "q": "Qu'est-ce que l'Encyclopédie (1751-1772) ?",
-    "c": [
-      "Un journal politique",
-      "Un ouvrage collectif des Lumières visant à répandre les connaissances et la raison",
-      "Un code juridique",
-      "Un manuel scolaire"
-    ],
-    "a": 1,
-    "e": "L'Encyclopédie, dirigée par Diderot et d'Alembert, est le monument des Lumières regroupant le savoir de son temps."
-  },
-  {
-    "theme": "histoire",
-    "q": "Quelle école d'art français a produit Monet, Renoir et Degas ?",
-    "c": [
-      "Le réalisme",
-      "L'impressionnisme",
-      "Le symbolisme",
-      "Le fauvisme"
-    ],
-    "a": 1,
-    "e": "L'impressionnisme (2e moitié du XIXe s.) regroupe Monet, Renoir, Degas, Pissarro, Sisley."
-  },
-  {
-    "theme": "histoire",
-    "q": "Qu'est-ce que le château de Versailles représente pour l'histoire française ?",
-    "c": [
-      "Le siège du parlement actuel",
-      "Le symbole de l'absolutisme de Louis XIV et chef-d'œuvre de l'architecture classique",
-      "Le palais de l'Élysée",
-      "Un musée d'art moderne"
-    ],
-    "a": 1,
-    "e": "Le château de Versailles symbolise l'absolutisme de Louis XIV et est inscrit au patrimoine mondial de l'UNESCO."
-  },
-  {
-    "theme": "histoire",
-    "q": "En quelle année la France a-t-elle accueilli les Jeux olympiques à Paris pour la dernière fois avant 2024 ?",
-    "c": [
-      "1900",
-      "1924",
-      "1968",
-      "1992"
-    ],
-    "a": 1,
-    "e": "Paris a accueilli les Jeux olympiques en 1900 et 1924. En 2024, Paris accueille les JO pour la 3e fois."
-  },
-  {
-    "theme": "histoire",
-    "q": "Qu'est-ce que l'Exposition universelle de 1889 ?",
-    "c": [
-      "Un salon de peinture",
-      "L'exposition pour laquelle la tour Eiffel a été construite, célébrant le centenaire de la Révolution",
-      "Une foire commerciale",
-      "Un salon de l'automobile"
-    ],
-    "a": 1,
-    "e": "L'Exposition universelle de 1889, tenue à Paris, a vu la construction de la tour Eiffel comme œuvre d'entrée."
-  },
-  {
-    "theme": "histoire",
-    "q": "Quel physicien français a découvert le radium ?",
-    "c": [
-      "Louis Pasteur",
-      "Marie Curie",
-      "Pierre et Marie Curie ensemble",
-      "Henri Becquerel seul"
-    ],
-    "a": 2,
-    "e": "Pierre et Marie Curie ont découvert le polonium et le radium en 1898. Marie Curie a reçu deux prix Nobel."
-  },
-  {
-    "theme": "histoire",
-    "q": "Quelle est la contribution de Gustave Eiffel à l'architecture ?",
-    "c": [
-      "Il a construit Notre-Dame",
-      "Il a conçu la tour Eiffel (1889) et participé à la statue de la Liberté",
-      "Il a construit le Louvre",
-      "Il a conçu le Panthéon"
-    ],
-    "a": 1,
-    "e": "Gustave Eiffel (1832-1923) a conçu la tour Eiffel (1887-1889) et les armatures internes de la statue de la Liberté."
-  },
-  {
-    "theme": "histoire",
-    "q": "Qu'est-ce que le Moulin Rouge ?",
-    "c": [
-      "Un moulin à farine",
-      "Un cabaret parisien fondé en 1889, célèbre pour le french cancan",
-      "Un musée d'art",
-      "Un théâtre national"
-    ],
-    "a": 1,
-    "e": "Le Moulin Rouge, ouvert en 1889 à Montmartre, est un cabaret mondial célèbre pour ses spectacles de danse."
-  },
-  {
-    "theme": "histoire",
-    "q": "Quelle ville française est connue pour son festival de cinéma international ?",
-    "c": [
-      "Paris",
-      "Cannes",
-      "Lyon",
-      "Nice"
-    ],
-    "a": 1,
-    "e": "Le Festival de Cannes est l'un des plus prestigieux festivals de cinéma au monde, créé en 1946."
-  },
-  {
-    "theme": "societe",
-    "q": "Qu'est-ce que le numerus apertus en médecine ?",
-    "c": [
-      "Un numerus clausus maintenu",
-      "La suppression du numerus clausus pour accéder aux études médicales, remplacé par un quota flexible depuis 2020",
-      "Un concours de médecine",
-      "Un diplôme européen"
-    ],
-    "a": 1,
-    "e": "Depuis 2020, le numerus clausus en médecine a été remplacé par un numerus apertus plus flexible."
-  },
-  {
-    "theme": "societe",
-    "q": "Quel est le rôle de la médecin traitant en France ?",
-    "c": [
-      "Il gère les urgences",
-      "Il assure le suivi médical de base et coordonne les soins (accès au spécialiste)",
-      "Il pratique uniquement des opérations",
-      "Il prescrit les médicaments sans consultation"
-    ],
-    "a": 1,
-    "e": "Le médecin traitant est le pivot du parcours de soins. Le consulter en premier permet un meilleur remboursement."
-  },
-  {
-    "theme": "societe",
-    "q": "Qu'est-ce que l'assurance maladie obligatoire ?",
-    "c": [
-      "Une assurance privée",
-      "Le régime de base de la Sécurité sociale qui rembourse les frais médicaux",
-      "Une assurance facultative",
-      "Un service hospitalier"
-    ],
-    "a": 1,
-    "e": "L'assurance maladie obligatoire (Sécurité sociale) rembourse une partie des frais de santé pour tous les assurés."
-  },
-  {
-    "theme": "societe",
-    "q": "Qu'est-ce que la retraite complémentaire AGIRC-ARRCO ?",
-    "c": [
-      "La retraite de base",
-      "Le régime de retraite complémentaire obligatoire pour les salariés du privé",
-      "Un régime facultatif",
-      "Une retraite d'État"
-    ],
-    "a": 1,
-    "e": "L'AGIRC-ARRCO est la caisse de retraite complémentaire obligatoire des salariés du secteur privé."
-  },
-  {
-    "theme": "societe",
-    "q": "Quelle est la durée de cotisation requise pour une retraite à taux plein (génération 1965) ?",
-    "c": [
-      "40 ans",
-      "41 ans",
-      "43 ans",
-      "45 ans"
-    ],
-    "a": 2,
-    "e": "Pour la génération née en 1965 et après, la durée de cotisation requise est de 43 ans (172 trimestres)."
-  },
-  {
-    "theme": "societe",
-    "q": "Qu'est-ce que l'assurance chômage (ARE) ?",
-    "c": [
-      "Une aide de l'État sans conditions",
-      "L'allocation chômage versée par France Travail aux travailleurs involontairement privés d'emploi",
-      "Un revenu minimum",
-      "Un salaire différé"
-    ],
-    "a": 1,
-    "e": "L'ARE (Allocation d'aide au retour à l'emploi) est versée sous conditions par France Travail (ex-Pôle Emploi)."
-  },
-  {
-    "theme": "societe",
-    "q": "Que signifie l'acronyme CPAM ?",
-    "c": [
-      "Comité des parents et mères",
-      "Caisse primaire d'assurance maladie",
-      "Centre pour les aides médicales",
-      "Commission de prévention des accidents du travail"
-    ],
-    "a": 1,
-    "e": "La CPAM gère l'assurance maladie au niveau local."
-  },
-  {
-    "theme": "societe",
-    "q": "Qu'est-ce que la déclaration préalable à l'embauche (DPAE) ?",
-    "c": [
-      "Un formulaire de candidature",
-      "La déclaration obligatoire de l'employeur à l'URSSAF avant toute embauche",
-      "Un contrat de travail",
-      "Un formulaire de licenciement"
-    ],
-    "a": 1,
-    "e": "L'employeur doit effectuer une DPAE auprès de l'URSSAF avant tout embauche, pour déclarer le salarié."
-  },
-  {
-    "theme": "societe",
-    "q": "Combien y a-t-il de types de baccalauréat en France ?",
-    "c": [
-      "2",
-      "3",
-      "4",
-      "5"
-    ],
-    "a": 1,
-    "e": "Il existe 3 séries de bac : général, technologique et professionnel."
-  },
-  {
-    "theme": "societe",
-    "q": "Qu'est-ce que le BTS (Brevet de technicien supérieur) ?",
-    "c": [
-      "Un diplôme de lycée",
-      "Un diplôme bac+2 de l'enseignement supérieur professionnel",
-      "Un diplôme universitaire de licence",
-      "Un certificat d'aptitude professionnelle"
-    ],
-    "a": 1,
-    "e": "Le BTS est un diplôme bac+2 préparé dans des lycées à sections de techniciens supérieurs (STS)."
-  },
-  {
-    "theme": "societe",
-    "q": "Qu'est-ce que le CAP (Certificat d'aptitude professionnelle) ?",
-    "c": [
-      "Un baccalauréat professionnel",
-      "Le premier diplôme professionnel préparé en lycée ou en apprentissage",
-      "Un BEP",
-      "Un brevet des collèges"
-    ],
-    "a": 1,
-    "e": "Le CAP est un diplôme professionnel de niveau 3 (bac-2) préparant à un métier précis."
-  },
-  {
-    "theme": "societe",
-    "q": "Quelle est la différence entre un lycée général et un lycée professionnel ?",
-    "c": [
-      "Aucune différence",
-      "Le lycée général prépare au bac général/technologique ; le lycée pro prépare au bac pro et aux CAP/BEP",
-      "Le lycée pro est privé",
-      "Le lycée général est plus difficile"
-    ],
-    "a": 1,
-    "e": "Le lycée général/technologique prépare au bac G ou T ; le lycée professionnel prépare au bac pro ou aux diplômes pro (CAP)."
-  },
-  {
-    "theme": "societe",
-    "q": "Qu'est-ce que le numerus clausus en médecine (avant sa suppression) ?",
-    "c": [
-      "Le nombre de médecins autorisés à exercer",
-      "Le nombre maximal d'étudiants admis en 2e année de médecine (PCEM2) après une sélection sévère en 1re année",
-      "Le nombre de spécialités médicales",
-      "Un diplôme européen"
-    ],
-    "a": 1,
-    "e": "Avant 2020, le numerus clausus fixait le nombre de places en 2e année de médecine. Il a été remplacé par le numerus apertus."
-  },
-  {
-    "theme": "societe",
-    "q": "Qu'est-ce qu'une grande école française ?",
-    "c": [
-      "Une école de grande taille",
-      "Un établissement d'enseignement supérieur sélectif préparant des élites (ENA devenue INSP, Polytechnique, HEC...)",
-      "Un lycée international",
-      "Un établissement public non sélectif"
-    ],
-    "a": 1,
-    "e": "Les grandes écoles (Polytechnique, HEC, ENS, Sciences Po...) sont des établissements sélectifs d'excellence formant les élites françaises."
-  },
-  {
-    "theme": "societe",
-    "q": "Qu'est-ce que Sciences Po ?",
-    "c": [
-      "Une école de sciences",
-      "Un Institut d'études politiques préparant aux carrières dans la politique, la diplomatie et les sciences sociales",
-      "Un lycée spécialisé",
-      "Une école de commerce"
-    ],
-    "a": 1,
-    "e": "Sciences Po (anciennement École libre des sciences politiques) forme à la politique, la diplomatie, le droit, l'économie et les médias."
-  },
-  {
-    "theme": "societe",
-    "q": "Quelle est la principale mission de l'Éducation nationale ?",
-    "c": [
-      "Préparer au marché du travail uniquement",
-      "Instruire les jeunes, former les citoyens et réduire les inégalités sociales",
-      "Gérer les transports scolaires",
-      "Contrôler les établissements privés"
-    ],
-    "a": 1,
-    "e": "L'Éducation nationale a pour missions d'instruire, éduquer, former et contribuer à l'égalité des chances."
-  },
-  {
-    "theme": "societe",
-    "q": "Combien de niveaux compte le système d'éducation français (de la maternelle au doctorat) ?",
-    "c": [
-      "5 niveaux",
-      "8 niveaux",
-      "En réalité on parle de 8 niveaux de qualification (du niveau 1 au niveau 8)",
-      "3 niveaux"
-    ],
-    "a": 2,
-    "e": "Le système français compte 8 niveaux de qualification, allant du CAP/BEP (niveau 3) au doctorat (niveau 8)."
-  },
-  {
-    "theme": "societe",
-    "q": "Qu'est-ce que le brevet des collèges (DNB) ?",
-    "c": [
-      "Un diplôme secondaire",
-      "Le diplôme obtenu en fin de 3e, premier diplôme national du collège",
-      "Un diplôme professionnel",
-      "Un certificat de fin d'école primaire"
-    ],
-    "a": 1,
-    "e": "Le Diplôme national du brevet (DNB) est obtenu en fin de 3e (collège). Il n'est pas obligatoire pour passer en lycée."
-  },
-  {
-    "theme": "societe",
-    "q": "Combien d'associations actives compte-t-on en France ?",
-    "c": [
-      "Environ 100 000",
-      "Environ 500 000",
-      "Environ 1,5 million",
-      "Environ 10 millions"
-    ],
-    "a": 2,
-    "e": "La France compte environ 1,5 million d'associations actives, impliquant plus de 20 millions de bénévoles."
-  },
-  {
-    "theme": "societe",
-    "q": "Qu'est-ce que la CNSA (Caisse nationale de solidarité pour l'autonomie) ?",
-    "c": [
-      "Un organisme bancaire",
-      "L'organisme finançant l'aide aux personnes âgées et handicapées pour leur autonomie",
-      "Un syndicat",
-      "Un organisme de retraite"
-    ],
-    "a": 1,
-    "e": "La CNSA finance et régule les aides à domicile et en établissement pour les personnes âgées et handicapées."
-  },
-  {
-    "theme": "societe",
-    "q": "Qu'est-ce que la Prestation de compensation du handicap (PCH) ?",
-    "c": [
-      "Une allocation chômage pour les handicapés",
-      "Une aide permettant de financer les surcoûts liés au handicap (aide humaine, technique, logement)",
-      "Un salaire spécial",
-      "Un droit à la retraite anticipée"
-    ],
-    "a": 1,
-    "e": "La PCH est une aide personnalisée qui couvre les besoins spécifiques liés au handicap : aide humaine, technique, aménagement..."
-  },
-  {
-    "theme": "societe",
-    "q": "Qu'est-ce que la MDPH (Maison départementale des personnes handicapées) ?",
-    "c": [
-      "Un hôpital spécialisé",
-      "Le guichet unique gérant les droits et les prestations pour les personnes handicapées",
-      "Un tribunal spécial",
-      "Un service de placement en établissement"
-    ],
-    "a": 1,
-    "e": "La MDPH est le guichet unique pour toutes les demandes liées au handicap (reconnaissance, prestations, orientation)."
-  },
-  {
-    "theme": "societe",
-    "q": "Qu'est-ce que la loi ELAN (2018) en matière de logement ?",
-    "c": [
-      "Une loi sur l'éducation",
-      "La loi sur l'évolution du logement, de l'aménagement et du numérique",
-      "Une loi sur l'emploi",
-      "Une loi sur l'environnement"
-    ],
-    "a": 1,
-    "e": "La loi ELAN (2018) réforme le droit du logement : construction, location, copropriété, expulsions..."
-  },
-  {
-    "theme": "societe",
-    "q": "Quel organisme gère les demandes de logement social ?",
-    "c": [
-      "La mairie uniquement",
-      "Le guichet enregistreur de la demande de logement social dans chaque département",
-      "La préfecture seule",
-      "France Travail"
-    ],
-    "a": 1,
-    "e": "La demande de logement social se fait via un formulaire unique déposé en mairie, à l'organisme HLM ou en ligne (SNE)."
-  },
-  {
-    "theme": "societe",
-    "q": "Qu'est-ce qu'un permis de construire ?",
-    "c": [
-      "Une autorisation de louer",
-      "L'autorisation administrative obligatoire pour construire ou agrandir un bâtiment",
-      "Un certificat de propriété",
-      "Une déclaration fiscale"
-    ],
-    "a": 1,
-    "e": "Le permis de construire est une autorisation administrative préalable obligatoire pour toute construction ou modification importante."
-  },
-  {
-    "theme": "societe",
-    "q": "Qu'est-ce que le zonage prioritaire en matière scolaire (REP/REP+) ?",
-    "c": [
-      "Une sélection scolaire",
-      "Un dispositif octroyant des moyens supplémentaires aux écoles de quartiers défavorisés",
-      "Un système de transport scolaire",
-      "Une prime pour les professeurs"
-    ],
-    "a": 1,
-    "e": "Les réseaux d'éducation prioritaire (REP/REP+) reçoivent des moyens humains et financiers supplémentaires pour compenser les inégalités scolaires."
-  },
-  {
-    "theme": "societe",
-    "q": "Quel est le principe du 'droit au repos dominical' ?",
-    "c": [
-      "Travailler le dimanche est interdit sans exception",
-      "Le dimanche est le jour de repos légal hebdomadaire, avec de nombreuses dérogations",
-      "Tout salarié doit se reposer le dimanche",
-      "La loi interdit le commerce le dimanche"
-    ],
-    "a": 1,
-    "e": "Le droit au repos dominical est un principe général mais soumis à de nombreuses dérogations légales (tourisme, alimentation...)."
-  },
-  {
-    "theme": "societe",
-    "q": "Qu'est-ce que la médiation familiale ?",
-    "c": [
-      "Un service d'aide juridictionnelle",
-      "Un processus aidant les familles en conflit à trouver des solutions amiables avec l'aide d'un tiers professionnel",
-      "Un service de placement d'enfants",
-      "Un tribunal familial"
-    ],
-    "a": 1,
-    "e": "La médiation familiale est un processus dans lequel un médiateur aide les membres d'une famille en conflit à trouver des accords amiables."
-  },
-  {
-    "theme": "societe",
-    "q": "Qu'est-ce que le plan de sauvegarde de l'emploi (PSE) ?",
-    "c": [
-      "Un contrat de travail",
-      "Le plan obligatoire dans les entreprises de 50 salariés et plus souhaitant licencier 10 salariés ou plus pour motif économique",
-      "Un congé de formation",
-      "Une aide de l'État aux entreprises"
-    ],
-    "a": 1,
-    "e": "Le PSE (anciennement plan social) est obligatoire dans les entreprises de 50+ salariés pour les licenciements économiques collectifs importants."
-  },
-  {
-    "theme": "societe",
-    "q": "Qu'est-ce que le chèque emploi service universel (CESU) ?",
-    "c": [
-      "Un chèque cadeaux",
-      "Un moyen de paiement simplifié pour les services à la personne à domicile (ménage, jardinage, garde d'enfants)",
-      "Un bon d'achat alimentaire",
-      "Un chèque vacances"
-    ],
-    "a": 1,
-    "e": "Le CESU est un titre de paiement simplifiant les démarches administratives pour les emplois à domicile et la déclaration des salariés."
-  },
-  {
-    "theme": "societe",
-    "q": "Qu'est-ce que la protection sociale en France ?",
-    "c": [
-      "Un service privé",
-      "L'ensemble des mécanismes de solidarité collective couvrant les risques sociaux (maladie, vieillesse, famille, chômage, accident du travail)",
-      "Une assurance facultative",
-      "Un service uniquement pour les fonctionnaires"
-    ],
-    "a": 1,
-    "e": "La protection sociale française est l'un des systèmes les plus développés au monde, couvrant l'ensemble des risques sociaux."
-  },
-  {
-    "theme": "societe",
-    "q": "Qu'est-ce que le déficit de la Sécurité sociale ?",
-    "c": [
-      "Un excédent budgétaire",
-      "La situation où les dépenses de la Sécurité sociale dépassent ses recettes",
-      "Un indicateur de croissance",
-      "Un surplus fiscal"
-    ],
-    "a": 1,
-    "e": "Le déficit de la Sécurité sociale est le montant par lequel les dépenses dépassent les recettes (cotisations et impôts affectés)."
-  },
-  {
-    "theme": "societe",
-    "q": "Qu'est-ce que la CSG (Contribution sociale généralisée) ?",
-    "c": [
-      "Un impôt sur les bénéfices",
-      "Un prélèvement fiscal finançant la protection sociale, assis sur tous les revenus",
-      "Un impôt sur les successions",
-      "Une taxe sur les entreprises"
-    ],
-    "a": 1,
-    "e": "La CSG est un prélèvement social finançant la Sécurité sociale, prélevé sur l'ensemble des revenus (travail, capital, remplacement)."
-  },
-  {
-    "theme": "societe",
-    "q": "Quel est le taux standard de la CSG sur les revenus d'activité ?",
-    "c": [
-      "3,8%",
-      "6,2%",
-      "9,2%",
-      "12%"
-    ],
-    "a": 2,
-    "e": "Le taux de la CSG sur les revenus d'activité est de 9,2% (7,5% pour les revenus de remplacement)."
-  },
-  {
-    "theme": "societe",
-    "q": "Qu'est-ce que l'Assurance vieillesse (retraite de base) ?",
-    "c": [
-      "Un produit d'épargne privé",
-      "Le régime de base obligatoire gérant les retraites des salariés du privé (CNAV)",
-      "Un régime de retraite facultatif",
-      "Un régime uniquement pour les fonctionnaires"
-    ],
-    "a": 1,
-    "e": "L'assurance vieillesse (CNAV) gère la retraite de base des salariés du régime général."
-  },
-  {
-    "theme": "societe",
-    "q": "Qu'est-ce que le régime spécial de retraite des fonctionnaires ?",
-    "c": [
-      "Le même régime que le privé",
-      "Un régime particulier géré par l'État, avec des règles différentes",
-      "Un régime plus avantageux interdit depuis 2010",
-      "Un régime européen"
-    ],
-    "a": 1,
-    "e": "Les fonctionnaires dépendent de la CNRACL (collectivités) ou du code des pensions civiles (État), avec des règles propres."
-  },
-  {
-    "theme": "societe",
-    "q": "Qu'est-ce que la Charte de la laïcité dans les services publics ?",
-    "c": [
-      "Un document facultatif",
-      "Une charte obligatoirement affichée dans les services publics précisant les droits et devoirs des agents et usagers en matière de laïcité",
-      "Un code de déontologie des médecins",
-      "Un règlement scolaire"
-    ],
-    "a": 1,
-    "e": "La Charte de la laïcité, obligatoirement affichée dans les services publics depuis 2013, informe agents et usagers de leurs droits et obligations."
-  },
-  {
-    "theme": "societe",
-    "q": "Que mesure le PIB (Produit intérieur brut) ?",
-    "c": [
-      "Le revenu des ménages",
-      "La valeur totale de la production de biens et services d'un pays sur une période donnée",
-      "Le niveau de vie des citoyens",
-      "Les exportations uniquement"
-    ],
-    "a": 1,
-    "e": "Le PIB mesure la richesse créée sur un territoire national en une période donnée. Il est l'indicateur économique le plus utilisé."
-  },
-  {
-    "theme": "societe",
-    "q": "Quel organisme publie les comptes nationaux et le PIB de la France ?",
-    "c": [
-      "La Banque de France",
-      "L'INSEE",
-      "Le ministère de l'Économie",
-      "La Cour des comptes"
-    ],
-    "a": 1,
-    "e": "L'INSEE publie les comptes nationaux et les statistiques économiques officielles, dont le PIB."
-  },
-  {
-    "theme": "societe",
-    "q": "Qu'est-ce que l'inflation ?",
-    "c": [
-      "La baisse générale des prix",
-      "La hausse générale et durable des prix, qui érode le pouvoir d'achat",
-      "La hausse des salaires",
-      "La baisse du chômage"
-    ],
-    "a": 1,
-    "e": "L'inflation est la hausse générale des prix. Elle est mesurée par l'indice des prix à la consommation (IPC) publié par l'INSEE."
-  },
-  {
-    "theme": "societe",
-    "q": "Qu'est-ce que le pouvoir d'achat ?",
-    "c": [
-      "Le salaire brut",
-      "La capacité d'acheter des biens et services avec un revenu donné",
-      "Le prix des logements",
-      "Le montant des impôts"
-    ],
-    "a": 1,
-    "e": "Le pouvoir d'achat est la quantité de biens et services qu'un revenu permet d'acheter. Il diminue quand l'inflation augmente."
-  },
-  {
-    "theme": "societe",
-    "q": "Qu'est-ce que le budget de l'État ?",
-    "c": [
-      "Le budget des collectivités locales",
-      "L'ensemble des ressources (impôts, taxes) et des dépenses (services publics, investissements) de l'État pour une année",
-      "Le budget de la Sécurité sociale",
-      "Un budget d'entreprise publique"
-    ],
-    "a": 1,
-    "e": "Le budget de l'État (loi de finances) prévoit les ressources et les dépenses de l'État pour l'année à venir."
-  },
-  {
-    "theme": "societe",
-    "q": "Qu'est-ce que la politique familiale française ?",
-    "c": [
-      "Des mesures uniquement pour les familles nombreuses",
-      "L'ensemble des dispositifs (allocations, congés, fiscalité) soutenant les familles avec enfants",
-      "Une politique de natalité forcée",
-      "Un programme privé"
-    ],
-    "a": 1,
-    "e": "La France a une politique familiale parmi les plus développées d'Europe : allocations familiales, congé parental, quotient familial..."
-  },
-  {
-    "theme": "societe",
-    "q": "Qu'est-ce que le quotient familial ?",
-    "c": [
-      "Un calcul pour les notes scolaires",
-      "Un mécanisme fiscal divisant le revenu imposable par le nombre de parts fiscales selon la composition du foyer",
-      "Un avantage réservé aux riches",
-      "Un indice économique"
-    ],
-    "a": 1,
-    "e": "Le quotient familial réduit l'impôt sur le revenu selon le nombre d'enfants à charge, favorisant les familles nombreuses."
-  },
-  {
-    "theme": "societe",
-    "q": "Qu'est-ce que le don d'organes en France ?",
-    "c": [
-      "Un don volontaire obligatoire",
-      "Depuis 2017, le principe est le consentement présumé : toute personne est donneur sauf si elle s'y est opposée",
-      "Un acte payant",
-      "Un droit uniquement pour les adultes"
-    ],
-    "a": 1,
-    "e": "Depuis la loi de 2017, le principe est le 'opt-out' : toute personne est présumée donneuse sauf si elle s'est inscrite sur le registre des refus."
-  },
-  {
-    "theme": "societe",
-    "q": "Comment s'inscrire sur le registre national des refus de don d'organes ?",
-    "c": [
-      "En mairie",
-      "Sur le site de l'Agence de la biomédecine",
-      "À l'hôpital",
-      "À la préfecture"
-    ],
-    "a": 1,
-    "e": "Pour refuser le don d'organes, il faut s'inscrire sur le registre national des refus géré par l'Agence de la biomédecine."
-  },
-  {
-    "theme": "societe",
-    "q": "Qu'est-ce que le don du sang ?",
-    "c": [
-      "Un acte obligatoire",
-      "Un acte bénévole, anonyme, gratuit et volontaire permettant de fournir du sang aux patients qui en ont besoin",
-      "Un acte payant",
-      "Un acte réservé aux médecins"
-    ],
-    "a": 1,
-    "e": "Le don du sang est un acte bénévole, anonyme et gratuit. La France a besoin de 10 000 dons de sang par jour."
-  },
-  {
-    "theme": "societe",
-    "q": "Qu'est-ce que le droit des étrangers en matière de regroupement familial ?",
-    "c": [
-      "Les étrangers ne peuvent pas faire venir leur famille",
-      "Un étranger en situation régulière peut demander à faire venir son conjoint et ses enfants mineurs sous certaines conditions",
-      "Tout étranger peut faire venir n'importe qui",
-      "Uniquement pour les ressortissants européens"
-    ],
-    "a": 1,
-    "e": "Le regroupement familial est possible sous conditions : résidence régulière depuis 18 mois, ressources stables, logement décent."
-  },
-  {
-    "theme": "societe",
-    "q": "Qu'est-ce que le titre de séjour ?",
-    "c": [
-      "Un passeport étranger",
-      "L'autorisation délivrée par la préfecture permettant à un étranger non-européen de résider en France",
-      "Un visa d'entrée",
-      "Un document pour les touristes"
-    ],
-    "a": 1,
-    "e": "Le titre de séjour (carte de séjour ou de résident) autorise les ressortissants non-européens à résider en France."
-  },
-  {
-    "theme": "societe",
-    "q": "Quelle est la durée de validité d'une carte de résident ?",
-    "c": [
-      "1 an",
-      "3 ans",
-      "10 ans, renouvelable",
-      "5 ans"
-    ],
-    "a": 2,
-    "e": "La carte de résident est valable 10 ans et est renouvelable. Elle est accordée après 5 ans de résidence régulière."
-  },
-  {
-    "theme": "societe",
-    "q": "Quel titre de séjour permanent accorde des droits équivalents aux citoyens UE en France ?",
-    "c": [
-      "La carte de séjour temporaire",
-      "La carte de résident",
-      "La carte de séjour pluriannuelle",
-      "La carte de ressortissant UE"
-    ],
-    "a": 1,
-    "e": "La carte de résident (10 ans) est le titre de séjour le plus stable pour les non-européens, proche des droits des citoyens UE."
-  },
-  {
-    "theme": "societe",
-    "q": "Qu'est-ce que le statut de réfugié ?",
-    "c": [
-      "Un titre de séjour ordinaire",
-      "La protection accordée à une personne fuyant des persécutions dans son pays, lui donnant des droits spécifiques",
-      "Un statut temporaire",
-      "Un visa humanitaire"
-    ],
-    "a": 1,
-    "e": "Le statut de réfugié, accordé par l'OFPRA, donne droit à une carte de résident de 10 ans et à des droits sociaux."
-  },
-  {
-    "theme": "societe",
-    "q": "Qu'est-ce que l'intégration dans la société française ?",
-    "c": [
-      "L'assimilation totale et l'abandon de sa culture",
-      "Un processus par lequel une personne devient un membre actif de la société en partageant ses valeurs et en respectant ses règles",
-      "Une obligation légale",
-      "La naturalisation uniquement"
-    ],
-    "a": 1,
-    "e": "L'intégration est un processus progressif d'adhésion aux valeurs républicaines et de participation à la vie sociale, sans effacement des origines culturelles."
-  }
+// PrépaCivique 2026 — Question Bank
+// 736 questions across 5 official themes
+// valeurs, institutions, droits, histoire, societe
+
+const ALL_QUESTIONS = [
+{theme:"valeurs",q:"Quelle est la devise de la République française ?",c:["Travail, Famille, Patrie","Liberté, Égalité, Fraternité","Justice, Paix, Progrès","Unité, Force, Honneur"],a:1,e:"La devise officielle est Liberté, Égalité, Fraternité, inscrite dans la Constitution de 1958."},
+{theme:"valeurs",q:"Que commémore la fête nationale du 14 juillet ?",c:["La déclaration des droits de l'homme","La prise de la Bastille en 1789","La proclamation de la République","L'armistice de 1918"],a:1,e:"Le 14 juillet commémore la prise de la Bastille en 1789."},
+{theme:"valeurs",q:"En quelle année la loi de séparation des Églises et de l'État a-t-elle été votée ?",c:["1789","1870","1905","1946"],a:2,e:"La loi du 9 décembre 1905 établit la séparation des Églises et de l'État."},
+{theme:"valeurs",q:"Que garantit le principe de laïcité ?",c:["La pratique obligatoire d'une religion","L'interdiction de toute religion","La liberté de conscience et la neutralité de l'État","Le financement des cultes par l'État"],a:2,e:"La laïcité garantit la liberté de conscience et la neutralité de l'État vis-à-vis des religions."},
+{theme:"valeurs",q:"Lequel de ces symboles représente la République française ?",c:["La tour Eiffel","Marianne","Le coq gaulois","La fleur de lys"],a:1,e:"Marianne est le symbole humain de la République française."},
+{theme:"valeurs",q:"Quelles sont les couleurs du drapeau français ?",c:["Rouge, blanc, vert","Bleu, blanc, rouge","Rouge, bleu, vert","Blanc, bleu, rouge"],a:1,e:"Le drapeau tricolore français est bleu, blanc, rouge."},
+{theme:"valeurs",q:"Quel est l'hymne national français ?",c:["Le Chant du Départ","La Marseillaise","L'Internationale","Le Chant des Partisans"],a:1,e:"La Marseillaise, composée en 1792, est l'hymne national depuis 1879."},
+{theme:"valeurs",q:"Qui a composé La Marseillaise ?",c:["Victor Hugo","Rouget de Lisle","Robespierre","Napoléon Bonaparte"],a:1,e:"Claude Joseph Rouget de Lisle a composé La Marseillaise en 1792."},
+{theme:"valeurs",q:"Que symbolise Marianne ?",c:["La noblesse française","La République et la liberté","L'armée française","L'Église catholique"],a:1,e:"Marianne symbolise la République française, la liberté et la raison."},
+{theme:"valeurs",q:"Quel principe garantit l'égalité devant la loi sans distinction d'origine ?",c:["La laïcité","L'universalisme républicain","Le fédéralisme","Le communautarisme"],a:1,e:"L'universalisme républicain garantit que la loi s'applique à tous sans distinction."},
+{theme:"valeurs",q:"Combien d'articles compte la Déclaration des droits de l'homme de 1789 ?",c:["10","17","24","30"],a:1,e:"La DDHC de 1789 compte 17 articles."},
+{theme:"valeurs",q:"Quel article de la DDHC affirme que les hommes naissent libres et égaux en droits ?",c:["Article 1","Article 4","Article 6","Article 11"],a:0,e:"L'article 1er de la DDHC : 'Les hommes naissent et demeurent libres et égaux en droits.'"},
+{theme:"valeurs",q:"Que dit l'article 4 de la DDHC sur la liberté ?",c:["La liberté consiste à voter","La liberté consiste à pouvoir faire tout ce qui ne nuit pas à autrui","La liberté est absolue","La liberté est accordée par l'État"],a:1,e:"L'article 4 de la DDHC définit la liberté comme le droit de faire tout ce qui ne nuit pas à autrui."},
+{theme:"valeurs",q:"Quel document a proclamé les droits naturels et imprescriptibles de l'homme ?",c:["La Constitution de 1958","La Déclaration des droits de l'homme de 1789","La loi de 1905","L'ordonnance de 1944"],a:1,e:"La DDHC de 1789 proclame les droits naturels et imprescriptibles."},
+{theme:"valeurs",q:"Dans quels établissements l'affichage de signes religieux ostensibles est-il interdit ?",c:["Universités","Lycées, collèges et écoles publics","Tous les lieux publics","Mairies uniquement"],a:1,e:"La loi de 2004 interdit le port de signes religieux ostensibles dans les écoles, collèges et lycées publics."},
+{theme:"valeurs",q:"Quelle loi interdit le port de signes religieux ostensibles à l'école publique ?",c:["Loi du 9 décembre 1905","Loi du 15 mars 2004","Loi du 11 octobre 2010","Loi du 9 juillet 2010"],a:1,e:"La loi du 15 mars 2004 interdit le port de signes religieux ostensibles dans les écoles publiques."},
+{theme:"valeurs",q:"La loi du 11 octobre 2010 interdit quoi ?",c:["Le voile islamique dans les écoles","La dissimulation du visage dans l'espace public","Les réunions religieuses","Le port de la kippa"],a:1,e:"La loi du 11 octobre 2010 interdit la dissimulation du visage dans l'espace public."},
+{theme:"valeurs",q:"Que signifie la notion de 'souveraineté nationale' ?",c:["Le roi est souverain","La Nation est souveraine, le pouvoir émane du peuple","Chaque région est souveraine","L'État est souverain sur les individus"],a:1,e:"La souveraineté nationale signifie que le pouvoir appartient à la Nation."},
+{theme:"valeurs",q:"Qu'est-ce que le référendum ?",c:["Une élection de représentants","Un vote direct du peuple sur une question","Une consultation des experts","Un vote du Parlement"],a:1,e:"Le référendum est une procédure par laquelle les citoyens votent directement sur une question précise."},
+{theme:"valeurs",q:"Quelle valeur républicaine impose de traiter tous les citoyens de la même façon devant la loi ?",c:["La liberté","L'égalité","La fraternité","La laïcité"],a:1,e:"L'égalité impose que tous les citoyens soient traités de la même façon devant la loi."},
+{theme:"valeurs",q:"La France est-elle un État fédéral ?",c:["Oui, depuis 1958","Non, c'est un État unitaire","Oui, depuis 1982","Non, mais elle le deviendra"],a:1,e:"La France est un État unitaire et indivisible, pas un État fédéral."},
+{theme:"valeurs",q:"Qu'est-ce que le suffrage universel ?",c:["Le droit de vote réservé aux hommes","Le droit de vote pour tous les citoyens sans condition de fortune","Le vote des seuls propriétaires","Le vote des seuls diplômés"],a:1,e:"Le suffrage universel donne le droit de vote à tous les citoyens sans condition de fortune ou de diplôme."},
+{theme:"valeurs",q:"Depuis quelle année le suffrage universel masculin est-il en vigueur en France ?",c:["1789","1848","1870","1944"],a:1,e:"Le suffrage universel masculin a été instauré en France en 1848, sous la IIe République."},
+{theme:"valeurs",q:"Quel est le principe d'égalité républicaine dans l'accès aux services publics ?",c:["Les riches sont mieux servis","Tous les usagers sont traités de la même façon","Certaines régions ont plus de droits","Les fonctionnaires décident des priorités"],a:1,e:"Le principe d'égalité impose que tous les usagers accèdent aux services publics dans les mêmes conditions."},
+{theme:"valeurs",q:"Quelle est la valeur juridique du Préambule de la Constitution de 1958 ?",c:["Aucune","Valeur constitutionnelle reconnue depuis 1971","Valeur législative seulement","Valeur indicative"],a:1,e:"Depuis la décision du Conseil constitutionnel de 1971, le Préambule a valeur constitutionnelle."},
+{theme:"valeurs",q:"Que signifie 'État de droit' ?",c:["Un État gouverné par des juristes","Un État où tous, y compris le gouvernement, sont soumis à la loi","Un État sans religion","Un État riche"],a:1,e:"L'État de droit signifie que tous, y compris les gouvernants, sont soumis à la loi."},
+{theme:"valeurs",q:"Quel philosophe a influencé la notion de 'contrat social' ?",c:["Voltaire","Jean-Jacques Rousseau","Montesquieu","Denis Diderot"],a:1,e:"Jean-Jacques Rousseau a développé la théorie du contrat social dans son ouvrage 'Du Contrat social' (1762)."},
+{theme:"valeurs",q:"Quelle loi punit le négationnisme en France ?",c:["Loi Pleven de 1972","Loi Gayssot de 1990","Loi Taubira de 2001","Loi Lellouche de 2003"],a:1,e:"La loi Gayssot de 1990 punit la contestation des crimes contre l'humanité reconnus par les tribunaux internationaux."},
+{theme:"valeurs",q:"Qu'est-ce que la présomption d'innocence ?",c:["Toute personne est coupable jusqu'à preuve du contraire","Toute personne est considérée innocente tant que sa culpabilité n'est pas prouvée","Les témoins sont toujours honnêtes","Les policiers ne peuvent arrêter personne"],a:1,e:"La présomption d'innocence : toute personne est innocente jusqu'à ce que sa culpabilité soit établie."},
+{theme:"valeurs",q:"Quelle institution veille au respect des droits fondamentaux en France ?",c:["Le Conseil d'État","Le Conseil constitutionnel","La Cour des comptes","Le Sénat"],a:1,e:"Le Conseil constitutionnel contrôle que les lois respectent les droits fondamentaux."},
+{theme:"valeurs",q:"Qu'est-ce que la dignité humaine dans le contexte républicain ?",c:["Le respect dû aux fonctionnaires","Le droit inaliénable au respect de sa personne","Le droit à la richesse","Le droit au luxe"],a:1,e:"La dignité humaine est le droit fondamental de tout être humain à être respecté dans son intégrité."},
+{theme:"valeurs",q:"La liberté d'expression en France est-elle absolue ?",c:["Oui, sans aucune limite","Non, elle est limitée par la loi (diffamation, incitation à la haine)","Oui, mais seulement pour les journalistes","Non, elle est très restreinte"],a:1,e:"La liberté d'expression a des limites légales : diffamation, injure, incitation à la haine, négationnisme."},
+{theme:"valeurs",q:"Qu'est-ce que la liberté syndicale ?",c:["Le droit de créer un syndicat d'État","Le droit fondamental de tout travailleur d'adhérer ou non à un syndicat","Un droit réservé aux fonctionnaires","Un droit limité au secteur privé"],a:1,e:"Le Préambule de 1946 reconnaît la liberté syndicale comme un droit fondamental de tout travailleur."},
+{theme:"valeurs",q:"Que signifie 'ius soli' ?",c:["La nationalité par le sang","La nationalité par la naissance sur le territoire","La nationalité par mariage","La naturalisation par décret"],a:1,e:"Le 'ius soli' donne la nationalité à toute personne née sur le territoire national."},
+{theme:"valeurs",q:"Que signifie 'ius sanguinis' ?",c:["La nationalité par naissance sur le territoire","La nationalité par la filiation (parenté)","La nationalité par mariage","La nationalité par achat"],a:1,e:"Le 'ius sanguinis' donne la nationalité par filiation : on est français si ses parents sont français."},
+{theme:"valeurs",q:"Après combien d'années de résidence peut-on demander la naturalisation ?",c:["2 ans","5 ans","10 ans","15 ans"],a:1,e:"La naturalisation peut être demandée après 5 ans de résidence régulière (réduit à 2 ans dans certains cas)."},
+{theme:"valeurs",q:"Quel niveau de français est requis pour la naturalisation ?",c:["Aucun","Niveau A2","Niveau B1","Niveau C1"],a:2,e:"Le niveau B1 à l'oral du Cadre européen de référence est requis pour la naturalisation."},
+{theme:"valeurs",q:"Quel organisme gère le Contrat d'intégration républicaine ?",c:["La mairie","L'OFII","La préfecture seule","Le consulat"],a:1,e:"L'OFII (Office français de l'immigration et de l'intégration) gère le CIR et organise les formations."},
+{theme:"valeurs",q:"Que couvre la formation civique du CIR ?",c:["L'histoire uniquement","La laïcité, l'égalité hommes-femmes, les droits et devoirs","Le droit du travail uniquement","La géographie de la France"],a:1,e:"La formation porte sur la laïcité, l'égalité hommes-femmes, les institutions, les droits et devoirs civiques."},
+{theme:"valeurs",q:"Les mariages forcés sont-ils légaux en France ?",c:["Oui, dans certaines conditions","Non, ils sont interdits et punis par la loi","Oui, avec l'accord des parents","Non, mais peu appliqué"],a:1,e:"Les mariages forcés sont expressément interdits et punis par la loi française."},
+{theme:"valeurs",q:"La polygamie est-elle autorisée en droit français ?",c:["Oui, pour certaines religions","Non, elle est interdite et peut empêcher l'obtention de titres","Oui, pour les étrangers","Non, mais tolérée"],a:1,e:"La polygamie est interdite en France. Elle peut empêcher l'obtention d'un titre de séjour et de la nationalité."},
+{theme:"valeurs",q:"La France reconnaît-elle officiellement des communautés ethniques ou religieuses ?",c:["Oui, depuis 2005","Non, l'universalisme républicain s'y oppose","Oui, dans certaines régions","Oui, depuis la loi de 1905"],a:1,e:"La République française ne reconnaît pas de communautés ethniques ou religieuses ; elle ne connaît que des citoyens."},
+{theme:"valeurs",q:"Qu'est-ce que la Charte de l'environnement de 2004 ?",c:["Un texte sans portée","Un texte constitutionnel garantissant le droit à un environnement sain","Un règlement de l'UE","Un accord international"],a:1,e:"La Charte de l'environnement de 2004 a valeur constitutionnelle depuis 2005."},
+{theme:"valeurs",q:"Qu'est-ce que le principe de précaution ?",c:["Interdire toute innovation","Prendre des mesures préventives face à un risque incertain mais potentiellement grave","Protéger uniquement les espèces menacées","Réduire les dépenses de santé"],a:1,e:"Le principe de précaution impose des mesures face à des risques potentiellement graves et incertains."},
+{theme:"valeurs",q:"Qu'est-ce que la parité en politique ?",c:["La représentation égale des religions","L'égal accès des femmes et des hommes aux mandats politiques","Le partage du pouvoir entre régions","La représentation des minorités"],a:1,e:"La parité vise à assurer une représentation égale des femmes et des hommes dans les instances politiques."},
+{theme:"valeurs",q:"Quelle est la loi qui impose la parité dans les listes électorales ?",c:["Loi de 1995","Loi du 6 juin 2000","Loi de 2005","Loi de 2010"],a:1,e:"La loi du 6 juin 2000 impose la parité dans les listes électorales (alternance femme-homme)."},
+{theme:"valeurs",q:"Quel est le rôle du Défenseur des droits ?",c:["Juger les violations des droits","Défendre les droits des citoyens face aux administrations et lutter contre les discriminations","Gérer les plaintes","Contrôler les médias"],a:1,e:"Le Défenseur des droits protège les droits des citoyens dans leurs relations avec les services publics."},
+{theme:"valeurs",q:"Que signifie 'valeurs républicaines' dans le cadre du CIR ?",c:["L'adhésion aux partis républicains","L'adhésion aux principes de liberté, égalité, fraternité et laïcité","L'apprentissage de l'histoire uniquement","Le service militaire"],a:1,e:"Les valeurs républicaines comprennent liberté, égalité, fraternité, laïcité et dignité humaine."},
+{theme:"institutions",q:"Quelle est la durée du mandat du Président de la République française ?",c:["4 ans","5 ans","6 ans","7 ans"],a:1,e:"Depuis la réforme de 2000, le mandat présidentiel est de 5 ans, renouvelable une fois."},
+{theme:"institutions",q:"Quel est le nombre maximum de mandats présidentiels consécutifs ?",c:["1","2","3","Illimité"],a:1,e:"Le Président peut exercer au maximum deux mandats consécutifs de 5 ans depuis la révision de 2008."},
+{theme:"institutions",q:"Qui nomme le Premier ministre en France ?",c:["L'Assemblée nationale","Le Sénat","Le Président de la République","Le Conseil constitutionnel"],a:2,e:"Le Premier ministre est nommé par le Président de la République."},
+{theme:"institutions",q:"Combien de chambres compte le Parlement français ?",c:["1","2","3","4"],a:1,e:"Le Parlement français est bicaméral : Assemblée nationale et Sénat."},
+{theme:"institutions",q:"Combien de députés siègent à l'Assemblée nationale ?",c:["470","491","577","600"],a:2,e:"L'Assemblée nationale est composée de 577 députés élus pour 5 ans."},
+{theme:"institutions",q:"Combien de sénateurs siègent au Sénat ?",c:["270","348","400","500"],a:1,e:"Le Sénat compte 348 sénateurs élus pour 6 ans au suffrage indirect."},
+{theme:"institutions",q:"Comment sont élus les sénateurs ?",c:["Au suffrage universel direct","Au suffrage universel indirect, par les grands électeurs","Par le Président","Par l'Assemblée nationale"],a:1,e:"Les sénateurs sont élus au suffrage indirect par les 'grands électeurs' (élus locaux et nationaux)."},
+{theme:"institutions",q:"Qui peut dissoudre l'Assemblée nationale ?",c:["Le Premier ministre","Le Président du Sénat","Le Président de la République","Le Conseil constitutionnel"],a:2,e:"Selon l'article 12 de la Constitution, seul le Président de la République peut dissoudre l'Assemblée nationale."},
+{theme:"institutions",q:"Quel est le rôle principal de l'Assemblée nationale ?",c:["Représenter les collectivités locales","Voter les lois et contrôler le gouvernement","Nommer les juges","Représenter les syndicats"],a:1,e:"L'Assemblée nationale vote les lois, adopte le budget, contrôle le gouvernement et peut le renverser."},
+{theme:"institutions",q:"Quel est le rôle principal du Sénat ?",c:["Représenter les électeurs directement","Représenter les collectivités territoriales et participer à la législation","Voter uniquement le budget","Nommer les ministres"],a:1,e:"Le Sénat représente les collectivités territoriales et participe à l'élaboration des lois."},
+{theme:"institutions",q:"Qui préside le Conseil des ministres ?",c:["Le Premier ministre","Le Président de la République","Le Président de l'Assemblée","Le Président du Sénat"],a:1,e:"Le Conseil des ministres est présidé par le Président de la République."},
+{theme:"institutions",q:"Quel organisme vérifie la constitutionnalité des lois ?",c:["Le Conseil d'État","La Cour de cassation","Le Conseil constitutionnel","Le Sénat"],a:2,e:"Le Conseil constitutionnel contrôle la conformité des lois à la Constitution."},
+{theme:"institutions",q:"Qu'est-ce qu'une QPC ?",c:["Une question posée au gouvernement","Un mécanisme permettant à tout justiciable de contester la constitutionnalité d'une loi","Une question référendaire","Un recours administratif"],a:1,e:"La QPC (Question prioritaire de constitutionnalité) permet à tout citoyen de contester la constitutionnalité d'une loi."},
+{theme:"institutions",q:"Combien de membres compte le Conseil constitutionnel ?",c:["5","7","9","11"],a:2,e:"Le Conseil constitutionnel compte 9 membres nommés pour 9 ans."},
+{theme:"institutions",q:"Quel est le rôle du Conseil d'État ?",c:["Juger les criminels","Conseiller le gouvernement et juger les litiges administratifs","Contrôler les lois","Gérer les finances publiques"],a:1,e:"Le Conseil d'État est à la fois conseiller juridique du gouvernement et juge suprême de l'ordre administratif."},
+{theme:"institutions",q:"Quel est le rôle de la Cour de cassation ?",c:["Juger les crimes les plus graves","Contrôler l'application du droit par les juridictions judiciaires","Contrôler les actes administratifs","Juger les étrangers"],a:1,e:"La Cour de cassation est la plus haute juridiction de l'ordre judiciaire."},
+{theme:"institutions",q:"Combien de régions compte la France entière ?",c:["13","18","20","22"],a:1,e:"La France compte 18 régions : 13 en métropole et 5 régions d'outre-mer."},
+{theme:"institutions",q:"Combien de départements d'outre-mer compte la France ?",c:["3","4","5","6"],a:2,e:"La France compte 5 départements et régions d'outre-mer : Guadeloupe, Martinique, Guyane, La Réunion, Mayotte."},
+{theme:"institutions",q:"Quel est le rôle du Préfet ?",c:["Gérer la région","Représenter l'État dans le département et la région","Présider le conseil régional","Gérer la police municipale"],a:1,e:"Le Préfet représente l'État dans le département et la région, et est nommé par le gouvernement."},
+{theme:"institutions",q:"Que signifie la décentralisation en France ?",c:["Le transfert du pouvoir à des États fédérés","Le transfert de compétences de l'État central aux collectivités territoriales","L'abandon de toute organisation centrale","La privatisation des services publics"],a:1,e:"La décentralisation est le transfert de compétences de l'État aux collectivités territoriales."},
+{theme:"institutions",q:"Quel acte majeur a lancé la décentralisation en France ?",c:["Loi du 2 mars 1982 (loi Deferre)","Réforme de 1958","Loi du 7 janvier 1983","Loi du 13 août 2004"],a:0,e:"La loi du 2 mars 1982, dite loi Deferre, a lancé la décentralisation en supprimant la tutelle de l'État sur les collectivités."},
+{theme:"institutions",q:"Comment est élu le Président de la République en France ?",c:["Par l'Assemblée nationale","Au suffrage universel direct à deux tours","Par le Parlement réuni en Congrès","Par le Sénat"],a:1,e:"Le Président est élu au suffrage universel direct à deux tours depuis 1962."},
+{theme:"institutions",q:"Quel est le mode d'élection des députés ?",c:["Proportionnel à un tour","Uninominal majoritaire à deux tours","Par liste proportionnelle","Par désignation"],a:1,e:"Les députés sont élus au scrutin uninominal majoritaire à deux tours dans chaque circonscription."},
+{theme:"institutions",q:"Combien de membres permanents compte le Conseil de sécurité de l'ONU ?",c:["3","5","7","10"],a:1,e:"Le Conseil de sécurité compte 5 membres permanents avec droit de veto."},
+{theme:"institutions",q:"La France est-elle membre permanent du Conseil de sécurité de l'ONU ?",c:["Non","Oui, avec droit de veto","Oui, sans droit de veto","Non, en rotation"],a:1,e:"La France est membre permanent du Conseil de sécurité de l'ONU avec droit de veto depuis 1945."},
+{theme:"institutions",q:"Combien d'États font partie de l'Union européenne en 2025 ?",c:["25","26","27","28"],a:2,e:"Depuis le Brexit en 2020, l'Union européenne compte 27 États membres."},
+{theme:"institutions",q:"Quel État a quitté l'Union Européenne en 2020 ?",c:["La Norvège","La Suisse","Le Royaume-Uni","La Turquie"],a:2,e:"Le Royaume-Uni a officiellement quitté l'Union européenne le 31 janvier 2020."},
+{theme:"institutions",q:"En quelle année le traité de Maastricht a-t-il été signé ?",c:["1985","1989","1992","1997"],a:2,e:"Le traité de Maastricht a été signé le 7 février 1992."},
+{theme:"institutions",q:"À quel âge peut-on devenir électeur en France ?",c:["16 ans","18 ans","21 ans","25 ans"],a:1,e:"Le droit de vote est accordé à 18 ans en France, depuis la loi du 5 juillet 1974."},
+{theme:"institutions",q:"Qui dirige l'action du gouvernement ?",c:["Le Président de la République","Le Président de l'Assemblée nationale","Le Premier ministre","Le Président du Sénat"],a:2,e:"Selon l'article 21 de la Constitution, le Premier ministre dirige l'action du gouvernement."},
+{theme:"institutions",q:"Combien y a-t-il de régions en France métropolitaine ?",c:["12","13","14","18"],a:1,e:"Depuis la réforme territoriale de 2016, la France métropolitaine compte 13 régions."},
+{theme:"institutions",q:"Qui assure l'intérim du Président en cas de décès ?",c:["Le Premier ministre","Le Président du Sénat","Le Président de l'Assemblée nationale","Le doyen des ministres"],a:1,e:"En cas de décès ou d'empêchement, le Président du Sénat assure l'intérim."},
+{theme:"institutions",q:"Où est le siège du Parlement européen ?",c:["Bruxelles","Luxembourg","Strasbourg","Francfort"],a:2,e:"Le siège officiel du Parlement européen est à Strasbourg, en France."},
+{theme:"institutions",q:"Où siège la Commission européenne ?",c:["Strasbourg","Luxembourg","Bruxelles","Francfort"],a:2,e:"La Commission européenne siège principalement à Bruxelles."},
+{theme:"institutions",q:"Comment est élu le Parlement européen ?",c:["Par les gouvernements nationaux","Au suffrage universel direct dans chaque État membre","Par les maires","Par les parlements nationaux"],a:1,e:"Le Parlement européen est élu au suffrage universel direct par les citoyens européens depuis 1979."},
+{theme:"institutions",q:"Où siège la Banque centrale européenne ?",c:["Bruxelles","Paris","Francfort","Amsterdam"],a:2,e:"La Banque centrale européenne (BCE) est installée à Francfort, en Allemagne."},
+{theme:"institutions",q:"Qu'est-ce que l'espace Schengen ?",c:["L'Union européenne élargie","Un espace de libre circulation des personnes sans contrôle aux frontières intérieures","L'espace économique européen","La zone de libre-échange"],a:1,e:"L'espace Schengen regroupe des pays européens où les contrôles aux frontières intérieures sont supprimés."},
+{theme:"institutions",q:"Quel est le rôle de la CJUE ?",c:["Juger les crimes internationaux","Assurer le respect et l'interprétation uniforme du droit européen","Juger les conflits entre entreprises","Gérer les politiques commerciales"],a:1,e:"La Cour de justice de l'UE assure l'interprétation uniforme et le respect du droit de l'UE."},
+{theme:"institutions",q:"Où siège le Conseil de l'Europe ?",c:["Bruxelles","Genève","Strasbourg","Vienne"],a:2,e:"Le Conseil de l'Europe a son siège à Strasbourg, France."},
+{theme:"institutions",q:"La France est-elle membre de l'OTAN ?",c:["Non","Oui, depuis 1949 (commandement intégré réintégré en 2009)","Oui, depuis 1966","Non, elle s'est retirée en 1966"],a:1,e:"La France est membre fondateur de l'OTAN (1949). Elle a réintégré le commandement militaire intégré en 2009."},
+{theme:"institutions",q:"Où siège l'Assemblée nationale ?",c:["Le Palais du Luxembourg","Le Palais Bourbon","L'Hôtel de Ville","Le Palais Royal"],a:1,e:"L'Assemblée nationale siège au Palais Bourbon, Paris 7e."},
+{theme:"institutions",q:"Où siège le Sénat ?",c:["Le Palais Bourbon","Le Palais du Luxembourg","L'Élysée","Le Palais Royal"],a:1,e:"Le Sénat siège au Palais du Luxembourg, Paris 6e."},
+{theme:"institutions",q:"Qu'est-ce que la Cour des comptes ?",c:["Un tribunal pour les dettes","La juridiction qui contrôle la gestion des finances publiques","Un tribunal commercial","La Cour qui juge les fonctionnaires"],a:1,e:"La Cour des comptes contrôle et certifie les comptes publics et évalue les politiques publiques."},
+{theme:"institutions",q:"Qu'est-ce que le Conseil économique, social et environnemental (CESE) ?",c:["Une chambre du Parlement","Un organe consultatif représentant la société civile","Un tribunal administratif","Un comité de ministres"],a:1,e:"Le CESE est une assemblée consultative représentant les organisations socioprofessionnelles et la société civile."},
+{theme:"institutions",q:"Qu'est-ce que l'article 49-3 de la Constitution ?",c:["La procédure de dissolution","L'article permettant au gouvernement d'adopter un texte sans vote sauf motion de censure","L'article sur le référendum","L'article sur la QPC"],a:1,e:"L'article 49-3 permet au gouvernement d'adopter un texte sans vote de l'Assemblée, sauf motion de censure adoptée."},
+{theme:"institutions",q:"Qu'est-ce que la Cour de justice de la République ?",c:["Tribunal international","Juridiction jugeant les membres du gouvernement pour les crimes dans l'exercice de leurs fonctions","Tribunal pour étrangers","Tribunal militaire"],a:1,e:"La CJR juge les membres du gouvernement pour les crimes et délits commis dans l'exercice de leurs fonctions."},
+{theme:"institutions",q:"Qu'est-ce que la 'navette parlementaire' ?",c:["Un transport pour les parlementaires","L'examen alternatif d'un texte par l'Assemblée et le Sénat jusqu'à accord","Une procédure d'urgence","Un vote par correspondance"],a:1,e:"La navette parlementaire est la procédure par laquelle un texte est examiné alternativement par chaque chambre."},
+{theme:"institutions",q:"Où se situe le Palais de l'Élysée ?",c:["Paris 7e","Paris 8e","Paris 1er","Paris 16e"],a:1,e:"Le Palais de l'Élysée, résidence officielle du Président, est dans le 8e arrondissement de Paris."},
+{theme:"institutions",q:"Où réside officiellement le Premier ministre ?",c:["L'Élysée","L'Hôtel Matignon","Le Palais Bourbon","Le Luxembourg"],a:1,e:"Le Premier ministre réside à l'Hôtel Matignon, Paris 7e."},
+{theme:"institutions",q:"Qu'est-ce que le principe de séparation des pouvoirs selon Montesquieu ?",c:["Les pouvoirs doivent être concentrés","Les pouvoirs législatif, exécutif et judiciaire doivent être séparés","Les régions doivent être indépendantes","Les militaires et civils séparés"],a:1,e:"Montesquieu a théorisé dans L'Esprit des lois (1748) la séparation des trois pouvoirs."},
+{theme:"droits",q:"Quel est l'âge de la majorité civile en France ?",c:["16 ans","17 ans","18 ans","21 ans"],a:2,e:"La majorité civile est fixée à 18 ans en France depuis la loi du 5 juillet 1974."},
+{theme:"droits",q:"Quel est l'âge de la majorité numérique en France ?",c:["13 ans","15 ans","16 ans","18 ans"],a:1,e:"Depuis 2023, la majorité numérique est fixée à 15 ans."},
+{theme:"droits",q:"Que dit l'article 1er de la Constitution française ?",c:["Tout Français a droit au travail","La France est une République indivisible, laïque, démocratique et sociale","Le peuple est souverain","La loi est l'expression de la volonté générale"],a:1,e:"La France est une République indivisible, laïque, démocratique et sociale."},
+{theme:"droits",q:"La vente d'alcool en France est interdite aux personnes de moins de :",c:["16 ans","17 ans","18 ans","21 ans"],a:2,e:"Depuis la loi HPST de 2009, la vente d'alcool est interdite aux mineurs de moins de 18 ans."},
+{theme:"droits",q:"Quelle est la durée légale du temps de travail par semaine en France ?",c:["32 heures","35 heures","39 heures","40 heures"],a:1,e:"La durée légale du travail est fixée à 35 heures par semaine depuis la loi Aubry II de 2000."},
+{theme:"droits",q:"Est-il obligatoire de porter secours à une personne en danger ?",c:["Non, c'est facultatif","Oui, sous peine de sanctions pénales","Oui, uniquement pour les professionnels","Non, mais conseillé"],a:1,e:"L'article 223-6 du Code pénal oblige toute personne à porter secours à autrui en danger."},
+{theme:"droits",q:"Quel numéro d'urgence permet d'appeler la police en France ?",c:["15","17","18","112"],a:1,e:"Le 17 est le numéro de la Police nationale. Le 15 est le SAMU, le 18 les Pompiers."},
+{theme:"droits",q:"Quel numéro d'urgence permet d'appeler le SAMU ?",c:["15","17","18","112"],a:0,e:"Le 15 est le numéro du SAMU, disponible 24h/24."},
+{theme:"droits",q:"Quel est l'âge minimum légal pour se marier en France ?",c:["15 ans","16 ans","18 ans","21 ans"],a:2,e:"Depuis la loi du 21 novembre 2006, l'âge minimum légal pour se marier est de 18 ans."},
+{theme:"droits",q:"Qu'est-ce que le PACS ?",c:["Un contrat de travail","Un contrat entre deux personnes pour organiser leur vie commune","Un contrat de mariage religieux","Un accord entre entreprises"],a:1,e:"Le PACS est un contrat conclu entre deux personnes majeures pour organiser leur vie commune."},
+{theme:"droits",q:"Depuis quelle année le mariage entre personnes de même sexe est-il légal en France ?",c:["2007","2010","2013","2015"],a:2,e:"La loi Taubira du 17 mai 2013 a ouvert le mariage et l'adoption aux couples de même sexe."},
+{theme:"droits",q:"Quel droit protège le domicile d'une personne contre les perquisitions arbitraires ?",c:["L'inviolabilité du domicile","La liberté d'aller et venir","La propriété privée","Le secret des correspondances"],a:0,e:"L'inviolabilité du domicile protège contre les perquisitions sans autorisation judiciaire."},
+{theme:"droits",q:"Quel est le droit au logement opposable (DALO) ?",c:["Le droit de choisir son logement","Le droit de saisir la justice pour obtenir un logement décent","Un droit pour les propriétaires","Un droit pour les sans-abri seulement"],a:1,e:"La loi DALO de 2007 permet aux personnes sans logement décent de saisir un tribunal administratif."},
+{theme:"droits",q:"Qu'est-ce que la trêve hivernale ?",c:["Une trêve militaire","La période (1er nov au 31 mars) pendant laquelle les expulsions locatives sont interdites","Un congé spécial","Une aide chauffage"],a:1,e:"Pendant la trêve hivernale (1er novembre - 31 mars), les expulsions de locataires sont suspendues."},
+{theme:"droits",q:"Quelle est la durée minimale des congés payés annuels en France ?",c:["3 semaines","4 semaines","5 semaines","6 semaines"],a:2,e:"Tout salarié a droit à 5 semaines (25 jours ouvrables) de congés payés par an."},
+{theme:"droits",q:"Qu'est-ce que le harcèlement moral au travail ?",c:["Une plaisanterie","Des agissements répétés dégradant les conditions de travail, sanctionnés pénalement","Des critiques normales","Un conflit entre collègues"],a:1,e:"Le harcèlement moral est défini par l'article L. 1152-1 du Code du travail."},
+{theme:"droits",q:"Quelle est la peine pour traite des êtres humains en France ?",c:["2 ans","Jusqu'à 20 ans de réclusion","Une simple amende","5 ans"],a:1,e:"La traite des êtres humains est punie d'emprisonnement pouvant aller jusqu'à 20 ans."},
+{theme:"droits",q:"Quel texte affirme que tous les hommes naissent libres et égaux en droits ?",c:["La Constitution de 1958","La Déclaration des droits de l'homme et du citoyen de 1789","Le Code civil","Le Préambule de 1946"],a:1,e:"L'article 1er de la DDHC de 1789 affirme que les hommes naissent libres et égaux."},
+{theme:"droits",q:"Être juré d'assises est :",c:["Un droit mais pas une obligation","Une obligation civique","Réservé aux juristes","Interdit aux étrangers résidents"],a:1,e:"Être juré d'assises est une obligation civique pour tout citoyen français tiré au sort."},
+{theme:"droits",q:"Qu'est-ce que le droit de grève dans le secteur privé ?",c:["Il n'existe pas","Un droit reconnu au salarié de cesser le travail collectivement","Un droit soumis à autorisation","Un droit uniquement pour les syndicats"],a:1,e:"Le droit de grève est reconnu au salarié du privé sans préavis obligatoire."},
+{theme:"droits",q:"Un employeur peut-il licencier un salarié pour fait de grève ?",c:["Oui, toujours","Non, sauf en cas de faute lourde du gréviste","Oui, après mise en demeure","Non, dans aucun cas"],a:1,e:"Il est interdit de licencier un gréviste, sauf en cas de faute lourde."},
+{theme:"droits",q:"Quel est le droit à la formation professionnelle ?",c:["Un droit uniquement pour les chômeurs","Le droit de tout salarié à accéder à des formations via le CPF","Un droit réservé aux entreprises","Un programme facultatif"],a:1,e:"Tout salarié dispose d'un Compte personnel de formation (CPF) pour financer des formations."},
+{theme:"droits",q:"Qu'est-ce que la légitime défense ?",c:["Le droit de se battre à tout moment","Le droit de riposter proportionnément à une agression injuste et actuelle","Le droit de se venger","Un droit réservé aux policiers"],a:1,e:"La légitime défense exonère de responsabilité pénale la riposte proportionnée à une agression."},
+{theme:"droits",q:"Qu'est-ce que la responsabilité civile ?",c:["L'obligation d'aller en prison","L'obligation de réparer le préjudice causé à autrui par sa faute","L'obligation de payer des impôts","L'obligation de voter"],a:1,e:"La responsabilité civile oblige à réparer le dommage causé par sa faute (article 1240 du Code civil)."},
+{theme:"droits",q:"Qu'est-ce que le droit d'asile ?",c:["Le droit d'entrer librement en France","Le droit de demander une protection internationale à une personne fuyant des persécutions","Un droit pour tous les migrants","Un visa humanitaire"],a:1,e:"Le droit d'asile est la protection accordée aux personnes fuyant des persécutions dans leur pays."},
+{theme:"droits",q:"Quelle institution accorde le statut de réfugié en France ?",c:["La préfecture","L'OFPRA","Le ministère de l'Intérieur","La CNDA"],a:1,e:"L'OFPRA instruit les demandes d'asile et accorde ou refuse le statut de réfugié."},
+{theme:"droits",q:"Quel organisme protège les données personnelles en France ?",c:["L'ANSSI","La CNIL","Le Défenseur des droits","La DGSI"],a:1,e:"La CNIL est l'autorité de contrôle indépendante chargée de veiller à la protection des données personnelles."},
+{theme:"droits",q:"Qu'est-ce que le RGPD ?",c:["Un règlement sur les armes","Le Règlement général sur la protection des données européen","Une règle de copropriété","Un règlement fiscal"],a:1,e:"Le RGPD (2018) est le règlement européen harmonisant la protection des données personnelles."},
+{theme:"droits",q:"Qu'est-ce que la liberté de la presse garantit ?",c:["Des avantages fiscaux","Le droit de publier librement, de protéger ses sources, sans censure préalable","Des subventions","L'immunité totale"],a:1,e:"La liberté de la presse garantit le droit d'informer sans censure préalable."},
+{theme:"droits",q:"Qu'est-ce que l'assurance responsabilité civile obligatoire ?",c:["Une obligation pour les seules entreprises","L'assurance obligatoire pour les propriétaires de véhicules à moteur","Une assurance habitation","Un contrat entre employeurs"],a:1,e:"L'assurance responsabilité civile automobile est obligatoire pour tout propriétaire de véhicule."},
+{theme:"droits",q:"Quelle est la durée de congé maternité pour le premier enfant ?",c:["10 semaines","14 semaines","16 semaines","20 semaines"],a:2,e:"Le congé maternité pour le premier enfant est de 16 semaines (6 semaines avant + 10 après)."},
+{theme:"droits",q:"Un patient peut-il refuser des soins ?",c:["Non, le médecin a toujours le dernier mot","Oui, tout patient majeur et capable peut refuser tout soin","Non, en urgence vitale","Oui, uniquement pour les soins non urgents"],a:1,e:"Tout patient majeur et lucide a le droit de refuser tout soin selon le principe d'autonomie."},
+{theme:"droits",q:"Qu'est-ce que la loi Informatique et Libertés de 1978 ?",c:["Une loi sur la presse","La loi qui protège les données personnelles et a créé la CNIL","Une loi sur internet","La loi sur la propriété intellectuelle"],a:1,e:"La loi du 6 janvier 1978 protège les données personnelles et a créé la CNIL."},
+{theme:"histoire",q:"En quelle année a débuté la Révolution française ?",c:["1776","1787","1789","1792"],a:2,e:"La Révolution française a débuté en 1789, marquée par la prise de la Bastille le 14 juillet."},
+{theme:"histoire",q:"En quelle année Napoléon Ier est-il devenu empereur ?",c:["1799","1802","1804","1807"],a:2,e:"Napoléon Bonaparte est devenu Napoléon Premier le 2 décembre 1804."},
+{theme:"histoire",q:"Depuis quelle année l'école publique est-elle gratuite en France ?",c:["1848","1871","1881","1905"],a:2,e:"La loi Jules Ferry de 1881 a rendu l'école primaire publique gratuite, obligatoire et laïque."},
+{theme:"histoire",q:"En 1944, qu'est-ce qui a changé pour les femmes en France ?",c:["Droit au travail","Droit de vote","Droit à l'éducation","Égalité salariale"],a:1,e:"L'ordonnance du 21 avril 1944 a accordé le droit de vote aux femmes."},
+{theme:"histoire",q:"Sous quel président a été abolie la peine de mort en France ?",c:["Giscard d'Estaing","François Mitterrand","Jacques Chirac","Georges Pompidou"],a:1,e:"La peine de mort a été abolie le 9 octobre 1981, sous Mitterrand, à l'initiative de Robert Badinter."},
+{theme:"histoire",q:"En quelle année l'euro est-il devenu la monnaie officielle de la France ?",c:["1999","2000","2001","2002"],a:3,e:"L'euro est devenu la monnaie fiduciaire en France le 1er janvier 2002."},
+{theme:"histoire",q:"Quelle est la plus haute montagne de France ?",c:["Le Puy de Dôme","Le Mont Ventoux","Le Mont-Blanc","La Meije"],a:2,e:"Le Mont-Blanc (4 808 m) est le plus haut sommet de France et d'Europe occidentale."},
+{theme:"histoire",q:"Que célèbre-t-on le 8 mai ?",c:["La fête du travail","La victoire des Alliés en Europe en 1945","L'armistice de 1918","La libération de Paris"],a:1,e:"Le 8 mai commémore la capitulation de l'Allemagne nazie et la victoire des Alliés en Europe."},
+{theme:"histoire",q:"Qui a peint La Liberté guidant le peuple ?",c:["Claude Monet","Auguste Renoir","Eugène Delacroix","Paul Cézanne"],a:2,e:"La Liberté guidant le peuple (1830) est une peinture d'Eugène Delacroix."},
+{theme:"histoire",q:"Depuis quand l'esclavage a-t-il été définitivement aboli en France ?",c:["1794","1815","1848","1865"],a:2,e:"L'esclavage a été définitivement aboli le 27 avril 1848, à l'initiative de Victor Schoelcher."},
+{theme:"histoire",q:"Quel est le principal fleuve traversant Paris ?",c:["La Loire","Le Rhône","La Seine","La Garonne"],a:2,e:"La Seine traverse Paris et se jette dans la Manche."},
+{theme:"histoire",q:"De quand date l'appel à la résistance du général de Gaulle ?",c:["17 juin 1940","18 juin 1940","1er juillet 1940","11 novembre 1940"],a:1,e:"Le 18 juin 1940, de Gaulle a lancé depuis Londres son appel à la résistance."},
+{theme:"histoire",q:"Qui a mené la conquête de la Gaule pour Rome ?",c:["Auguste","Cicéron","Jules César","Pompée"],a:2,e:"Jules César a conquis la Gaule entre 58 et 51 av. J.-C."},
+{theme:"histoire",q:"Qui est Clovis ?",c:["Un général romain","Le premier roi franc, baptisé chrétien vers 496","Un roi gaulois","Un pape médiéval"],a:1,e:"Clovis Ier est le premier roi franc chrétien. Il est souvent considéré comme le premier roi de France."},
+{theme:"histoire",q:"En quelle année Charlemagne a-t-il été couronné Empereur d'Occident ?",c:["768","800","814","987"],a:1,e:"Charlemagne a été couronné empereur d'Occident par le pape Léon III à Rome le 25 décembre 800."},
+{theme:"histoire",q:"Quel roi a été le premier des Capétiens ?",c:["Charlemagne","Pépin le Bref","Hugues Capet","Philippe Auguste"],a:2,e:"Hugues Capet a été élu roi de France en 987, fondant la dynastie capétienne."},
+{theme:"histoire",q:"Qui est Jeanne d'Arc ?",c:["Une reine de France","Une héroïne qui a participé à la libération d'Orléans en 1429 et a été brûlée en 1431","Une sainte uniquement","Une reine d'Angleterre"],a:1,e:"Jeanne d'Arc (vers 1412-1431) a contribué à la victoire française lors de la guerre de Cent Ans."},
+{theme:"histoire",q:"Qui était le Roi-Soleil ?",c:["Henri IV","Louis XIII","Louis XIV","Louis XV"],a:2,e:"Louis XIV (1638-1715), surnommé le Roi-Soleil, a fait construire Versailles."},
+{theme:"histoire",q:"Quel roi de France a été guillotiné pendant la Révolution ?",c:["Louis XIII","Louis XIV","Louis XV","Louis XVI"],a:3,e:"Louis XVI a été guillotiné le 21 janvier 1793."},
+{theme:"histoire",q:"En quelle année la Première République a-t-elle été proclamée ?",c:["1789","1792","1795","1799"],a:1,e:"La Première République française a été proclamée le 21 septembre 1792."},
+{theme:"histoire",q:"Quand Napoléon a-t-il été vaincu à Waterloo ?",c:["1812","1813","1815","1816"],a:2,e:"La bataille de Waterloo (18 juin 1815) a mis fin aux Cent-Jours de Napoléon."},
+{theme:"histoire",q:"Quel événement a mis fin à la IIIe République ?",c:["La révolution de 1936","L'armistice de 1940 et les pleins pouvoirs votés à Pétain","La libération de Paris","La Commune de Paris"],a:1,e:"La IIIe République a pris fin en juillet 1940 quand le Parlement a voté les pleins pouvoirs à Pétain."},
+{theme:"histoire",q:"En quelle année la Ve République a-t-elle été fondée ?",c:["1946","1954","1958","1962"],a:2,e:"La Constitution de la Ve République a été approuvée le 28 septembre 1958."},
+{theme:"histoire",q:"En quelle année l'Algérie a-t-elle accédé à l'indépendance ?",c:["1956","1960","1962","1965"],a:2,e:"L'Algérie a accédé à l'indépendance le 5 juillet 1962."},
+{theme:"histoire",q:"Qu'est-ce que le régime de Vichy ?",c:["Un régime républicain","Le gouvernement collaborationniste sous Pétain (1940-1944)","Un régime communiste","Un gouvernement en exil"],a:1,e:"Le régime de Vichy a collaboré avec l'occupant nazi de 1940 à 1944."},
+{theme:"histoire",q:"Quand Paris a-t-il été libéré ?",c:["6 juin 1944","25 août 1944","8 mai 1945","11 novembre 1944"],a:1,e:"Paris a été libéré le 25 août 1944."},
+{theme:"histoire",q:"Qu'est-ce que le Débarquement du 6 juin 1944 ?",c:["Le débarquement en Afrique du Nord","L'opération Overlord : débarquement allié en Normandie","Le débarquement en Provence","Le débarquement en Italie"],a:1,e:"L'opération Overlord est le débarquement allié sur les côtes normandes, tournant de la Seconde Guerre mondiale."},
+{theme:"histoire",q:"Qu'est-ce que les 'Trente Glorieuses' ?",c:["La période de la Révolution","Les 30 ans de croissance économique de 1945 à 1975","Les 30 premières années de la IIIe République","La période napoléonienne"],a:1,e:"Les Trente Glorieuses sont la période de forte croissance économique et sociale de 1945 à 1975."},
+{theme:"histoire",q:"Quand le mur de Berlin est-il tombé ?",c:["1987","1989","1991","1993"],a:1,e:"Le mur de Berlin est tombé le 9 novembre 1989."},
+{theme:"histoire",q:"Quel est le plus long fleuve de France ?",c:["La Seine","La Garonne","Le Rhône","La Loire"],a:3,e:"La Loire (1 006 km) est le plus long fleuve de France."},
+{theme:"histoire",q:"Quelle est la population approximative de la France en 2024 ?",c:["57 millions","62 millions","68 millions","75 millions"],a:2,e:"La France compte environ 68 millions d'habitants en 2024."},
+{theme:"histoire",q:"En quelle année la France a-t-elle gagné la Coupe du monde de football pour la première fois ?",c:["1984","1990","1998","2006"],a:2,e:"La France a remporté sa première Coupe du monde en 1998, en battant le Brésil 3-0."},
+{theme:"histoire",q:"Quel est le monument le plus visité de Paris ?",c:["Le Louvre","Le musée d'Orsay","La tour Eiffel","Notre-Dame de Paris"],a:2,e:"La tour Eiffel, construite en 1889, est le monument le plus visité."},
+{theme:"histoire",q:"En quelle année Notre-Dame de Paris a-t-elle été touchée par un incendie ?",c:["2015","2017","2019","2021"],a:2,e:"L'incendie de Notre-Dame de Paris s'est déclaré le 15 avril 2019."},
+{theme:"histoire",q:"Qui est Louis Pasteur ?",c:["Un explorateur","Un chimiste et biologiste, père de la microbiologie et inventeur de la pasteurisation","Un peintre","Un philosophe"],a:1,e:"Louis Pasteur (1822-1895) a révolutionné la médecine : pasteurisation, vaccins."},
+{theme:"histoire",q:"Qui est Victor Hugo ?",c:["Un peintre romantique","Le grand écrivain romantique français auteur des Misérables","Un général napoléonien","Un philosophe des Lumières"],a:1,e:"Victor Hugo (1802-1885) est l'auteur des Misérables, Notre-Dame de Paris, Hernani."},
+{theme:"histoire",q:"Qui est Édith Piaf ?",c:["Une actrice","La chanteuse française surnommée La Môme Piaf, icône culturelle mondiale","Une danseuse","Une compositrice classique"],a:1,e:"Édith Piaf (1915-1963) est la plus célèbre chanteuse française (La Vie en rose, Non je ne regrette rien)."},
+{theme:"histoire",q:"Qui est Simone de Beauvoir ?",c:["Une chanteuse","La philosophe existentialiste et militante féministe, auteure du Deuxième Sexe","Une peintre","Une actrice"],a:1,e:"Simone de Beauvoir (1908-1986) est l'auteure du Deuxième Sexe (1949), texte fondateur du féminisme."},
+{theme:"histoire",q:"Quel est le rôle du Moulin Rouge à Paris ?",c:["Un moulin à farine","Un cabaret fondé en 1889, célèbre pour le french cancan","Un musée d'art","Un théâtre national"],a:1,e:"Le Moulin Rouge, ouvert en 1889 à Montmartre, est un cabaret mondial célèbre pour ses spectacles."},
+{theme:"histoire",q:"Qui est Molière ?",c:["Un philosophe","Le plus grand dramaturge comique français du XVIIe s., auteur du Misanthrope et Tartuffe","Un peintre","Un poète romantique"],a:1,e:"Molière (Jean-Baptiste Poquelin, 1622-1673) est le maître de la comédie française."},
+{theme:"histoire",q:"Quel philosophe des Lumières est l'auteur de L'Esprit des lois ?",c:["Voltaire","Rousseau","Montesquieu","Diderot"],a:2,e:"Montesquieu a publié L'Esprit des lois en 1748."},
+{theme:"histoire",q:"En quelle année l'Exposition universelle de Paris a-t-elle conduit à la construction de la Tour Eiffel ?",c:["1878","1889","1900","1937"],a:1,e:"La tour Eiffel a été construite pour l'Exposition universelle de 1889."},
+{theme:"histoire",q:"Quel compositeur français est l'auteur de Boléro ?",c:["Claude Debussy","Erik Satie","Maurice Ravel","Hector Berlioz"],a:2,e:"Maurice Ravel (1875-1937) a composé le Boléro (1928)."},
+{theme:"histoire",q:"Quelle défaite militaire a entraîné la chute du Second Empire ?",c:["La Marne","La bataille de Sedan (1870)","Verdun","Trafalgar"],a:1,e:"La défaite de Sedan (2 septembre 1870) a entraîné la chute de Napoléon III."},
+{theme:"histoire",q:"Qu'est-ce que la Commune de Paris (1871) ?",c:["L'administration municipale","Un gouvernement révolutionnaire instauré à Paris en 1871 et écrasé par les Versaillais","Un quartier de Paris","Un mouvement artistique"],a:1,e:"La Commune de Paris (18 mars - 28 mai 1871) était un gouvernement révolutionnaire socialiste."},
+{theme:"histoire",q:"En quelle année a débuté la Première Guerre mondiale ?",c:["1912","1914","1916","1918"],a:1,e:"La Première Guerre mondiale a débuté le 28 juillet 1914."},
+{theme:"histoire",q:"Quel traité a mis fin officiellement à la Première Guerre mondiale ?",c:["Traité de Paris","Traité de Versailles (1919)","Traité de Vienne","Traité de Berlin"],a:1,e:"Le traité de Versailles, signé le 28 juin 1919, a mis fin à la Première Guerre mondiale."},
+{theme:"societe",q:"L'instruction des enfants est obligatoire de :",c:["6 à 16 ans","6 à 18 ans","3 à 16 ans","3 à 18 ans"],a:2,e:"Depuis 2019, l'instruction est obligatoire de 3 à 16 ans en France."},
+{theme:"societe",q:"Qu'est-ce que le SMIC ?",c:["Salaire mensuel imposable commun","Salaire minimum interprofessionnel de croissance","Système monétaire international","Service minimum interprofessionnel"],a:1,e:"Le SMIC est le salaire horaire minimum légal en France."},
+{theme:"societe",q:"L'avortement est-il possible en France ?",c:["Non, il est interdit","Oui, jusqu'à 14 semaines de grossesse","Oui, sans limite","Oui, uniquement pour les femmes mariées"],a:1,e:"L'IVG est légale jusqu'à 14 semaines de grossesse et est remboursée par la Sécurité sociale."},
+{theme:"societe",q:"Où faut-il déclarer la naissance d'un enfant ?",c:["À la préfecture","À la mairie","À l'hôpital uniquement","À la CAF"],a:1,e:"Toute naissance doit être déclarée à la mairie du lieu de naissance dans les 5 jours."},
+{theme:"societe",q:"À quoi sert la carte Vitale ?",c:["À prouver son identité","À accéder aux services en ligne","À bénéficier du remboursement des frais de santé","À prouver sa nationalité française"],a:2,e:"La carte Vitale facilite le remboursement des frais de santé par la Sécurité sociale."},
+{theme:"societe",q:"Depuis le 1er juillet 2021, quelle est la durée du congé paternité ?",c:["7 jours","11 jours","25 jours","28 jours"],a:2,e:"Depuis le 1er juillet 2021, le congé de paternité est de 25 jours calendaires."},
+{theme:"societe",q:"Jusqu'à quel âge l'école est-elle obligatoire en France ?",c:["14 ans","15 ans","16 ans","18 ans"],a:2,e:"La scolarité obligatoire s'étend de 3 à 16 ans en France."},
+{theme:"societe",q:"Travailler sans être déclaré est :",c:["Autorisé si d'accord","Une infraction pénale, le travail dissimulé","Autorisé pour les petits emplois","Interdit aux étrangers uniquement"],a:1,e:"Le travail dissimulé est une infraction pénale pouvant entraîner des poursuites judiciaires."},
+{theme:"societe",q:"En cas de divorce, qui exerce l'autorité parentale ?",c:["Le parent gardien","Les deux parents conjointement","Le juge décide toujours","L'État"],a:1,e:"L'autorité parentale est exercée conjointement par les deux parents même après le divorce."},
+{theme:"societe",q:"Est-ce possible de punir physiquement ses enfants en France ?",c:["Oui, si léger","Non, interdit par la loi depuis 2019","Oui, droit parental","Non, mais sans sanction"],a:1,e:"La loi du 10 juillet 2019 interdit expressément toute punition corporelle envers un enfant."},
+{theme:"societe",q:"Quel est le taux de TVA normal en France ?",c:["10%","18%","20%","22%"],a:2,e:"Le taux normal de TVA en France est de 20%."},
+{theme:"societe",q:"Quel est le taux de TVA réduit appliqué aux produits alimentaires de base ?",c:["2,1%","5,5%","7%","10%"],a:1,e:"Les produits alimentaires de base sont soumis au taux réduit de TVA de 5,5%."},
+{theme:"societe",q:"Qu'est-ce que la Sécurité sociale ?",c:["Une police privée","Un système public de protection contre les risques sociaux","Un service bancaire","Un organisme militaire"],a:1,e:"La Sécurité sociale, créée en 1945, protège contre la maladie, la maternité, la vieillesse, les accidents."},
+{theme:"societe",q:"Quel est le rôle du médecin traitant en France ?",c:["Il gère les urgences","Il assure le suivi de base et coordonne les soins (accès au spécialiste)","Il pratique uniquement des opérations","Il prescrit sans consultation"],a:1,e:"Le médecin traitant est le pivot du parcours de soins."},
+{theme:"societe",q:"Qu'est-ce que le baccalauréat ?",c:["Un diplôme universitaire","Le diplôme de fin d'études secondaires, ouvrant l'accès à l'enseignement supérieur","Un concours d'entrée","Un diplôme professionnel"],a:1,e:"Le baccalauréat est obtenu en terminale et ouvre l'accès à l'enseignement supérieur."},
+{theme:"societe",q:"Qu'est-ce que le RSA ?",c:["Une allocation pour les handicapés","Un revenu minimum garanti aux personnes sans ressources ou ressources insuffisantes","Un revenu pour les retraités","Un prêt de l'État"],a:1,e:"Le RSA garantit un niveau minimum de ressources."},
+{theme:"societe",q:"Qu'est-ce que l'APL ?",c:["Une aide pour acheter un logement","Une aide versée par la CAF pour réduire le loyer","Un prêt immobilier","Une subvention pour rénover"],a:1,e:"L'APL est une aide versée par la CAF directement déduite du loyer des bénéficiaires."},
+{theme:"societe",q:"Qu'est-ce que la CAF ?",c:["Un organisme bancaire","L'organisme de sécurité sociale gérant les prestations familiales","Un syndicat","Une association caritative"],a:1,e:"La CAF verse les prestations familiales : allocations familiales, APL, RSA, etc."},
+{theme:"societe",q:"Qu'est-ce que Parcoursup ?",c:["Un réseau social","La plateforme nationale d'admission dans l'enseignement supérieur après le bac","Un site d'emploi","Une application éducative"],a:1,e:"Parcoursup (depuis 2018) est la plateforme de vœux et d'admission dans l'enseignement supérieur."},
+{theme:"societe",q:"Qu'est-ce que le service civique ?",c:["Un service militaire","Un engagement volontaire d'intérêt général pour les 16-25 ans, indemnisé","Un stage professionnel","Un service de secourisme"],a:1,e:"Le service civique est un engagement volontaire pour des missions d'intérêt général."},
+{theme:"societe",q:"Qu'est-ce que la loi 1901 sur les associations ?",c:["Une loi sur le travail","La loi régissant la création et le fonctionnement des associations sans but lucratif","Une loi sur les syndicats","Une loi sur les partis politiques"],a:1,e:"La loi du 1er juillet 1901 régit les associations sans but lucratif."},
+{theme:"societe",q:"Qu'est-ce que le contrat à durée indéterminée (CDI) ?",c:["Un contrat temporaire","Le contrat de travail sans limitation de durée, le plus protecteur","Un contrat d'apprentissage","Un contrat saisonnier"],a:1,e:"Le CDI est la forme normale du contrat de travail, sans terme fixé."},
+{theme:"societe",q:"Qu'est-ce que le contrat à durée déterminée (CDD) ?",c:["Un CDI avec période d'essai","Un contrat de travail à terme précis, limité aux cas prévus par la loi","Un contrat de stage","Un contrat de prestation"],a:1,e:"Le CDD est un contrat temporaire. Il ne peut être utilisé que dans des cas limités."},
+{theme:"societe",q:"Qu'est-ce que le CAP ?",c:["Un baccalauréat professionnel","Le premier diplôme professionnel préparé en lycée ou apprentissage","Un BEP","Un brevet des collèges"],a:1,e:"Le CAP est un diplôme professionnel de niveau 3 préparant à un métier précis."},
+{theme:"societe",q:"Quel est le taux de TVA sur la restauration en France ?",c:["5,5%","10%","20%","2,1%"],a:1,e:"La restauration sur place est soumise au taux intermédiaire de TVA de 10%."},
+{theme:"societe",q:"Qu'est-ce que l'URSSAF ?",c:["Un syndicat","L'organisme qui collecte les cotisations sociales des employeurs et travailleurs","Une caisse de retraite","Un organisme de formation"],a:1,e:"L'URSSAF collecte les cotisations sociales et contributions dues par les employeurs."},
+{theme:"societe",q:"Qu'est-ce que le prélèvement à la source de l'impôt sur le revenu ?",c:["Un versement annuel","Un prélèvement mensuel directement sur le salaire ou la pension","Un impôt différé","Une retenue pour le chômage"],a:1,e:"Depuis 2019, l'impôt sur le revenu est prélevé directement chaque mois à la source."},
+{theme:"societe",q:"Qu'est-ce que le don d'organes en France depuis 2017 ?",c:["Un don volontaire obligatoire","Le principe est le consentement présumé : toute personne est donneur sauf si elle s'y est opposée","Un acte payant","Un droit uniquement pour les adultes"],a:1,e:"Depuis 2017, toute personne est présumée donneuse sauf si elle s'est inscrite sur le registre des refus."},
+{theme:"societe",q:"Qu'est-ce que l'AAH (Allocation aux adultes handicapés) ?",c:["Une aide pour les parents d'enfants handicapés","Une aide financière pour les adultes handicapés ne pouvant pas travailler","Un arrêt maladie prolongé","Une pension d'invalidité"],a:1,e:"L'AAH est une aide pour les adultes ayant un taux d'incapacité d'au moins 80%."},
+{theme:"societe",q:"Qu'est-ce que l'APA (Allocation personnalisée d'autonomie) ?",c:["Une aide au logement","Une aide pour les personnes âgées de 60 ans et plus en perte d'autonomie","Un revenu minimum","Une aide pour les chômeurs"],a:1,e:"L'APA aide les personnes de 60 ans et plus ayant des difficultés à accomplir les actes de la vie quotidienne."},
+{theme:"societe",q:"Qu'est-ce que la MDPH ?",c:["Un hôpital spécialisé","Le guichet unique gérant les droits et prestations pour les personnes handicapées","Un tribunal spécial","Un service de placement en établissement"],a:1,e:"La MDPH est le guichet unique pour toutes les demandes liées au handicap."},
+{theme:"societe",q:"Qu'est-ce que l'encadrement des loyers ?",c:["L'interdiction de louer","Un dispositif plafonnant les loyers dans certaines zones tendues","Un loyer fixé par l'État","Un système de location sociale"],a:1,e:"L'encadrement des loyers plafonne les loyers dans les zones tendues (Paris, Lille, Lyon...)."},
+{theme:"societe",q:"Quel est le principal impôt payé par les particuliers en France ?",c:["La TVA","L'impôt sur le revenu (IR)","La CSG","La taxe foncière"],a:1,e:"L'impôt sur le revenu est le principal impôt direct payé par les particuliers, sur une base progressive."},
+{theme:"societe",q:"Qu'est-ce que le logement social (HLM) ?",c:["Un logement privé moins cher","Un logement à loyer modéré géré par des organismes publics, destiné aux ménages modestes","Un logement de fonctionnaire","Un logement gratuit"],a:1,e:"Le logement HLM est destiné aux personnes ayant des revenus inférieurs aux plafonds fixés."},
+{theme:"valeurs",q:"Quelle est la signification du terme 'laïcité' en France ?",c:["Interdiction des religions","Neutralité de l'État et liberté de conscience","Athéisme officiel","Religion d'État catholique"],a:1,e:"La laïcité garantit la neutralité de l'État et la liberté de conscience pour tous."},
+{theme:"valeurs",q:"Qu'est-ce que la liberté de réunion ?",c:["Droit de se rassembler violemment","Droit de se rassembler pacifiquement","Droit de bloquer les routes","Droit de former des groupes armés"],a:1,e:"La liberté de réunion est le droit de se rassembler pacifiquement."},
+{theme:"valeurs",q:"Quel principe interdit à l'État de favoriser une religion ?",c:["L'égalité","L'universalisme","La laïcité","La neutralité"],a:2,e:"La laïcité interdit à l'État de favoriser ou de défavoriser une religion particulière."},
+{theme:"valeurs",q:"La France reconnaît-elle le droit à l'objection de conscience ?",c:["Non","Oui, pour le service militaire (aujourd'hui suspendu)","Oui, en toutes circonstances","Non, jamais"],a:1,e:"L'objection de conscience était reconnue pour le service militaire, suspendu depuis 2001."},
+{theme:"valeurs",q:"Qu'est-ce que le civisme ?",c:["La connaissance de la Constitution","Le respect des règles et devoirs envers la communauté","Le service militaire","Le paiement des impôts uniquement"],a:1,e:"Le civisme est l'ensemble des comportements qui témoignent du respect envers la communauté."},
+{theme:"valeurs",q:"Que signifie 'République démocratique' ?",c:["Le peuple élit un roi","Le peuple est souverain et gouverne","Les riches gouvernent","Les juges gouvernent"],a:1,e:"République démocratique signifie que le pouvoir émane du peuple."},
+{theme:"valeurs",q:"Que signifie 'République sociale' dans la Constitution ?",c:["L'État gère toutes les entreprises","L'État garantit la solidarité nationale","Tous les biens sont communs","Le socialisme est officiel"],a:1,e:"République sociale signifie que l'État garantit des droits sociaux et la solidarité."},
+{theme:"valeurs",q:"Qu'est-ce que la souveraineté populaire ?",c:["Le roi est souverain","Le pouvoir appartient au peuple","Les élus sont souverains","L'armée est souveraine"],a:1,e:"La souveraineté populaire signifie que le pouvoir réside dans le peuple."},
+{theme:"valeurs",q:"Quel est l'objectif de l'éducation civique à l'école ?",c:["Former des soldats","Former des citoyens responsables","Enseigner uniquement l'histoire","Former des fonctionnaires"],a:1,e:"L'éducation civique vise à former des citoyens responsables, capables de participer à la démocratie."},
+{theme:"valeurs",q:"Qu'est-ce que le 'vivre ensemble' dans la République ?",c:["Uniformité culturelle totale","Respect mutuel et respect des règles communes","Parler la même langue régionale","Abandon de toute identité culturelle"],a:1,e:"Vivre ensemble implique le respect mutuel et l'acceptation des règles communes."},
+{theme:"valeurs",q:"Quel document protège les droits fondamentaux en Europe ?",c:["La DDHC de 1789","La Convention européenne des droits de l'homme (CEDH)","Le traité de Maastricht","La Constitution française"],a:1,e:"La CEDH, signée en 1950, protège les droits fondamentaux dans les États membres du Conseil de l'Europe."},
+{theme:"valeurs",q:"Où siège la Cour européenne des droits de l'homme ?",c:["Bruxelles","Genève","Strasbourg","La Haye"],a:2,e:"La Cour européenne des droits de l'homme siège à Strasbourg, France."},
+{theme:"valeurs",q:"Qu'est-ce que le droit à la dignité humaine ?",c:["Un privilège","Un droit inaliénable au respect de sa personne","Un droit payant","Un droit pour les riches"],a:1,e:"La dignité humaine est le droit fondamental de tout être humain à être respecté."},
+{theme:"valeurs",q:"Qui peut modifier la Constitution française ?",c:["Le seul Président","Le Parlement en Congrès ou le peuple par référendum","Le Premier ministre","Le Conseil constitutionnel"],a:1,e:"La Constitution peut être révisée par le Parlement réuni en Congrès (article 89) ou par référendum."},
+{theme:"valeurs",q:"Quelle disposition constitutionnelle est intangible ?",c:["La durée du mandat présidentiel","La forme républicaine du gouvernement","La liste des droits","La composition du Sénat"],a:1,e:"L'article 89 interdit de réviser la forme républicaine du gouvernement."},
+{theme:"valeurs",q:"Qu'est-ce que la fraternité dans la devise républicaine ?",c:["Appartenance à une même famille","La solidarité entre tous les membres de la société","L'aide uniquement aux Français","La charité religieuse"],a:1,e:"La fraternité exprime la solidarité nationale et l'entraide entre tous."},
+{theme:"valeurs",q:"Que représente le Panthéon à Paris ?",c:["Le siège du gouvernement","Le mausolée des grands hommes de la Nation","L'Académie française","Un musée"],a:1,e:"Le Panthéon est le mausolée des personnalités illustres ayant servi la Nation française."},
+{theme:"valeurs",q:"Quel principe interdit de juger deux fois pour le même fait ?",c:["La présomption d'innocence","Non bis in idem","L'habeas corpus","La rétroactivité"],a:1,e:"Le principe 'non bis in idem' garantit que nul ne peut être poursuivi deux fois pour les mêmes faits."},
+{theme:"valeurs",q:"Qu'est-ce que la Charte de l'environnement de 2004 garantit ?",c:["Le droit à la nature sauvage","Le droit à un environnement sain et le devoir de protéger l'environnement","Le droit à la chasse","Le droit de construire"],a:1,e:"La Charte de l'environnement (valeur constitutionnelle depuis 2005) garantit le droit à un environnement sain."},
+{theme:"valeurs",q:"Quelle est la date de la fête nationale française ?",c:["1er juillet","4 juillet","14 juillet","25 août"],a:2,e:"Le 14 juillet est la fête nationale française, commémorant la prise de la Bastille en 1789."},
+{theme:"valeurs",q:"Qu'est-ce que le droit d'association ?",c:["Le droit de former des partis politiques uniquement","Le droit de se regrouper librement pour défendre une cause","Le droit à la famille","Un droit réservé aux syndicats"],a:1,e:"Le droit d'association, garanti par la loi de 1901, permet à toute personne de créer ou rejoindre une association."},
+{theme:"valeurs",q:"Quel est l'anniversaire de la Déclaration universelle des droits de l'homme ?",c:["14 juillet","10 décembre","26 août","4 novembre"],a:1,e:"La Déclaration universelle des droits de l'homme a été adoptée le 10 décembre 1948."},
+{theme:"valeurs",q:"Qu'est-ce que la liberté de conscience ?",c:["Le droit d'agir sans respecter la loi","Le droit d'avoir ses propres convictions religieuses ou philosophiques","Le droit de ne pas voter","Le droit de refuser tout service"],a:1,e:"La liberté de conscience est le droit pour chacun d'avoir ses propres convictions sans ingérence de l'État."},
+{theme:"valeurs",q:"Depuis quand la peine de mort est-elle abolie en France ?",c:["1946","1958","1981","2000"],a:2,e:"La peine de mort a été abolie en France le 9 octobre 1981."},
+{theme:"valeurs",q:"Qu'est-ce que l'antisémitisme en droit français ?",c:["Une opinion politique","Une idéologie raciste contre les Juifs, punie par la loi","Un mouvement religieux","Une philosophie"],a:1,e:"L'antisémitisme est puni par la loi française (incitation à la haine, discrimination)."},
+{theme:"valeurs",q:"Quel est le principe de non-rétroactivité de la loi pénale ?",c:["Une loi peut s'appliquer aux faits passés","Une loi pénale plus sévère ne s'applique pas aux faits commis avant son entrée en vigueur","Les lois s'appliquent dès la publication","Les lois pénales s'appliquent à tous les faits"],a:1,e:"Le principe de non-rétroactivité protège : on ne peut être jugé plus sévèrement qu'au moment des faits."},
+{theme:"valeurs",q:"Le service militaire est-il obligatoire en France en 2026 ?",c:["Oui, pour tous les hommes à 18 ans","Non, il a été suspendu en 2001","Oui, pour hommes et femmes","Non, sauf en guerre"],a:1,e:"Le service militaire obligatoire a été suspendu en 2001. La JDC est cependant obligatoire."},
+{theme:"valeurs",q:"Qu'est-ce que la Journée défense et citoyenneté (JDC) ?",c:["Un jour de congé","Une journée obligatoire pour les 16-25 ans sur la défense nationale","Une cérémonie militaire","Une journée de commémoration"],a:1,e:"La JDC est obligatoire pour tous les Français entre 16 et 25 ans."},
+{theme:"valeurs",q:"La France est-elle officiellement catholique ?",c:["Oui, le catholicisme est religion d'État","Non, la loi de 1905 a mis fin à tout culte officiel","Oui, depuis le Concordat de 1801","Non, mais le catholicisme est favorisé"],a:1,e:"Non, la France est laïque depuis 1905. L'État ne reconnaît aucune religion officielle."},
+{theme:"valeurs",q:"Qu'est-ce que le Concordat en Alsace-Moselle ?",c:["Un traité militaire","Un régime local maintenant financement des cultes et enseignement religieux","Un accord commercial","Un statut fiscal particulier"],a:1,e:"En Alsace-Moselle, le Concordat de 1801 n'a pas été abrogé par la loi de 1905, ce régime particulier subsiste."},
+{theme:"institutions",q:"Qu'est-ce que la motion de censure ?",c:["Une critique de la politique","Un vote de l'Assemblée pour renverser le gouvernement","Un veto du Président","Une dissolution"],a:1,e:"La motion de censure, si adoptée à la majorité absolue, oblige le gouvernement à démissionner."},
+{theme:"institutions",q:"Quel article prévoit la motion de censure ?",c:["Article 12","Article 34","Article 49","Article 52"],a:2,e:"L'article 49 de la Constitution prévoit la mise en jeu de la responsabilité du gouvernement."},
+{theme:"institutions",q:"Qu'est-ce qu'une loi organique ?",c:["Une loi sur l'environnement","Une loi qui précise l'organisation des pouvoirs publics, soumise au Conseil constitutionnel","Une loi ordinaire","Une loi régionale"],a:1,e:"Les lois organiques précisent l'organisation des pouvoirs publics et sont obligatoirement soumises au Conseil constitutionnel."},
+{theme:"institutions",q:"Qu'est-ce qu'une ordonnance (article 38) ?",c:["Une décision de justice","Un acte du gouvernement dans un domaine législatif, après habilitation du Parlement","Un décret ministériel","Un arrêté municipal"],a:1,e:"L'ordonnance est prise par le gouvernement sur habilitation parlementaire dans un domaine normalement législatif."},
+{theme:"institutions",q:"Quelle est la durée du mandat des conseillers municipaux ?",c:["4 ans","5 ans","6 ans","7 ans"],a:2,e:"Les conseillers municipaux sont élus pour 6 ans."},
+{theme:"institutions",q:"Qu'est-ce qu'un EPCI ?",c:["Une entreprise publique","Un regroupement de communes pour mutualiser des compétences","Un organisme d'État","Un syndicat"],a:1,e:"Un EPCI (Établissement public de coopération intercommunale) regroupe plusieurs communes pour exercer des compétences en commun."},
+{theme:"institutions",q:"Qu'est-ce que la Cour de justice de l'UE ?",c:["Un tribunal pénal international","La juridiction garantissant l'interprétation uniforme du droit européen","Un tribunal commercial","Un comité consultatif"],a:1,e:"La CJUE (Luxembourg) garantit l'interprétation uniforme et le respect du droit de l'UE."},
+{theme:"institutions",q:"Qu'est-ce que le Conseil de l'Europe ?",c:["La même chose que l'UE","Une organisation internationale (47 membres) distincte de l'UE, veillant aux droits humains","Une institution de l'UE","Un organe de l'ONU"],a:1,e:"Le Conseil de l'Europe (47 membres, Strasbourg) est une organisation distincte de l'UE, axée sur les droits humains."},
+{theme:"institutions",q:"Quel est le traité fondateur de l'UE actuellement en vigueur ?",c:["Traité de Rome (1957)","Traité de Maastricht (1992)","Traité de Lisbonne (2007/2009)","Traité de Nice (2001)"],a:2,e:"Le traité de Lisbonne, entré en vigueur en 2009, est le traité de base de l'UE."},
+{theme:"institutions",q:"Qu'est-ce que le droit de veto au Conseil de sécurité de l'ONU ?",c:["Le droit de parler en premier","Le droit des 5 membres permanents de bloquer toute résolution","Un droit de vote double","Un droit de proposer des résolutions"],a:1,e:"Les 5 membres permanents (France, RU, USA, Russie, Chine) peuvent bloquer toute résolution du Conseil de sécurité."},
+{theme:"institutions",q:"Qui est le Secrétaire général de l'ONU depuis 2017 ?",c:["Ban Ki-moon","António Guterres","Kofi Annan","Boutros Boutros-Ghali"],a:1,e:"António Guterres (Portugal) est Secrétaire général des Nations Unies depuis 2017."},
+{theme:"institutions",q:"Quel est le rôle de la Commission nationale consultative des droits de l'homme (CNCDH) ?",c:["Juger les violations des droits","Conseiller le gouvernement sur les droits de l'homme","Gérer les plaintes","Contrôler les médias"],a:1,e:"La CNCDH est une institution nationale indépendante conseillant sur les droits de l'homme."},
+{theme:"institutions",q:"Qu'est-ce que le Défenseur des droits regroupe ?",c:["Médiateur, Défenseur des enfants, HALDE et CNDS","Médiateur et Conseil d'État","Cour des comptes et DGSI","CSM et CNCDH"],a:0,e:"Depuis 2011, le Défenseur des droits regroupe le Médiateur de la République, le Défenseur des enfants, la HALDE et le CNDS."},
+{theme:"institutions",q:"Qui est le garde des Sceaux ?",c:["Le Président du Conseil d'État","Le ministre de la Justice","Le Président de la Cour de cassation","Le Procureur général"],a:1,e:"Le garde des Sceaux est le ministre de la Justice."},
+{theme:"institutions",q:"Qu'est-ce que le Conseil supérieur de la magistrature (CSM) ?",c:["Le syndicat des magistrats","L'organe qui assure l'indépendance de la justice","Le tribunal des juges","Un organe parlementaire"],a:1,e:"Le CSM veille à l'indépendance de l'autorité judiciaire et propose les nominations des magistrats."},
+{theme:"institutions",q:"Quelle est la différence entre magistrats du siège et du parquet ?",c:["Aucune","Les magistrats du siège jugent (inamovibles) ; le parquet poursuit (hiérarchiquement dépendant)","Le siège est plus important","Le parquet est indépendant"],a:1,e:"Les magistrats du siège (juges) sont inamovibles ; les magistrats du parquet dépendent du ministère de la Justice."},
+{theme:"institutions",q:"Qu'est-ce que l'immunité parlementaire ?",c:["Droit de ne jamais être jugés","Irresponsabilité pour votes et opinions, protection contre l'arrestation sans autorisation","Avantages fiscaux","Protection contre les critiques"],a:1,e:"L'immunité parlementaire comprend l'irresponsabilité (opinions et votes) et l'inviolabilité."},
+{theme:"institutions",q:"Comment les Français de l'étranger sont-ils représentés à l'Assemblée ?",c:["Ils ne le sont pas","Par 11 députés élus dans des circonscriptions pour les Français hors de France","Par des représentants nommés","Par le MAE"],a:1,e:"11 circonscriptions pour les Français établis hors de France permettent d'élire 11 députés."},
+{theme:"institutions",q:"Qu'est-ce que la Commission mixte paritaire (CMP) ?",c:["Une commission d'enquête","7 députés et 7 sénateurs pour trouver un accord sur un texte en désaccord","Une commission des femmes","Une commission budgétaire"],a:1,e:"La CMP réunit 7 députés et 7 sénateurs pour trouver un compromis sur un texte en désaccord."},
+{theme:"institutions",q:"Qu'est-ce que la déconcentration ?",c:["Transfert de compétences aux collectivités","Délégation de pouvoirs à des représentants locaux de l'État","Privatisation des services","Suppression de l'État central"],a:1,e:"La déconcentration délègue des décisions à des agents de l'État dans les territoires (préfets, recteurs...)."},
+{theme:"institutions",q:"Combien de membres compte le Parlement européen (depuis 2024) ?",c:["620","705","720","800"],a:2,e:"Le Parlement européen compte 720 membres (eurodéputés) depuis les élections de 2024."},
+{theme:"institutions",q:"Quel est le mandat des eurodéputés ?",c:["4 ans","5 ans","6 ans","7 ans"],a:1,e:"Les eurodéputés sont élus pour 5 ans."},
+{theme:"institutions",q:"Combien de pays utilisent l'euro en 2025 ?",c:["17","19","20","27"],a:2,e:"En 2025, 20 pays de l'UE utilisent l'euro (zone euro)."},
+{theme:"institutions",q:"Qu'est-ce que la Cour d'assises ?",c:["Une juridiction civile","La juridiction qui juge les crimes avec un jury","Un tribunal correctionnel","Une juridiction administrative"],a:1,e:"La Cour d'assises juge les crimes (faits les plus graves) avec un jury de citoyens."},
+{theme:"institutions",q:"Qu'est-ce que le tribunal correctionnel ?",c:["Un tribunal qui juge les crimes","Un tribunal qui juge les délits","Un tribunal administratif","Un tribunal de commerce"],a:1,e:"Le tribunal correctionnel juge les délits (faits de moyenne gravité)."},
+{theme:"institutions",q:"Qu'est-ce que le Conseil des prud'hommes ?",c:["Un tribunal administratif","Une juridiction réglant les litiges entre employeurs et salariés","Un tribunal de commerce","Un tribunal familial"],a:1,e:"Le Conseil de prud'hommes règle les litiges individuels entre employeurs et salariés."},
+{theme:"institutions",q:"Quel est le rôle du procureur de la République ?",c:["Défendre les accusés","Représenter le ministère public et soutenir l'accusation","Juger les affaires","Gérer les prisons"],a:1,e:"Le procureur dirige la police judiciaire, décide des poursuites et soutient l'accusation."},
+{theme:"institutions",q:"Quel est le rôle de la Police nationale ?",c:["Protéger les intérêts financiers","Assurer la sécurité publique en milieu urbain","Surveiller les frontières exclusivement","Protéger les forêts"],a:1,e:"La Police nationale assure la sécurité publique, notamment en milieu urbain."},
+{theme:"institutions",q:"Quel est le rôle de la Gendarmerie nationale ?",c:["Uniquement la surveillance des routes","Assurer la sécurité publique en zone rurale et périurbaine","Gérer les prisons","Surveiller les côtes"],a:1,e:"La Gendarmerie assure la sécurité en zones rurales et périurbaines."},
+{theme:"institutions",q:"Qu'est-ce que la police municipale ?",c:["La même que la Police nationale","Une police locale sous l'autorité du maire","Un service de médiation","Une branche de la Gendarmerie"],a:1,e:"La police municipale est placée sous l'autorité du maire et s'occupe de la tranquillité locale."},
+{theme:"droits",q:"Qu'est-ce que la liberté d'expression ?",c:["Le droit de tout dire sans limite","Le droit d'exprimer ses opinions dans le respect de la loi","Le droit de critiquer uniquement le gouvernement","Le droit à l'anonymat"],a:1,e:"La liberté d'expression est le droit d'exprimer ses opinions, sous réserve des limites légales."},
+{theme:"droits",q:"Qu'est-ce que la liberté de la presse ?",c:["Le droit de publier n'importe quoi","Le droit d'informer librement dans le respect de la loi","Le droit de critiquer l'État uniquement","L'exonération fiscale des journalistes"],a:1,e:"La liberté de la presse est le droit d'informer et publier librement, dans le respect des lois."},
+{theme:"droits",q:"Qu'est-ce que la prescription en droit pénal ?",c:["Une ordonnance médicale","Le délai au-delà duquel les poursuites ne peuvent plus être engagées","La fin d'une peine","La libération conditionnelle"],a:1,e:"La prescription est le délai au-delà duquel une action pénale ne peut plus être engagée."},
+{theme:"droits",q:"Les crimes contre l'humanité sont-ils prescrits en France ?",c:["Oui, après 30 ans","Oui, après 50 ans","Non, ils sont imprescriptibles","Oui, après 20 ans"],a:2,e:"Les crimes contre l'humanité et les crimes de guerre sont imprescriptibles en droit français."},
+{theme:"droits",q:"Qu'est-ce que l'autorité parentale ?",c:["Le droit d'imposer ses choix à ses enfants adultes","L'ensemble des droits et devoirs des parents pour protéger leurs enfants mineurs","Un pouvoir exclusif de la mère","Un droit accordé par le juge"],a:1,e:"L'autorité parentale est l'ensemble des droits et devoirs confiés aux parents pour leurs enfants mineurs."},
+{theme:"droits",q:"Qu'est-ce que le droit à la scolarité pour les enfants en France ?",c:["Un droit optionnel","L'instruction est obligatoire de 3 à 16 ans pour tout enfant résidant en France","Un droit uniquement pour les citoyens","Un service payant"],a:1,e:"L'instruction est obligatoire de 3 à 16 ans pour tous les enfants résidant en France."},
+{theme:"droits",q:"Qu'est-ce que l'aide juridictionnelle ?",c:["Une subvention pour les avocats","Une prise en charge des frais de justice pour les personnes aux revenus insuffisants","Un fonds d'urgence","Un syndicat d'avocats"],a:1,e:"L'aide juridictionnelle permet aux personnes aux ressources insuffisantes de bénéficier d'un avocat."},
+{theme:"droits",q:"Qu'est-ce que la liberté conditionnelle ?",c:["La libération définitive","La remise en liberté avant la fin de la peine sous conditions","Un pardon présidentiel","Une grâce amnistiante"],a:1,e:"La liberté conditionnelle permet de libérer un détenu avant la fin de sa peine, sous conditions imposées."},
+{theme:"droits",q:"Quel est le délai de prescription pour les crimes en France ?",c:["6 ans","10 ans","20 ans","Imprescriptibles"],a:2,e:"Le délai de prescription pour les crimes est de 20 ans en France."},
+{theme:"droits",q:"Qu'est-ce que le droit de retrait au travail ?",c:["Le droit de quitter l'entreprise","Le droit de se retirer d'une situation présentant un danger grave et imminent","Le droit de prendre des congés","Le droit de refuser des heures supp."],a:1,e:"Le droit de retrait permet à un salarié de quitter son poste face à un danger grave et imminent."},
+{theme:"droits",q:"Qu'est-ce que la loi DALO de 2007 ?",c:["Une loi sur l'urbanisme","La loi instaurant le droit au logement opposable","Une loi sur la construction","Une loi fiscale"],a:1,e:"La loi DALO (2007) permet aux personnes sans logement décent de saisir un tribunal administratif."},
+{theme:"droits",q:"Qu'est-ce que la sécurité sociale au sens large ?",c:["Une police privée","Le système public de protection contre les risques sociaux","Une assurance facultative","Un service pour fonctionnaires"],a:1,e:"La Sécurité sociale (1945) protège contre la maladie, la maternité, la vieillesse, les accidents du travail."},
+{theme:"droits",q:"Qu'est-ce que le droit au repos hebdomadaire légal ?",c:["Un repos d'une journée par semaine minimum","Un repos de deux journées par semaine","Un repos de 35 heures","Applicable uniquement le dimanche"],a:0,e:"Tout salarié a droit à au moins 24 heures de repos consécutives par semaine."},
+{theme:"droits",q:"Qu'est-ce que le Compte personnel de formation (CPF) ?",c:["Un compte bancaire","Un compte crédité annuellement permettant de financer des formations","Un compte d'épargne retraite","Une allocation chômage"],a:1,e:"Le CPF crédite chaque actif d'un montant annuel utilisable pour financer des formations professionnelles."},
+{theme:"droits",q:"Qu'est-ce que le droit d'accès aux soins ?",c:["Un droit réservé aux assurés","Un droit fondamental pour toute personne résidant en France","Un droit uniquement pour les Français","Un service payant"],a:1,e:"Toute personne en France a droit à des soins, notamment via la complémentaire santé solidaire."},
+{theme:"droits",q:"Le travail du dimanche est-il possible en France ?",c:["Non, totalement interdit","Oui, avec des dérogations dans certains secteurs","Oui, sans restriction","Non, sauf pour les médecins"],a:1,e:"Le travail du dimanche est possible dans les secteurs à dérogation permanente ou sur autorisation."},
+{theme:"droits",q:"Qu'est-ce que la tutelle pour un adulte ?",c:["La même chose que la curatelle","Une protection pour les adultes totalement incapables, où le tuteur représente la personne","Un service hospitalier","Un contrat de mandataire"],a:1,e:"La tutelle est la protection la plus complète : le tuteur représente la personne protégée pour tous les actes."},
+{theme:"droits",q:"Qu'est-ce que la curatelle ?",c:["Une tutelle pour mineurs","Une mesure pour adultes dont les facultés sont altérées, leur laissant une certaine autonomie","Un contrat d'assurance","Une aide sociale"],a:1,e:"La curatelle est une protection juridique pour les adultes dont les facultés sont partiellement altérées."},
+{theme:"droits",q:"Qu'est-ce que le PACS par rapport au mariage ?",c:["Le PACS est identique au mariage","Le PACS est un contrat plus souple avec moins d'obligations que le mariage","Le PACS est plus protecteur que le mariage","Le PACS est une forme de mariage religieux"],a:1,e:"Le PACS est un contrat de vie commune plus souple que le mariage, avec moins d'obligations."},
+{theme:"droits",q:"Qu'est-ce que le droit de grève dans les services publics ?",c:["Interdit totalement","Possible avec un préavis de 5 jours et parfois un service minimum","Sans restriction","Interdit sauf autorisé"],a:1,e:"Dans les services publics, la grève nécessite un préavis de 5 jours et peut être soumise à un service minimum."},
+{theme:"droits",q:"Quelle est la durée maximale d'un CDD ?",c:["3 mois","6 mois","18 mois (24 mois maximum avec renouvellement)","36 mois"],a:2,e:"Un CDD peut durer au maximum 18 mois, renouvelable une fois, soit 24 mois au total."},
+{theme:"droits",q:"Qu'est-ce que la discrimination à l'embauche ?",c:["Un recrutement sélectif normal","Le refus d'embaucher basé sur critères prohibés (origine, sexe, âge, handicap...)","Un test de compétences","La préférence pour l'expérience"],a:1,e:"La discrimination à l'embauche est interdite sur les critères prohibés par la loi."},
+{theme:"droits",q:"Qu'est-ce que le droit à l'information en matière de santé ?",c:["Le médecin n'informe pas","Tout patient a le droit d'être informé de son état et des traitements","Réservé à la famille","Dépend du médecin"],a:1,e:"La loi Kouchner de 2002 consacre le droit du patient à l'information médicale complète."},
+{theme:"droits",q:"Qu'est-ce que la loi Gayssot ?",c:["Une loi sur les transports","La loi de 1990 punissant la contestation des crimes contre l'humanité (négationnisme)","Une loi sur l'éducation","Une loi sur l'immigration"],a:1,e:"La loi Gayssot (1990) punit la négation ou la minimisation des crimes contre l'humanité reconnus par les tribunaux."},
+{theme:"droits",q:"À quel âge la responsabilité pénale d'un mineur est-elle engagée ?",c:["6 ans","10 ans","13 ans","15 ans"],a:1,e:"Depuis le Code de la justice pénale des mineurs (2021), les mineurs de 13 ans et plus peuvent être condamnés pénalement."},
+{theme:"droits",q:"Qu'est-ce que le droit de visite et d'hébergement ?",c:["Le droit de visiter n'importe qui","Le droit du parent non-gardien de voir ses enfants selon un calendrier","Le droit de visiter les prisons","Un droit hôtelier"],a:1,e:"Le droit de visite et d'hébergement permet au parent sans garde principale de voir ses enfants."},
+{theme:"droits",q:"Qu'est-ce que la pension alimentaire ?",c:["Une aide au logement","Une somme versée par un parent à l'autre pour l'entretien des enfants","Un revenu de retraite","Une aide de l'État"],a:1,e:"La pension alimentaire est versée par un parent à l'autre pour contribuer à l'entretien des enfants."},
+{theme:"droits",q:"Qu'est-ce que le droit à l'éducation garanti par le Préambule de 1946 ?",c:["Un droit pour les riches","Le droit de l'enfant à recevoir une instruction gratuite et laïque","Un droit optionnel","Un service commercial"],a:1,e:"Le Préambule de 1946 garantit à tout enfant et adulte le droit à l'instruction et à la formation."},
+{theme:"droits",q:"Combien de types de divorces existent en France ?",c:["2","3","4","5"],a:2,e:"Il existe 4 types de divorce : consentement mutuel, accepté, altération du lien conjugal, faute."},
+{theme:"histoire",q:"Qui est Vercingétorix ?",c:["Un général romain","Le chef gaulois qui a capitulé devant César à Alésia en 52 av. J.-C.","Un roi franc","Un conquérant viking"],a:1,e:"Vercingétorix est le chef arverne qui a mené la résistance gauloise et capitulé à Alésia en 52 av. J.-C."},
+{theme:"histoire",q:"Qu'est-ce que l'Édit de Nantes (1598) ?",c:["Un traité de paix avec l'Espagne","Un édit de tolérance religieuse accordé aux Protestants par Henri IV","Une loi sur l'impôt","Un accord commercial"],a:1,e:"L'Édit de Nantes (1598) accordait aux Protestants la liberté de culte, mettant fin aux guerres de Religion."},
+{theme:"histoire",q:"Qui a révoqué l'Édit de Nantes en 1685 ?",c:["Richelieu","Mazarin","Louis XIV","Colbert"],a:2,e:"Louis XIV a révoqué l'Édit de Nantes par l'Édit de Fontainebleau le 22 octobre 1685."},
+{theme:"histoire",q:"Qu'est-ce que le Code civil napoléonien ?",c:["Un code militaire","Un code unifiant les lois civiles françaises, promulgué en 1804","Un code pénal","Un code commercial"],a:1,e:"Le Code civil (1804) a unifié le droit civil français. Il est encore largement en vigueur."},
+{theme:"histoire",q:"Qu'est-ce que la Restauration (1814-1830) ?",c:["Le retour de Napoléon","Le retour de la monarchie avec Louis XVIII puis Charles X","La proclamation de la République","Un régime républicain"],a:1,e:"La Restauration est le retour de la monarchie bourbonienne avec Louis XVIII (1814) et Charles X (1824)."},
+{theme:"histoire",q:"Qui a écrit J'accuse pour défendre Dreyfus ?",c:["Victor Hugo","Émile Zola","Georges Clemenceau","Jean Jaurès"],a:1,e:"Émile Zola a publié 'J'accuse' le 13 janvier 1898 dans L'Aurore."},
+{theme:"histoire",q:"Quelle bataille fut la plus symbolique du front français en 1916 ?",c:["La Marne","L'Yser","Verdun","La Somme"],a:2,e:"La bataille de Verdun (1916) est la plus emblématique de la Première Guerre mondiale côté français."},
+{theme:"histoire",q:"En quelle année la CEE a-t-elle été créée ?",c:["1951","1957","1962","1968"],a:1,e:"La CEE a été créée par le traité de Rome signé le 25 mars 1957."},
+{theme:"histoire",q:"Qu'est-ce que le traité de l'Élysée (1963) ?",c:["Un traité de paix","Le traité scellant la réconciliation et l'amitié franco-allemande","Un accord commercial","L'entrée dans l'OTAN"],a:1,e:"Le traité de l'Élysée (22 janvier 1963) a scellé l'amitié franco-allemande."},
+{theme:"histoire",q:"Qu'est-ce que la Rafle du Vél d'Hiv (1942) ?",c:["Une rafle de résistants","La rafle des 16-17 juillet 1942 par la police française de Juifs de Paris","Une opération militaire","Une arrestation politique"],a:1,e:"La Rafle du Vél d'Hiv (16-17 juillet 1942) a vu la police française arrêter 13 152 Juifs, livrés aux nazis."},
+{theme:"histoire",q:"Qu'est-ce que mai 1968 ?",c:["Une révolution réussie","Une crise sociale marquée par grèves et manifestations étudiantes","Une guerre civile","Un coup d'État"],a:1,e:"Mai 1968 est une période de crise sociale majeure avec grèves massives et manifestations étudiantes."},
+{theme:"histoire",q:"Quel Président a nationalisé de nombreuses entreprises en 1981-1982 ?",c:["Pompidou","Giscard d'Estaing","François Mitterrand","Chirac"],a:2,e:"François Mitterrand a mené de grandes nationalisations bancaires et industrielles en 1981-1982."},
+{theme:"histoire",q:"Quelle est la superficie approximative de la France métropolitaine ?",c:["451 000 km²","551 000 km²","643 000 km²","750 000 km²"],a:1,e:"La France métropolitaine a une superficie d'environ 551 000 km²."},
+{theme:"histoire",q:"Quel est le plus grand aéroport de France ?",c:["Lyon-Saint-Exupéry","Nice","Paris-Charles de Gaulle","Paris-Orly"],a:2,e:"Paris-Charles de Gaulle (Roissy) est le plus grand aéroport de France."},
+{theme:"histoire",q:"Qui est Claude Monet ?",c:["Un sculpteur","Un peintre impressionniste, auteur des Nymphéas","Un architecte","Un musicien"],a:1,e:"Claude Monet (1840-1926) est le chef de file de l'impressionnisme."},
+{theme:"histoire",q:"Qui est Marcel Proust ?",c:["Un peintre","L'auteur d'À la recherche du temps perdu","Un philosophe existentialiste","Un compositeur"],a:1,e:"Marcel Proust (1871-1922) est l'auteur d'À la recherche du temps perdu (1913-1927)."},
+{theme:"histoire",q:"Qui est Albert Camus ?",c:["Un peintre surréaliste","L'écrivain et philosophe auteur de L'Étranger et La Peste, prix Nobel 1957","Un compositeur","Un homme politique"],a:1,e:"Albert Camus (1913-1960), écrivain de l'absurde, a reçu le prix Nobel de littérature en 1957."},
+{theme:"histoire",q:"Quel est le plus grand port de France ?",c:["Nantes","Le Havre","Marseille","Dunkerque"],a:1,e:"Le Havre est le plus grand port à conteneurs de France."},
+{theme:"histoire",q:"En quelle année la France a-t-elle accueilli les Jeux Olympiques à Paris en 2024 ?",c:["Pour la 1re fois","Pour la 2e fois","Pour la 3e fois","Pour la 4e fois"],a:2,e:"Paris a accueilli les JO en 1900, 1924 et 2024 (3e fois)."},
+{theme:"histoire",q:"Quel est le musée le plus visité au monde, situé à Paris ?",c:["Le musée d'Orsay","Le musée du Louvre","Le Centre Pompidou","Le Grand Palais"],a:1,e:"Le musée du Louvre est le musée le plus visité au monde."},
+{theme:"histoire",q:"Qui est Jean-Paul Sartre ?",c:["Un romancier du XIXe s.","Le philosophe existentialiste français, auteur de L'Être et le Néant","Un physicien","Un mathématicien"],a:1,e:"Jean-Paul Sartre (1905-1980) est le chef de file de l'existentialisme français."},
+{theme:"histoire",q:"Quelle ville française est connue pour son festival de cinéma ?",c:["Paris","Cannes","Lyon","Nice"],a:1,e:"Le Festival de Cannes est l'un des plus prestigieux festivals de cinéma au monde."},
+{theme:"histoire",q:"Quelle est la monnaie française avant l'euro ?",c:["Le Napoléon","Le Franc","L'Écu","Le Florin"],a:1,e:"Le franc français était la monnaie nationale jusqu'au 31 décembre 2001."},
+{theme:"histoire",q:"En quelle année Napoléon a-t-il été vaincu une première fois ?",c:["1812","1813","1814","1815"],a:2,e:"Napoléon a abdiqué pour la première fois le 6 avril 1814, avant d'être exilé à l'île d'Elbe."},
+{theme:"histoire",q:"Qu'est-ce que la bataille d'Austerlitz (1805) ?",c:["Une victoire de Wellington","La victoire napoléonienne sur l'Autriche et la Russie, chef-d'œuvre militaire","Une défaite napoléonienne","Une bataille de 1914-18"],a:1,e:"Austerlitz (2 décembre 1805) est surnommée la 'bataille des trois empereurs', victoire brillante de Napoléon."},
+{theme:"histoire",q:"Qui est Auguste Rodin ?",c:["Un peintre impressionniste","Le sculpteur français auteur du Penseur et du Baiser","Un architecte","Un musicien"],a:1,e:"Auguste Rodin (1840-1917) est le père de la sculpture moderne (Le Penseur, Le Baiser)."},
+{theme:"societe",q:"Qu'est-ce que le ticket modérateur ?",c:["Un billet de transport","La partie des frais non remboursée par la Sécurité sociale","Un formulaire médical","Une pénalité médicale"],a:1,e:"Le ticket modérateur est la part des frais médicaux non remboursée par l'assurance maladie."},
+{theme:"societe",q:"Qu'est-ce qu'une mutuelle complémentaire santé ?",c:["La Sécurité sociale","Une assurance complémentaire qui rembourse tout ou partie du ticket modérateur","Un service hospitalier","Une association de patients"],a:1,e:"La mutuelle complète les remboursements de la Sécurité sociale."},
+{theme:"societe",q:"Qu'est-ce que le BTS ?",c:["Un diplôme de lycée","Un diplôme bac+2 de l'enseignement supérieur professionnel","Un diplôme de licence","Un certificat d'aptitude"],a:1,e:"Le BTS est un diplôme bac+2 préparé dans des sections de techniciens supérieurs."},
+{theme:"societe",q:"Qu'est-ce que l'obligation alimentaire ?",c:["L'obligation de nourrir ses animaux","L'obligation légale de subvenir aux besoins de ses ascendants et descendants directs","L'obligation de nourrir ses voisins","Un contrat de restauration"],a:1,e:"L'obligation alimentaire impose aux enfants de subvenir aux besoins de leurs parents dans le besoin, et réciproquement."},
+{theme:"societe",q:"Que rembourse la Sécurité sociale à 100% ?",c:["Tous les médicaments","Les affections de longue durée (ALD), la maternité, les accidents graves","Aucun soin","Seulement les hospitalisations"],a:1,e:"La prise en charge à 100% s'applique aux ALD, à la maternité après 6 mois et à certains accidents."},
+{theme:"societe",q:"Qu'est-ce que le RSA (Revenu de solidarité active) ?",c:["Une aide pour les handicapés","Un revenu minimum garanti aux personnes sans ressources suffisantes","Un revenu pour les retraités","Un prêt de l'État"],a:1,e:"Le RSA garantit un niveau minimum de ressources."},
+{theme:"societe",q:"Qu'est-ce que l'AAH ?",c:["Une aide pour les parents d'enfants handicapés","Une aide financière pour les adultes handicapés ne pouvant pas travailler","Un arrêt maladie prolongé","Une pension d'invalidité"],a:1,e:"L'AAH est une aide pour les adultes ayant un taux d'incapacité d'au moins 80%."},
+{theme:"societe",q:"Qu'est-ce que le logement HLM ?",c:["Un logement privé moins cher","Un logement à loyer modéré pour les ménages modestes","Un logement de fonctionnaire","Un logement gratuit"],a:1,e:"Le logement HLM est destiné aux personnes dont les revenus sont inférieurs aux plafonds."},
+{theme:"societe",q:"Quel est le taux de TVA sur la restauration ?",c:["5,5%","10%","20%","2,1%"],a:1,e:"La restauration sur place est soumise au taux intermédiaire de TVA de 10%."},
+{theme:"societe",q:"Qu'est-ce que le prélèvement à la source ?",c:["Un versement annuel","Un prélèvement mensuel directement sur le salaire ou la pension","Un impôt différé","Une retenue pour le chômage"],a:1,e:"Depuis 2019, l'impôt sur le revenu est prélevé directement chaque mois à la source."},
+{theme:"societe",q:"Qu'est-ce que le don d'organes par consentement présumé ?",c:["Un don obligatoire","Toute personne est donneuse sauf si elle s'y est opposée (registre des refus)","Un acte payant","Un droit limité aux adultes"],a:1,e:"Depuis 2017, toute personne est présumée donneuse sauf si elle est inscrite sur le registre des refus."},
+{theme:"societe",q:"Qu'est-ce que le dépôt de garantie dans une location ?",c:["Un cadeau au propriétaire","Une somme versée à l'entrée dans les lieux, restituée à la fin sauf dégradations","Un paiement de loyer d'avance","Une assurance habitation"],a:1,e:"Le dépôt de garantie est restitué dans les 2 mois suivant la sortie des lieux."},
+{theme:"societe",q:"Qu'est-ce que France Travail (ex-Pôle Emploi) ?",c:["Un syndicat","L'opérateur public du service de l'emploi en France","Une agence de placement privée","Un organisme de formation"],a:1,e:"France Travail (anciennement Pôle Emploi) gère l'inscription des demandeurs d'emploi et verse les allocations chômage."},
+{theme:"societe",q:"Qu'est-ce que le CPF (Compte personnel de formation) ?",c:["Un compte bancaire","Un compte crédité annuellement pour financer des formations professionnelles","Un compte d'épargne retraite","Une allocation chômage"],a:1,e:"Le CPF crédite chaque actif d'un montant annuel utilisable pour financer des formations."},
+{theme:"societe",q:"Qu'est-ce que la CNSA ?",c:["Un organisme bancaire","L'organisme finançant l'aide aux personnes âgées et handicapées pour leur autonomie","Un syndicat","Un organisme de retraite"],a:1,e:"La CNSA finance et régule les aides à domicile et en établissement pour les personnes âgées et handicapées."},
+{theme:"societe",q:"Qu'est-ce que le plan local d'urbanisme (PLU) ?",c:["Un programme de travaux","Le document définissant les règles d'utilisation des sols dans une commune","Un plan économique","Un registre de propriété"],a:1,e:"Le PLU est le principal document d'urbanisme de la commune."},
+{theme:"societe",q:"Qu'est-ce que la politique de la ville ?",c:["La gestion des villes","Une politique ciblant les quartiers défavorisés pour réduire les inégalités","La politique de transport","La politique culturelle"],a:1,e:"La politique de la ville cible les quartiers prioritaires (QPV) pour lutter contre les inégalités."},
+{theme:"societe",q:"Qu'est-ce que le REP (Réseau d'éducation prioritaire) ?",c:["Une sélection scolaire","Un dispositif octroyant des moyens supplémentaires aux écoles de quartiers défavorisés","Un système de transport scolaire","Une prime pour les professeurs"],a:1,e:"Les REP/REP+ reçoivent des moyens supplémentaires pour compenser les inégalités scolaires."},
+{theme:"societe",q:"Qu'est-ce que la CNIL ?",c:["Un syndicat","La Commission nationale de l'informatique et des libertés, protégeant les données personnelles","Un organe judiciaire","Un service fiscal"],a:1,e:"La CNIL veille à la protection des données personnelles en France."},
+{theme:"societe",q:"Qu'est-ce que l'INSEE ?",c:["Un syndicat","L'Institut national de la statistique et des études économiques","Un organisme fiscal","Un service de renseignement"],a:1,e:"L'INSEE produit et diffuse les statistiques officielles de la France."},
+{theme:"societe",q:"Qu'est-ce que le PIB ?",c:["Le revenu des ménages","La valeur totale de la production d'un pays sur une période","Le niveau de vie des citoyens","Les exportations uniquement"],a:1,e:"Le PIB mesure la richesse créée sur un territoire national."},
+{theme:"societe",q:"Qu'est-ce que le bénévolat ?",c:["Un travail non déclaré","Une activité exercée librement et sans rémunération au service d'une cause","Un emploi aidé","Un stage non payé"],a:1,e:"Le bénévolat est une activité librement choisie, exercée sans rémunération."},
+{theme:"societe",q:"Qu'est-ce que la journée de solidarité ?",c:["Un jour férié supprimé","Une journée de travail non rémunérée dont le produit finance la dépendance","Un congé obligatoire","Un don aux associations"],a:1,e:"La journée de solidarité (loi de 2004) finance la CNSA via une journée de travail supplémentaire."},
+{theme:"societe",q:"Qu'est-ce que la trêve hivernale pour les locataires ?",c:["Une pause des loyers","La période (1er nov-31 mars) pendant laquelle les expulsions locatives sont interdites","Un congé spécial","Une aide chauffage"],a:1,e:"Pendant la trêve hivernale, les expulsions de locataires sont suspendues."},
+{theme:"societe",q:"Qu'est-ce qu'un contrat d'apprentissage ?",c:["Un contrat pour adultes","Un contrat alternant formation en entreprise et CFA, pour les 16-29 ans","Un stage non rémunéré","Un contrat saisonnier"],a:1,e:"L'apprentissage alterne formation pratique en entreprise et formation théorique en CFA."},
+{theme:"societe",q:"Qu'est-ce que le CESU ?",c:["Un chèque cadeaux","Un moyen de paiement simplifié pour les services à la personne à domicile","Un bon d'achat alimentaire","Un chèque vacances"],a:1,e:"Le CESU est un titre de paiement simplifiant les démarches pour les emplois à domicile."},
+{theme:"societe",q:"Qu'est-ce que le droit au repos dominical ?",c:["Travailler le dimanche est interdit sans exception","Le dimanche est le jour de repos légal hebdomadaire, avec de nombreuses dérogations","Tout salarié doit se reposer le dimanche","Le commerce est interdit le dimanche"],a:1,e:"Le droit au repos dominical est un principe général soumis à de nombreuses dérogations légales."},
+{theme:"societe",q:"Qu'est-ce que le permis de construire ?",c:["Une autorisation de louer","L'autorisation administrative obligatoire pour construire ou agrandir un bâtiment","Un certificat de propriété","Une déclaration fiscale"],a:1,e:"Le permis de construire est une autorisation préalable obligatoire pour toute construction importante."},
+{theme:"histoire",q:"Quel événement marque le début de la décolonisation française en Asie du Sud-Est ?",c:["La bataille de Dien Bien Phu (1954)","L'indépendance du Vietnam en 1940","Le traité de Genève de 1950","Le départ des Japonais"],a:0,e:"La défaite de Dien Bien Phu (7 mai 1954) a contraint la France à céder l'Indochine."},
+{theme:"histoire",q:"Qui a succédé à de Gaulle à la présidence ?",c:["Valéry Giscard d'Estaing","Georges Pompidou","Jacques Chirac","Michel Debré"],a:1,e:"Georges Pompidou a succédé à Charles de Gaulle après sa démission en 1969."},
+{theme:"histoire",q:"Quel pays a été fondé en 1991 après la dissolution de l'URSS ?",c:["La Russie (qui a succédé à l'URSS)","La Biélorussie","La Tchéquie","La Pologne"],a:0,e:"La Russie a hérité des sièges et institutions de l'URSS, dissoute le 25 décembre 1991."},
+{theme:"histoire",q:"En quelle année la Communauté économique européenne (CEE) a-t-elle été créée ?",c:["1951","1957","1962","1968"],a:1,e:"La CEE a été créée par le traité de Rome signé le 25 mars 1957."},
+{theme:"histoire",q:"Quel traité a fondé la CECA (Communauté européenne du charbon et de l'acier) ?",c:["Traité de Rome","Traité de Paris (1951)","Traité de Bruxelles","Traité de Maastricht"],a:1,e:"La CECA a été fondée par le traité de Paris signé le 18 avril 1951."},
+{theme:"histoire",q:"Qui a lancé l'idée de la réconciliation franco-allemande après 1945 ?",c:["De Gaulle et Adenauer","Churchill et Roosevelt","Mitterrand et Kohl","Pompidou et Brandt"],a:0,e:"De Gaulle et Adenauer ont posé les bases de la réconciliation franco-allemande, symbolisée par le Traité de l'Élysée (1963)."},
+{theme:"histoire",q:"Que commémore le traité de l'Élysée signé en 1963 ?",c:["La fin de la guerre","La réconciliation et l'amitié franco-allemande","L'entrée de l'Allemagne dans l'OTAN","La création de l'euro"],a:1,e:"Le traité de l'Élysée (22 janvier 1963) a scellé l'amitié franco-allemande."},
+{theme:"histoire",q:"Quel président français a dit 'La France a perdu une bataille, mais elle n'a pas perdu la guerre' ?",c:["Pétain","Clemenceau","De Gaulle","Blum"],a:2,e:"Cette phrase est attribuée à de Gaulle, exprimant l'esprit de résistance de la France libre."},
+{theme:"histoire",q:"Quel est le plus grand lac naturel de France métropolitaine ?",c:["Le lac d'Annecy","Le lac du Bourget","Le lac de Genève","Le lac de Grand-Lieu"],a:1,e:"Le lac du Bourget (Savoie) est le plus grand lac naturel de France métropolitaine."},
+{theme:"histoire",q:"Quelle est la plus grande ville de France (par population) ?",c:["Lyon","Marseille","Paris","Bordeaux"],a:2,e:"Paris est la plus grande ville de France avec environ 2,1 millions d'habitants intramuros."},
+{theme:"histoire",q:"Quel est le nom officiel du musée le plus fréquenté au monde, situé à Paris ?",c:["Le musée d'Orsay","Le musée du Louvre","Le Centre Pompidou","Le Grand Palais"],a:1,e:"Le musée du Louvre est le musée le plus visité au monde."},
+{theme:"histoire",q:"Quel roi français est surnommé 'Saint Louis' ?",c:["Louis IX","Louis XI","Louis XII","Louis XV"],a:0,e:"Louis IX (1214-1270) a été canonisé en 1297 sous le nom de Saint Louis."},
+{theme:"histoire",q:"Qu'est-ce que l'Edit de Nantes (1598) ?",c:["Un traité de paix avec l'Espagne","Un édit de tolérance religieuse accordé par Henri IV aux Protestants","Une loi sur l'impôt","Un accord commercial"],a:1,e:"L'Édit de Nantes (1598) accordait aux Protestants la liberté de culte et certaines garanties, mettant fin aux guerres de Religion."},
+{theme:"histoire",q:"Qui a révoqué l'Edit de Nantes ?",c:["Richelieu","Mazarin","Louis XIV","Colbert"],a:2,e:"Louis XIV a révoqué l'Édit de Nantes par l'Édit de Fontainebleau le 22 octobre 1685."},
+{theme:"histoire",q:"Qu'est-ce que la Saint-Barthélemy (1572) ?",c:["Une fête religieuse","Le massacre de milliers de protestants en France","Une victoire militaire","Une révolte paysanne"],a:1,e:"La nuit de la Saint-Barthélemy (23-24 août 1572) a vu le massacre de milliers de Huguenots en France."},
+{theme:"histoire",q:"Qui était Robespierre ?",c:["Un général de Napoléon","Un leader révolutionnaire de la Terreur (1793-1794)","Un roi constitutionnel","Un philosophe des Lumières"],a:1,e:"Maximilien Robespierre a dirigé le Comité de salut public pendant la Terreur, avant d'être guillotiné le 28 juillet 1794."},
+{theme:"histoire",q:"Qu'est-ce que la Terreur pendant la Révolution ?",c:["Une guerre civile","La période de répression révolutionnaire (1793-1794) avec des milliers d'exécutions","Un régime militaire","Une invasion étrangère"],a:1,e:"La Terreur (1793-1794) est une période de répression politique avec environ 17 000 exécutions officielles."},
+{theme:"histoire",q:"Qu'est-ce que le Directoire ?",c:["Un régime napoléonien","Le régime qui a succédé à la Terreur (1795-1799) avant Napoléon","Un tribunal révolutionnaire","Un gouvernement de la Restauration"],a:1,e:"Le Directoire (1795-1799) était un régime de cinq directeurs, renversé par le coup d'État de Napoléon (18 Brumaire)."},
+{theme:"histoire",q:"Quelle était la date du coup d'État de Napoléon Bonaparte ?",c:["9 Thermidor an II","18 Brumaire an VIII (9 novembre 1799)","14 juillet 1789","2 décembre 1804"],a:1,e:"Le coup d'État du 18 Brumaire (9 novembre 1799) a renversé le Directoire et porté Napoléon au pouvoir."},
+{theme:"histoire",q:"Quelle est la date de la première abdication de Napoléon ?",c:["1813","1814","1815","1816"],a:1,e:"Napoléon a abdiqué une première fois le 6 avril 1814, avant de s'exiler à l'île d'Elbe."},
+{theme:"histoire",q:"Quel roi est renversé par la révolution de Juillet 1830 ?",c:["Louis XVIII","Charles X","Louis-Philippe","Napoléon III"],a:1,e:"Charles X est renversé par les 'Trois Glorieuses' (27-29 juillet 1830), remplacé par Louis-Philippe d'Orléans."},
+{theme:"histoire",q:"Qu'est-ce que la Monarchie de Juillet (1830-1848) ?",c:["Un régime républicain","Le règne de Louis-Philippe Ier, régime libéral et constitutionnel","Un régime militaire","Un empire"],a:1,e:"La Monarchie de Juillet est le règne de Louis-Philippe (1830-1848), régime parlementaire libéral."},
+{theme:"histoire",q:"Qui est Victor Schoelcher ?",c:["Un général napoléonien","L'abolitionniste français qui a obtenu l'abolition définitive de l'esclavage en 1848","Un politicien de la IIIe République","Un philosophe des Lumières"],a:1,e:"Victor Schoelcher, sous-secrétaire d'État aux colonies, a rédigé le décret d'abolition de l'esclavage du 27 avril 1848."},
+{theme:"histoire",q:"Qui a écrit le Contrat social ?",c:["Voltaire","Diderot","Rousseau","Montesquieu"],a:2,e:"Jean-Jacques Rousseau a publié Du Contrat social en 1762."},
+{theme:"histoire",q:"Qu'est-ce que l'Encyclopédie (1751-1772) ?",c:["Un journal politique","Un ouvrage collectif des Lumières visant à répandre les connaissances et la raison","Un code juridique","Un manuel scolaire"],a:1,e:"L'Encyclopédie, dirigée par Diderot et d'Alembert, est le monument des Lumières regroupant le savoir de son temps."},
+{theme:"histoire",q:"Quelle école d'art français a produit Monet, Renoir et Degas ?",c:["Le réalisme","L'impressionnisme","Le symbolisme","Le fauvisme"],a:1,e:"L'impressionnisme (2e moitié du XIXe s.) regroupe Monet, Renoir, Degas, Pissarro, Sisley."},
+{theme:"histoire",q:"Qu'est-ce que le château de Versailles représente pour l'histoire française ?",c:["Le siège du parlement actuel","Le symbole de l'absolutisme de Louis XIV et chef-d'œuvre de l'architecture classique","Le palais de l'Élysée","Un musée d'art moderne"],a:1,e:"Le château de Versailles symbolise l'absolutisme de Louis XIV et est inscrit au patrimoine mondial de l'UNESCO."},
+{theme:"histoire",q:"En quelle année la France a-t-elle accueilli les Jeux olympiques à Paris pour la dernière fois avant 2024 ?",c:["1900","1924","1968","1992"],a:1,e:"Paris a accueilli les Jeux olympiques en 1900 et 1924. En 2024, Paris accueille les JO pour la 3e fois."},
+{theme:"histoire",q:"Qu'est-ce que l'Exposition universelle de 1889 ?",c:["Un salon de peinture","L'exposition pour laquelle la tour Eiffel a été construite, célébrant le centenaire de la Révolution","Une foire commerciale","Un salon de l'automobile"],a:1,e:"L'Exposition universelle de 1889, tenue à Paris, a vu la construction de la tour Eiffel comme œuvre d'entrée."},
+{theme:"histoire",q:"Quel physicien français a découvert le radium ?",c:["Louis Pasteur","Marie Curie","Pierre et Marie Curie ensemble","Henri Becquerel seul"],a:2,e:"Pierre et Marie Curie ont découvert le polonium et le radium en 1898. Marie Curie a reçu deux prix Nobel."},
+{theme:"histoire",q:"Quelle est la contribution de Gustave Eiffel à l'architecture ?",c:["Il a construit Notre-Dame","Il a conçu la tour Eiffel (1889) et participé à la statue de la Liberté","Il a construit le Louvre","Il a conçu le Panthéon"],a:1,e:"Gustave Eiffel (1832-1923) a conçu la tour Eiffel (1887-1889) et les armatures internes de la statue de la Liberté."},
+{theme:"histoire",q:"Qu'est-ce que le Moulin Rouge ?",c:["Un moulin à farine","Un cabaret parisien fondé en 1889, célèbre pour le french cancan","Un musée d'art","Un théâtre national"],a:1,e:"Le Moulin Rouge, ouvert en 1889 à Montmartre, est un cabaret mondial célèbre pour ses spectacles de danse."},
+{theme:"histoire",q:"Quelle ville française est connue pour son festival de cinéma international ?",c:["Paris","Cannes","Lyon","Nice"],a:1,e:"Le Festival de Cannes est l'un des plus prestigieux festivals de cinéma au monde, créé en 1946."},
+{theme:"societe",q:"Qu'est-ce que le numerus apertus en médecine ?",c:["Un numerus clausus maintenu","La suppression du numerus clausus pour accéder aux études médicales, remplacé par un quota flexible depuis 2020","Un concours de médecine","Un diplôme européen"],a:1,e:"Depuis 2020, le numerus clausus en médecine a été remplacé par un numerus apertus plus flexible."},
+{theme:"societe",q:"Quel est le rôle de la médecin traitant en France ?",c:["Il gère les urgences","Il assure le suivi médical de base et coordonne les soins (accès au spécialiste)","Il pratique uniquement des opérations","Il prescrit les médicaments sans consultation"],a:1,e:"Le médecin traitant est le pivot du parcours de soins. Le consulter en premier permet un meilleur remboursement."},
+{theme:"societe",q:"Qu'est-ce que l'assurance maladie obligatoire ?",c:["Une assurance privée","Le régime de base de la Sécurité sociale qui rembourse les frais médicaux","Une assurance facultative","Un service hospitalier"],a:1,e:"L'assurance maladie obligatoire (Sécurité sociale) rembourse une partie des frais de santé pour tous les assurés."},
+{theme:"societe",q:"Qu'est-ce que la retraite complémentaire AGIRC-ARRCO ?",c:["La retraite de base","Le régime de retraite complémentaire obligatoire pour les salariés du privé","Un régime facultatif","Une retraite d'État"],a:1,e:"L'AGIRC-ARRCO est la caisse de retraite complémentaire obligatoire des salariés du secteur privé."},
+{theme:"societe",q:"Quelle est la durée de cotisation requise pour une retraite à taux plein (génération 1965) ?",c:["40 ans","41 ans","43 ans","45 ans"],a:2,e:"Pour la génération née en 1965 et après, la durée de cotisation requise est de 43 ans (172 trimestres)."},
+{theme:"societe",q:"Qu'est-ce que l'assurance chômage (ARE) ?",c:["Une aide de l'État sans conditions","L'allocation chômage versée par France Travail aux travailleurs involontairement privés d'emploi","Un revenu minimum","Un salaire différé"],a:1,e:"L'ARE (Allocation d'aide au retour à l'emploi) est versée sous conditions par France Travail (ex-Pôle Emploi)."},
+{theme:"societe",q:"Que signifie l'acronyme CPAM ?",c:["Comité des parents et mères","Caisse primaire d'assurance maladie","Centre pour les aides médicales","Commission de prévention des accidents du travail"],a:1,e:"La CPAM gère l'assurance maladie au niveau local."},
+{theme:"societe",q:"Qu'est-ce que la déclaration préalable à l'embauche (DPAE) ?",c:["Un formulaire de candidature","La déclaration obligatoire de l'employeur à l'URSSAF avant toute embauche","Un contrat de travail","Un formulaire de licenciement"],a:1,e:"L'employeur doit effectuer une DPAE auprès de l'URSSAF avant tout embauche, pour déclarer le salarié."},
+{theme:"societe",q:"Combien y a-t-il de types de baccalauréat en France ?",c:["2","3","4","5"],a:1,e:"Il existe 3 séries de bac : général, technologique et professionnel."},
+{theme:"societe",q:"Qu'est-ce que le BTS (Brevet de technicien supérieur) ?",c:["Un diplôme de lycée","Un diplôme bac+2 de l'enseignement supérieur professionnel","Un diplôme universitaire de licence","Un certificat d'aptitude professionnelle"],a:1,e:"Le BTS est un diplôme bac+2 préparé dans des lycées à sections de techniciens supérieurs (STS)."},
+{theme:"societe",q:"Qu'est-ce que le CAP (Certificat d'aptitude professionnelle) ?",c:["Un baccalauréat professionnel","Le premier diplôme professionnel préparé en lycée ou en apprentissage","Un BEP","Un brevet des collèges"],a:1,e:"Le CAP est un diplôme professionnel de niveau 3 (bac-2) préparant à un métier précis."},
+{theme:"societe",q:"Quelle est la différence entre un lycée général et un lycée professionnel ?",c:["Aucune différence","Le lycée général prépare au bac général/technologique ; le lycée pro prépare au bac pro et aux CAP/BEP","Le lycée pro est privé","Le lycée général est plus difficile"],a:1,e:"Le lycée général/technologique prépare au bac G ou T ; le lycée professionnel prépare au bac pro ou aux diplômes pro (CAP)."},
+{theme:"societe",q:"Qu'est-ce que le numerus clausus en médecine (avant sa suppression) ?",c:["Le nombre de médecins autorisés à exercer","Le nombre maximal d'étudiants admis en 2e année de médecine (PCEM2) après une sélection sévère en 1re année","Le nombre de spécialités médicales","Un diplôme européen"],a:1,e:"Avant 2020, le numerus clausus fixait le nombre de places en 2e année de médecine. Il a été remplacé par le numerus apertus."},
+{theme:"societe",q:"Qu'est-ce qu'une grande école française ?",c:["Une école de grande taille","Un établissement d'enseignement supérieur sélectif préparant des élites (ENA devenue INSP, Polytechnique, HEC...)","Un lycée international","Un établissement public non sélectif"],a:1,e:"Les grandes écoles (Polytechnique, HEC, ENS, Sciences Po...) sont des établissements sélectifs d'excellence formant les élites françaises."},
+{theme:"societe",q:"Qu'est-ce que Sciences Po ?",c:["Une école de sciences","Un Institut d'études politiques préparant aux carrières dans la politique, la diplomatie et les sciences sociales","Un lycée spécialisé","Une école de commerce"],a:1,e:"Sciences Po (anciennement École libre des sciences politiques) forme à la politique, la diplomatie, le droit, l'économie et les médias."},
+{theme:"societe",q:"Quelle est la principale mission de l'Éducation nationale ?",c:["Préparer au marché du travail uniquement","Instruire les jeunes, former les citoyens et réduire les inégalités sociales","Gérer les transports scolaires","Contrôler les établissements privés"],a:1,e:"L'Éducation nationale a pour missions d'instruire, éduquer, former et contribuer à l'égalité des chances."},
+{theme:"societe",q:"Combien de niveaux compte le système d'éducation français (de la maternelle au doctorat) ?",c:["5 niveaux","8 niveaux","En réalité on parle de 8 niveaux de qualification (du niveau 1 au niveau 8)","3 niveaux"],a:2,e:"Le système français compte 8 niveaux de qualification, allant du CAP/BEP (niveau 3) au doctorat (niveau 8)."},
+{theme:"societe",q:"Qu'est-ce que le brevet des collèges (DNB) ?",c:["Un diplôme secondaire","Le diplôme obtenu en fin de 3e, premier diplôme national du collège","Un diplôme professionnel","Un certificat de fin d'école primaire"],a:1,e:"Le Diplôme national du brevet (DNB) est obtenu en fin de 3e (collège). Il n'est pas obligatoire pour passer en lycée."},
+{theme:"societe",q:"Combien d'associations actives compte-t-on en France ?",c:["Environ 100 000","Environ 500 000","Environ 1,5 million","Environ 10 millions"],a:2,e:"La France compte environ 1,5 million d'associations actives, impliquant plus de 20 millions de bénévoles."},
+{theme:"societe",q:"Qu'est-ce que la CNSA (Caisse nationale de solidarité pour l'autonomie) ?",c:["Un organisme bancaire","L'organisme finançant l'aide aux personnes âgées et handicapées pour leur autonomie","Un syndicat","Un organisme de retraite"],a:1,e:"La CNSA finance et régule les aides à domicile et en établissement pour les personnes âgées et handicapées."},
+{theme:"societe",q:"Qu'est-ce que la Prestation de compensation du handicap (PCH) ?",c:["Une allocation chômage pour les handicapés","Une aide permettant de financer les surcoûts liés au handicap (aide humaine, technique, logement)","Un salaire spécial","Un droit à la retraite anticipée"],a:1,e:"La PCH est une aide personnalisée qui couvre les besoins spécifiques liés au handicap : aide humaine, technique, aménagement..."},
+{theme:"societe",q:"Qu'est-ce que la MDPH (Maison départementale des personnes handicapées) ?",c:["Un hôpital spécialisé","Le guichet unique gérant les droits et les prestations pour les personnes handicapées","Un tribunal spécial","Un service de placement en établissement"],a:1,e:"La MDPH est le guichet unique pour toutes les demandes liées au handicap (reconnaissance, prestations, orientation)."},
+{theme:"societe",q:"Qu'est-ce que la loi ELAN (2018) en matière de logement ?",c:["Une loi sur l'éducation","La loi sur l'évolution du logement, de l'aménagement et du numérique","Une loi sur l'emploi","Une loi sur l'environnement"],a:1,e:"La loi ELAN (2018) réforme le droit du logement : construction, location, copropriété, expulsions..."},
+{theme:"societe",q:"Quel organisme gère les demandes de logement social ?",c:["La mairie uniquement","Le guichet enregistreur de la demande de logement social dans chaque département","La préfecture seule","France Travail"],a:1,e:"La demande de logement social se fait via un formulaire unique déposé en mairie, à l'organisme HLM ou en ligne (SNE)."},
+{theme:"societe",q:"Qu'est-ce qu'un permis de construire ?",c:["Une autorisation de louer","L'autorisation administrative obligatoire pour construire ou agrandir un bâtiment","Un certificat de propriété","Une déclaration fiscale"],a:1,e:"Le permis de construire est une autorisation administrative préalable obligatoire pour toute construction ou modification importante."},
+{theme:"societe",q:"Qu'est-ce que le zonage prioritaire en matière scolaire (REP/REP+) ?",c:["Une sélection scolaire","Un dispositif octroyant des moyens supplémentaires aux écoles de quartiers défavorisés","Un système de transport scolaire","Une prime pour les professeurs"],a:1,e:"Les réseaux d'éducation prioritaire (REP/REP+) reçoivent des moyens humains et financiers supplémentaires pour compenser les inégalités scolaires."},
+{theme:"societe",q:"Quel est le principe du 'droit au repos dominical' ?",c:["Travailler le dimanche est interdit sans exception","Le dimanche est le jour de repos légal hebdomadaire, avec de nombreuses dérogations","Tout salarié doit se reposer le dimanche","La loi interdit le commerce le dimanche"],a:1,e:"Le droit au repos dominical est un principe général mais soumis à de nombreuses dérogations légales (tourisme, alimentation...)."},
+{theme:"societe",q:"Qu'est-ce que la médiation familiale ?",c:["Un service d'aide juridictionnelle","Un processus aidant les familles en conflit à trouver des solutions amiables avec l'aide d'un tiers professionnel","Un service de placement d'enfants","Un tribunal familial"],a:1,e:"La médiation familiale est un processus dans lequel un médiateur aide les membres d'une famille en conflit à trouver des accords amiables."},
+{theme:"societe",q:"Qu'est-ce que le plan de sauvegarde de l'emploi (PSE) ?",c:["Un contrat de travail","Le plan obligatoire dans les entreprises de 50 salariés et plus souhaitant licencier 10 salariés ou plus pour motif économique","Un congé de formation","Une aide de l'État aux entreprises"],a:1,e:"Le PSE (anciennement plan social) est obligatoire dans les entreprises de 50+ salariés pour les licenciements économiques collectifs importants."},
+{theme:"societe",q:"Qu'est-ce que le chèque emploi service universel (CESU) ?",c:["Un chèque cadeaux","Un moyen de paiement simplifié pour les services à la personne à domicile (ménage, jardinage, garde d'enfants)","Un bon d'achat alimentaire","Un chèque vacances"],a:1,e:"Le CESU est un titre de paiement simplifiant les démarches administratives pour les emplois à domicile et la déclaration des salariés."},
+{theme:"societe",q:"Qu'est-ce que la protection sociale en France ?",c:["Un service privé","L'ensemble des mécanismes de solidarité collective couvrant les risques sociaux (maladie, vieillesse, famille, chômage, accident du travail)","Une assurance facultative","Un service uniquement pour les fonctionnaires"],a:1,e:"La protection sociale française est l'un des systèmes les plus développés au monde, couvrant l'ensemble des risques sociaux."},
+{theme:"societe",q:"Qu'est-ce que le déficit de la Sécurité sociale ?",c:["Un excédent budgétaire","La situation où les dépenses de la Sécurité sociale dépassent ses recettes","Un indicateur de croissance","Un surplus fiscal"],a:1,e:"Le déficit de la Sécurité sociale est le montant par lequel les dépenses dépassent les recettes (cotisations et impôts affectés)."},
+{theme:"societe",q:"Qu'est-ce que la CSG (Contribution sociale généralisée) ?",c:["Un impôt sur les bénéfices","Un prélèvement fiscal finançant la protection sociale, assis sur tous les revenus","Un impôt sur les successions","Une taxe sur les entreprises"],a:1,e:"La CSG est un prélèvement social finançant la Sécurité sociale, prélevé sur l'ensemble des revenus (travail, capital, remplacement)."},
+{theme:"societe",q:"Quel est le taux standard de la CSG sur les revenus d'activité ?",c:["3,8%","6,2%","9,2%","12%"],a:2,e:"Le taux de la CSG sur les revenus d'activité est de 9,2% (7,5% pour les revenus de remplacement)."},
+{theme:"societe",q:"Qu'est-ce que l'Assurance vieillesse (retraite de base) ?",c:["Un produit d'épargne privé","Le régime de base obligatoire gérant les retraites des salariés du privé (CNAV)","Un régime de retraite facultatif","Un régime uniquement pour les fonctionnaires"],a:1,e:"L'assurance vieillesse (CNAV) gère la retraite de base des salariés du régime général."},
+{theme:"societe",q:"Qu'est-ce que le régime spécial de retraite des fonctionnaires ?",c:["Le même régime que le privé","Un régime particulier géré par l'État, avec des règles différentes","Un régime plus avantageux interdit depuis 2010","Un régime européen"],a:1,e:"Les fonctionnaires dépendent de la CNRACL (collectivités) ou du code des pensions civiles (État), avec des règles propres."},
+{theme:"societe",q:"Qu'est-ce que la Charte de la laïcité dans les services publics ?",c:["Un document facultatif","Une charte obligatoirement affichée dans les services publics précisant les droits et devoirs des agents et usagers en matière de laïcité","Un code de déontologie des médecins","Un règlement scolaire"],a:1,e:"La Charte de la laïcité, obligatoirement affichée dans les services publics depuis 2013, informe agents et usagers de leurs droits et obligations."},
+{theme:"societe",q:"Que mesure le PIB (Produit intérieur brut) ?",c:["Le revenu des ménages","La valeur totale de la production de biens et services d'un pays sur une période donnée","Le niveau de vie des citoyens","Les exportations uniquement"],a:1,e:"Le PIB mesure la richesse créée sur un territoire national en une période donnée. Il est l'indicateur économique le plus utilisé."},
+{theme:"societe",q:"Quel organisme publie les comptes nationaux et le PIB de la France ?",c:["La Banque de France","L'INSEE","Le ministère de l'Économie","La Cour des comptes"],a:1,e:"L'INSEE publie les comptes nationaux et les statistiques économiques officielles, dont le PIB."},
+{theme:"societe",q:"Qu'est-ce que l'inflation ?",c:["La baisse générale des prix","La hausse générale et durable des prix, qui érode le pouvoir d'achat","La hausse des salaires","La baisse du chômage"],a:1,e:"L'inflation est la hausse générale des prix. Elle est mesurée par l'indice des prix à la consommation (IPC) publié par l'INSEE."},
+{theme:"societe",q:"Qu'est-ce que le pouvoir d'achat ?",c:["Le salaire brut","La capacité d'acheter des biens et services avec un revenu donné","Le prix des logements","Le montant des impôts"],a:1,e:"Le pouvoir d'achat est la quantité de biens et services qu'un revenu permet d'acheter. Il diminue quand l'inflation augmente."},
+{theme:"societe",q:"Qu'est-ce que le budget de l'État ?",c:["Le budget des collectivités locales","L'ensemble des ressources (impôts, taxes) et des dépenses (services publics, investissements) de l'État pour une année","Le budget de la Sécurité sociale","Un budget d'entreprise publique"],a:1,e:"Le budget de l'État (loi de finances) prévoit les ressources et les dépenses de l'État pour l'année à venir."},
+{theme:"societe",q:"Qu'est-ce que la politique familiale française ?",c:["Des mesures uniquement pour les familles nombreuses","L'ensemble des dispositifs (allocations, congés, fiscalité) soutenant les familles avec enfants","Une politique de natalité forcée","Un programme privé"],a:1,e:"La France a une politique familiale parmi les plus développées d'Europe : allocations familiales, congé parental, quotient familial..."},
+{theme:"societe",q:"Qu'est-ce que le quotient familial ?",c:["Un calcul pour les notes scolaires","Un mécanisme fiscal divisant le revenu imposable par le nombre de parts fiscales selon la composition du foyer","Un avantage réservé aux riches","Un indice économique"],a:1,e:"Le quotient familial réduit l'impôt sur le revenu selon le nombre d'enfants à charge, favorisant les familles nombreuses."},
+{theme:"societe",q:"Qu'est-ce que le don d'organes en France ?",c:["Un don volontaire obligatoire","Depuis 2017, le principe est le consentement présumé : toute personne est donneur sauf si elle s'y est opposée","Un acte payant","Un droit uniquement pour les adultes"],a:1,e:"Depuis la loi de 2017, le principe est le 'opt-out' : toute personne est présumée donneuse sauf si elle s'est inscrite sur le registre des refus."},
+{theme:"societe",q:"Comment s'inscrire sur le registre national des refus de don d'organes ?",c:["En mairie","Sur le site de l'Agence de la biomédecine","À l'hôpital","À la préfecture"],a:1,e:"Pour refuser le don d'organes, il faut s'inscrire sur le registre national des refus géré par l'Agence de la biomédecine."},
+{theme:"societe",q:"Qu'est-ce que le don du sang ?",c:["Un acte obligatoire","Un acte bénévole, anonyme, gratuit et volontaire permettant de fournir du sang aux patients qui en ont besoin","Un acte payant","Un acte réservé aux médecins"],a:1,e:"Le don du sang est un acte bénévole, anonyme et gratuit. La France a besoin de 10 000 dons de sang par jour."},
+{theme:"societe",q:"Qu'est-ce que le droit des étrangers en matière de regroupement familial ?",c:["Les étrangers ne peuvent pas faire venir leur famille","Un étranger en situation régulière peut demander à faire venir son conjoint et ses enfants mineurs sous certaines conditions","Tout étranger peut faire venir n'importe qui","Uniquement pour les ressortissants européens"],a:1,e:"Le regroupement familial est possible sous conditions : résidence régulière depuis 18 mois, ressources stables, logement décent."},
+{theme:"societe",q:"Qu'est-ce que le titre de séjour ?",c:["Un passeport étranger","L'autorisation délivrée par la préfecture permettant à un étranger non-européen de résider en France","Un visa d'entrée","Un document pour les touristes"],a:1,e:"Le titre de séjour (carte de séjour ou de résident) autorise les ressortissants non-européens à résider en France."},
+{theme:"societe",q:"Quelle est la durée de validité d'une carte de résident ?",c:["1 an","3 ans","10 ans, renouvelable","5 ans"],a:2,e:"La carte de résident est valable 10 ans et est renouvelable. Elle est accordée après 5 ans de résidence régulière."},
+{theme:"societe",q:"Quel titre de séjour permanent accorde des droits équivalents aux citoyens UE en France ?",c:["La carte de séjour temporaire","La carte de résident","La carte de séjour pluriannuelle","La carte de ressortissant UE"],a:1,e:"La carte de résident (10 ans) est le titre de séjour le plus stable pour les non-européens, proche des droits des citoyens UE."},
+{theme:"societe",q:"Qu'est-ce que le statut de réfugié ?",c:["Un titre de séjour ordinaire","La protection accordée à une personne fuyant des persécutions dans son pays, lui donnant des droits spécifiques","Un statut temporaire","Un visa humanitaire"],a:1,e:"Le statut de réfugié, accordé par l'OFPRA, donne droit à une carte de résident de 10 ans et à des droits sociaux."},
+{theme:"societe",q:"Qu'est-ce que l'intégration dans la société française ?",c:["L'assimilation totale et l'abandon de sa culture","Un processus par lequel une personne devient un membre actif de la société en partageant ses valeurs et en respectant ses règles","Une obligation légale","La naturalisation uniquement"],a:1,e:"L'intégration est un processus progressif d'adhésion aux valeurs républicaines et de participation à la vie sociale, sans effacement des origines culturelles."}
+,
+{theme:"histoire",q:"Quel événement marque le début de la décolonisation française en Asie du Sud-Est ?",c:["La bataille de Dien Bien Phu (1954)","L'indépendance du Vietnam en 1940","Le traité de Genève de 1950","Le départ des Japonais"],a:0,e:"La défaite de Dien Bien Phu (7 mai 1954) a contraint la France à céder l'Indochine."},
+{theme:"histoire",q:"Qu'est-ce que les 'Trente Glorieuses' ?",c:["La période de la Révolution","Les 30 ans de croissance économique de 1945 à 1975","Les 30 premières années de la IIIe République","La période napoléonienne"],a:1,e:"Les Trente Glorieuses sont la période de forte croissance économique et sociale de 1945 à 1975."},
+{theme:"histoire",q:"Qu'est-ce que mai 1968 ?",c:["Une révolution politique réussie","Une crise sociale et politique marquée par des grèves et des manifestations étudiantes","Une guerre civile","Un coup d'État"],a:1,e:"Mai 1968 est une période de crise sociale majeure avec grèves massives et manifestations étudiantes."},
+{theme:"histoire",q:"Qui a succédé à de Gaulle à la présidence ?",c:["Valéry Giscard d'Estaing","Georges Pompidou","Jacques Chirac","Michel Debré"],a:1,e:"Georges Pompidou a succédé à Charles de Gaulle après sa démission en 1969."},
+{theme:"histoire",q:"Quel Président a nationalisé de nombreuses entreprises en 1981-1982 ?",c:["Georges Pompidou","Valéry Giscard d'Estaing","François Mitterrand","Jacques Chirac"],a:2,e:"François Mitterrand a mené de grandes nationalisations bancaires et industrielles en 1981-1982."},
+{theme:"histoire",q:"Quand le mur de Berlin est-il tombé ?",c:["1987","1989","1991","1993"],a:1,e:"Le mur de Berlin est tombé le 9 novembre 1989."},
+{theme:"histoire",q:"Quel pays a été fondé en 1991 après la dissolution de l'URSS ?",c:["La Russie (qui a succédé à l'URSS)","La Biélorussie","La Tchéquie","La Pologne"],a:0,e:"La Russie a hérité des sièges et institutions de l'URSS, dissoute le 25 décembre 1991."},
+{theme:"histoire",q:"En quelle année la Communauté économique européenne (CEE) a-t-elle été créée ?",c:["1951","1957","1962","1968"],a:1,e:"La CEE a été créée par le traité de Rome signé le 25 mars 1957."},
+{theme:"histoire",q:"Quel traité a fondé la CECA (Communauté européenne du charbon et de l'acier) ?",c:["Traité de Rome","Traité de Paris (1951)","Traité de Bruxelles","Traité de Maastricht"],a:1,e:"La CECA a été fondée par le traité de Paris signé le 18 avril 1951."},
+{theme:"histoire",q:"Qui a lancé l'idée de la réconciliation franco-allemande après 1945 ?",c:["De Gaulle et Adenauer","Churchill et Roosevelt","Mitterrand et Kohl","Pompidou et Brandt"],a:0,e:"De Gaulle et Adenauer ont posé les bases de la réconciliation franco-allemande, symbolisée par le Traité de l'Élysée (1963)."},
+{theme:"histoire",q:"Que commémore le traité de l'Élysée signé en 1963 ?",c:["La fin de la guerre","La réconciliation et l'amitié franco-allemande","L'entrée de l'Allemagne dans l'OTAN","La création de l'euro"],a:1,e:"Le traité de l'Élysée (22 janvier 1963) a scellé l'amitié franco-allemande."},
+{theme:"histoire",q:"Quel président français a dit 'La France a perdu une bataille, mais elle n'a pas perdu la guerre' ?",c:["Pétain","Clemenceau","De Gaulle","Blum"],a:2,e:"Cette phrase est attribuée à de Gaulle, exprimant l'esprit de résistance de la France libre."},
+{theme:"histoire",q:"Quel est le plus long fleuve de France ?",c:["La Seine","La Garonne","Le Rhône","La Loire"],a:3,e:"La Loire (1 006 km) est le plus long fleuve de France."},
+{theme:"histoire",q:"Quel est le plus grand lac naturel de France métropolitaine ?",c:["Le lac d'Annecy","Le lac du Bourget","Le lac de Genève","Le lac de Grand-Lieu"],a:1,e:"Le lac du Bourget (Savoie) est le plus grand lac naturel de France métropolitaine."},
+{theme:"histoire",q:"Quelle est la superficie approximative de la France métropolitaine ?",c:["451 000 km²","551 000 km²","643 000 km²","750 000 km²"],a:1,e:"La France métropolitaine a une superficie d'environ 551 000 km²."},
+{theme:"histoire",q:"Quelle est la population approximative de la France en 2024 ?",c:["57 millions","62 millions","68 millions","75 millions"],a:2,e:"La France compte environ 68 millions d'habitants en 2024."},
+{theme:"histoire",q:"Quelle est la plus grande ville de France (par population) ?",c:["Lyon","Marseille","Paris","Bordeaux"],a:2,e:"Paris est la plus grande ville de France avec environ 2,1 millions d'habitants intramuros."},
+{theme:"histoire",q:"Quel est le plus grand port de France ?",c:["Nantes","Le Havre","Marseille","Dunkerque"],a:1,e:"Le Havre est le plus grand port à conteneurs de France."},
+{theme:"histoire",q:"Quel est le plus grand aéroport de France ?",c:["Lyon-Saint-Exupéry","Nice-Côte d'Azur","Paris-Charles de Gaulle","Paris-Orly"],a:2,e:"Paris-Charles de Gaulle (Roissy) est le plus grand aéroport de France."},
+{theme:"histoire",q:"Quelle est la monnaie française avant l'euro ?",c:["Le Napoléon","Le Franc","L'Écu","Le Florin"],a:1,e:"Le franc français était la monnaie nationale jusqu'au 31 décembre 2001."},
+{theme:"histoire",q:"En quelle année la France a-t-elle gagné la Coupe du monde de football pour la première fois ?",c:["1984","1990","1998","2006"],a:2,e:"La France a remporté sa première Coupe du monde de football en 1998, en battant le Brésil 3-0 en finale."},
+{theme:"histoire",q:"Quel est le monument le plus visité de Paris ?",c:["Le Louvre","Le musée d'Orsay","La tour Eiffel","Notre-Dame de Paris"],a:2,e:"La tour Eiffel, construite par Gustave Eiffel pour l'Exposition universelle de 1889, est le monument le plus visité."},
+{theme:"histoire",q:"En quelle année Notre-Dame de Paris a-t-elle été touchée par un incendie ?",c:["2015","2017","2019","2021"],a:2,e:"L'incendie de Notre-Dame de Paris s'est déclaré le 15 avril 2019, causant l'effondrement de la flèche."},
+{theme:"histoire",q:"Quel est le nom officiel du musée le plus fréquenté au monde, situé à Paris ?",c:["Le musée d'Orsay","Le musée du Louvre","Le Centre Pompidou","Le Grand Palais"],a:1,e:"Le musée du Louvre est le musée le plus visité au monde."},
+{theme:"histoire",q:"Quel roi français est surnommé 'Saint Louis' ?",c:["Louis IX","Louis XI","Louis XII","Louis XV"],a:0,e:"Louis IX (1214-1270) a été canonisé en 1297 sous le nom de Saint Louis."},
+{theme:"histoire",q:"Qu'est-ce que l'Edit de Nantes (1598) ?",c:["Un traité de paix avec l'Espagne","Un édit de tolérance religieuse accordé par Henri IV aux Protestants","Une loi sur l'impôt","Un accord commercial"],a:1,e:"L'Édit de Nantes (1598) accordait aux Protestants la liberté de culte et certaines garanties, mettant fin aux guerres de Religion."},
+{theme:"histoire",q:"Qui a révoqué l'Edit de Nantes ?",c:["Richelieu","Mazarin","Louis XIV","Colbert"],a:2,e:"Louis XIV a révoqué l'Édit de Nantes par l'Édit de Fontainebleau le 22 octobre 1685."},
+{theme:"histoire",q:"Qu'est-ce que la Saint-Barthélemy (1572) ?",c:["Une fête religieuse","Le massacre de milliers de protestants en France","Une victoire militaire","Une révolte paysanne"],a:1,e:"La nuit de la Saint-Barthélemy (23-24 août 1572) a vu le massacre de milliers de Huguenots en France."},
+{theme:"histoire",q:"Qui était Robespierre ?",c:["Un général de Napoléon","Un leader révolutionnaire de la Terreur (1793-1794)","Un roi constitutionnel","Un philosophe des Lumières"],a:1,e:"Maximilien Robespierre a dirigé le Comité de salut public pendant la Terreur, avant d'être guillotiné le 28 juillet 1794."},
+{theme:"histoire",q:"Qu'est-ce que la Terreur pendant la Révolution ?",c:["Une guerre civile","La période de répression révolutionnaire (1793-1794) avec des milliers d'exécutions","Un régime militaire","Une invasion étrangère"],a:1,e:"La Terreur (1793-1794) est une période de répression politique avec environ 17 000 exécutions officielles."},
+{theme:"histoire",q:"Qu'est-ce que le Directoire ?",c:["Un régime napoléonien","Le régime qui a succédé à la Terreur (1795-1799) avant Napoléon","Un tribunal révolutionnaire","Un gouvernement de la Restauration"],a:1,e:"Le Directoire (1795-1799) était un régime de cinq directeurs, renversé par le coup d'État de Napoléon (18 Brumaire)."},
+{theme:"histoire",q:"Quelle était la date du coup d'État de Napoléon Bonaparte ?",c:["9 Thermidor an II","18 Brumaire an VIII (9 novembre 1799)","14 juillet 1789","2 décembre 1804"],a:1,e:"Le coup d'État du 18 Brumaire (9 novembre 1799) a renversé le Directoire et porté Napoléon au pouvoir."},
+{theme:"histoire",q:"Qu'est-ce que le Code civil napoléonien ?",c:["Un code militaire","Un code regroupant les lois civiles françaises, promulgué en 1804 et encore en vigueur","Un code pénal","Un code commercial"],a:1,e:"Le Code civil (1804) a unifié le droit civil français. Il est encore largement en vigueur aujourd'hui."},
+{theme:"histoire",q:"Qu'est-ce que la bataille d'Austerlitz (1805) ?",c:["Une victoire de Wellington","La victoire napoléonienne sur l'Autriche et la Russie, considérée comme son chef-d'œuvre militaire","Une défaite napoléonienne","Une bataille de la Première Guerre mondiale"],a:1,e:"Austerlitz (2 décembre 1805) est la 'bataille des trois empereurs', victoire brillante de Napoléon."},
+{theme:"histoire",q:"Quelle est la date de la première abdication de Napoléon ?",c:["1813","1814","1815","1816"],a:1,e:"Napoléon a abdiqué une première fois le 6 avril 1814, avant de s'exiler à l'île d'Elbe."},
+{theme:"histoire",q:"Qu'est-ce que la Restauration (1814-1830) ?",c:["Le retour de Napoléon","Le retour de la monarchie avec Louis XVIII puis Charles X","La proclamation de la République","Un régime constitutionnel républicain"],a:1,e:"La Restauration est le retour de la monarchie bourbonienne avec Louis XVIII (1814) et Charles X (1824-1830)."},
+{theme:"histoire",q:"Quel roi est renversé par la révolution de Juillet 1830 ?",c:["Louis XVIII","Charles X","Louis-Philippe","Napoléon III"],a:1,e:"Charles X est renversé par les 'Trois Glorieuses' (27-29 juillet 1830), remplacé par Louis-Philippe d'Orléans."},
+{theme:"histoire",q:"Qu'est-ce que la Monarchie de Juillet (1830-1848) ?",c:["Un régime républicain","Le règne de Louis-Philippe Ier, régime libéral et constitutionnel","Un régime militaire","Un empire"],a:1,e:"La Monarchie de Juillet est le règne de Louis-Philippe (1830-1848), régime parlementaire libéral."},
+{theme:"histoire",q:"Qui est Victor Schoelcher ?",c:["Un général napoléonien","L'abolitionniste français qui a obtenu l'abolition définitive de l'esclavage en 1848","Un politicien de la IIIe République","Un philosophe des Lumières"],a:1,e:"Victor Schoelcher, sous-secrétaire d'État aux colonies, a rédigé le décret d'abolition de l'esclavage du 27 avril 1848."},
+{theme:"histoire",q:"Quel philosophe des Lumières est l'auteur de L'Esprit des lois ?",c:["Voltaire","Rousseau","Montesquieu","Diderot"],a:2,e:"Montesquieu a publié L'Esprit des lois en 1748, œuvre fondatrice de la théorie de la séparation des pouvoirs."},
+{theme:"histoire",q:"Qui a écrit le Contrat social ?",c:["Voltaire","Diderot","Rousseau","Montesquieu"],a:2,e:"Jean-Jacques Rousseau a publié Du Contrat social en 1762."},
+{theme:"histoire",q:"Qu'est-ce que l'Encyclopédie (1751-1772) ?",c:["Un journal politique","Un ouvrage collectif des Lumières visant à répandre les connaissances et la raison","Un code juridique","Un manuel scolaire"],a:1,e:"L'Encyclopédie, dirigée par Diderot et d'Alembert, est le monument des Lumières regroupant le savoir de son temps."},
+{theme:"histoire",q:"Quelle école d'art français a produit Monet, Renoir et Degas ?",c:["Le réalisme","L'impressionnisme","Le symbolisme","Le fauvisme"],a:1,e:"L'impressionnisme (2e moitié du XIXe s.) regroupe Monet, Renoir, Degas, Pissarro, Sisley."},
+{theme:"histoire",q:"Qui est Auguste Rodin ?",c:["Un peintre impressionniste","Le sculpteur français auteur du Penseur et du Baiser","Un architecte","Un musicien"],a:1,e:"Auguste Rodin (1840-1917) est le père de la sculpture moderne, auteur du Penseur, du Baiser, des Bourgeois de Calais."},
+{theme:"histoire",q:"Qui est Claude Monet ?",c:["Un sculpteur","Un peintre impressionniste, auteur des Nymphéas","Un architecte","Un musicien"],a:1,e:"Claude Monet (1840-1926) est le chef de file de l'impressionnisme, célèbre pour ses séries (Meules, Cathédrale de Rouen, Nymphéas)."},
+{theme:"histoire",q:"Qu'est-ce que le château de Versailles représente pour l'histoire française ?",c:["Le siège du parlement actuel","Le symbole de l'absolutisme de Louis XIV et chef-d'œuvre de l'architecture classique","Le palais de l'Élysée","Un musée d'art moderne"],a:1,e:"Le château de Versailles symbolise l'absolutisme de Louis XIV et est inscrit au patrimoine mondial de l'UNESCO."},
+{theme:"histoire",q:"En quelle année la France a-t-elle accueilli les Jeux olympiques à Paris pour la dernière fois avant 2024 ?",c:["1900","1924","1968","1992"],a:1,e:"Paris a accueilli les Jeux olympiques en 1900 et 1924. En 2024, Paris accueille les JO pour la 3e fois."},
+{theme:"histoire",q:"Qu'est-ce que l'Exposition universelle de 1889 ?",c:["Un salon de peinture","L'exposition pour laquelle la tour Eiffel a été construite, célébrant le centenaire de la Révolution","Une foire commerciale","Un salon de l'automobile"],a:1,e:"L'Exposition universelle de 1889, tenue à Paris, a vu la construction de la tour Eiffel comme œuvre d'entrée."},
+{theme:"histoire",q:"Quel physicien français a découvert le radium ?",c:["Louis Pasteur","Marie Curie","Pierre et Marie Curie ensemble","Henri Becquerel seul"],a:2,e:"Pierre et Marie Curie ont découvert le polonium et le radium en 1898. Marie Curie a reçu deux prix Nobel."},
+{theme:"histoire",q:"Qui est Louis Pasteur ?",c:["Un explorateur","Un chimiste et biologiste français, père de la microbiologie et inventeur de la pasteurisation","Un peintre","Un philosophe"],a:1,e:"Louis Pasteur (1822-1895) a révolutionné la médecine et la biologie : pasteurisation, vaccins (rage, choléra des poules)."},
+{theme:"histoire",q:"Quelle est la contribution de Gustave Eiffel à l'architecture ?",c:["Il a construit Notre-Dame","Il a conçu la tour Eiffel (1889) et participé à la statue de la Liberté","Il a construit le Louvre","Il a conçu le Panthéon"],a:1,e:"Gustave Eiffel (1832-1923) a conçu la tour Eiffel (1887-1889) et les armatures internes de la statue de la Liberté."},
+{theme:"histoire",q:"Qu'est-ce que le Moulin Rouge ?",c:["Un moulin à farine","Un cabaret parisien fondé en 1889, célèbre pour le french cancan","Un musée d'art","Un théâtre national"],a:1,e:"Le Moulin Rouge, ouvert en 1889 à Montmartre, est un cabaret mondial célèbre pour ses spectacles de danse."},
+{theme:"histoire",q:"Quel compositeur français est l'auteur de Boléro ?",c:["Claude Debussy","Erik Satie","Maurice Ravel","Hector Berlioz"],a:2,e:"Maurice Ravel (1875-1937) a composé le Boléro (1928), l'une des pièces orchestrales les plus jouées au monde."},
+{theme:"histoire",q:"Qui est Molière ?",c:["Un philosophe","Le plus grand dramaturge comique français du XVIIe siècle, auteur du Misanthrope et Tartuffe","Un peintre","Un poète romantique"],a:1,e:"Molière (Jean-Baptiste Poquelin, 1622-1673) est le maître de la comédie française (Tartuffe, Le Misanthrope, L'Avare)."},
+{theme:"histoire",q:"Qui est Victor Hugo ?",c:["Un peintre romantique","Le grand écrivain romantique français, auteur des Misérables et Notre-Dame de Paris","Un général napoléonien","Un philosophe des Lumières"],a:1,e:"Victor Hugo (1802-1885) est l'une des plus grandes figures de la littérature française (Les Misérables, Notre-Dame de Paris, Hernani)."},
+{theme:"histoire",q:"Qui est Marcel Proust ?",c:["Un peintre impressionniste","L'auteur d'À la recherche du temps perdu, chef-d'œuvre de la littérature française du XXe siècle","Un philosophe existentialiste","Un compositeur"],a:1,e:"Marcel Proust (1871-1922) a écrit À la recherche du temps perdu (1913-1927), roman phare du XXe siècle."},
+{theme:"histoire",q:"Qui est Simone de Beauvoir ?",c:["Une chanteuse","La philosophe existentialiste française et militante féministe, auteure du Deuxième Sexe","Une peintre","Une actrice"],a:1,e:"Simone de Beauvoir (1908-1986) est une philosophe et écrivaine majeure. Le Deuxième Sexe (1949) est un texte fondateur du féminisme."},
+{theme:"histoire",q:"Qui est Jean-Paul Sartre ?",c:["Un romancier du XIXe siècle","Le philosophe existentialiste français, auteur de L'Être et le Néant","Un physicien","Un mathématicien"],a:1,e:"Jean-Paul Sartre (1905-1980) est le chef de file de l'existentialisme français. Ses œuvres incluent L'Être et le Néant et Huis clos."},
+{theme:"histoire",q:"Qui est Albert Camus ?",c:["Un peintre surréaliste","L'écrivain et philosophe français auteur de L'Étranger et La Peste, prix Nobel de littérature 1957","Un compositeur","Un homme politique"],a:1,e:"Albert Camus (1913-1960), écrivain de l'absurde, a reçu le prix Nobel de littérature en 1957."},
+{theme:"histoire",q:"Quelle ville française est connue pour son festival de cinéma international ?",c:["Paris","Cannes","Lyon","Nice"],a:1,e:"Le Festival de Cannes est l'un des plus prestigieux festivals de cinéma au monde, créé en 1946."},
+{theme:"histoire",q:"Qui est Édith Piaf ?",c:["Une actrice de cinéma","La chanteuse française populaire surnommée La Môme Piaf, icône culturelle mondiale","Une danseuse de ballet","Une compositrice classique"],a:1,e:"Édith Piaf (1915-1963) est la plus célèbre chanteuse française, connue pour Non, je ne regrette rien et La Vie en rose."},
+{theme:"societe",q:"L'instruction des enfants est obligatoire de :",c:["6 à 16 ans","6 à 18 ans","3 à 16 ans","3 à 18 ans"],a:2,e:"Depuis 2019, l'instruction est obligatoire de 3 à 16 ans en France."},
+{theme:"societe",q:"Qu'est-ce que le SMIC ?",c:["Salaire mensuel imposable commun","Salaire minimum interprofessionnel de croissance","Système monétaire international","Service minimum interprofessionnel"],a:1,e:"Le SMIC est le salaire horaire minimum légal en France."},
+{theme:"societe",q:"L'avortement est-il possible en France ?",c:["Non, il est interdit","Oui, jusqu'à 14 semaines de grossesse","Oui, sans limite de temps","Oui, uniquement pour les femmes mariées"],a:1,e:"L'IVG est légale jusqu'à 14 semaines de grossesse et est remboursée par la Sécurité sociale."},
+{theme:"societe",q:"Où faut-il déclarer la naissance d'un enfant ?",c:["À la préfecture","À la mairie","À l'hôpital uniquement","À la CAF"],a:1,e:"Toute naissance doit être déclarée à la mairie du lieu de naissance dans les 5 jours suivant l'accouchement."},
+{theme:"societe",q:"À quoi sert la carte Vitale ?",c:["À prouver son identité","À accéder aux services en ligne","À bénéficier du remboursement des frais de santé","À prouver sa nationalité française"],a:2,e:"La carte Vitale facilite le remboursement des frais de santé."},
+{theme:"societe",q:"Depuis le 1er juillet 2021, quelle est la durée du congé paternité ?",c:["7 jours","11 jours","25 jours","28 jours"],a:2,e:"Depuis le 1er juillet 2021, le congé de paternité est de 25 jours calendaires."},
+{theme:"societe",q:"Jusqu'à quel âge l'école est-elle obligatoire en France ?",c:["14 ans","15 ans","16 ans","18 ans"],a:2,e:"La scolarité obligatoire s'étend de 3 à 16 ans."},
+{theme:"societe",q:"Travailler sans être déclaré est :",c:["Autorisé si le travailleur est d'accord","Une infraction pénale (travail dissimulé)","Autorisé pour les petits emplois","Uniquement interdit aux étrangers"],a:1,e:"Le travail dissimulé est une infraction pénale."},
+{theme:"societe",q:"En cas de divorce, qui exerce l'autorité parentale ?",c:["Le parent ayant la garde","Les deux parents conjointement","Le juge décide toujours","L'État"],a:1,e:"L'autorité parentale est exercée conjointement par les deux parents même après le divorce."},
+{theme:"societe",q:"Est-ce possible de punir physiquement ses enfants en France ?",c:["Oui, si c'est léger","Non, interdit par la loi depuis 2019","Oui, droit parental","Non, mais sans sanction"],a:1,e:"La loi du 10 juillet 2019 interdit expressément toute punition corporelle envers un enfant."},
+{theme:"societe",q:"Quel est le taux de TVA normal en France ?",c:["10%","18%","20%","22%"],a:2,e:"Le taux normal de TVA en France est de 20%."},
+{theme:"societe",q:"Quel est le taux de TVA réduit appliqué aux produits alimentaires de base ?",c:["2,1%","5,5%","7%","10%"],a:1,e:"Les produits alimentaires de base sont soumis au taux réduit de TVA de 5,5%."},
+{theme:"societe",q:"Qu'est-ce que la Sécurité sociale ?",c:["Une police privée","Un système public de protection contre les risques sociaux","Un service bancaire","Un organisme militaire"],a:1,e:"La Sécurité sociale, créée en 1945, protège contre la maladie, la maternité, la vieillesse, les accidents du travail."},
+{theme:"societe",q:"Qu'est-ce que le numerus apertus en médecine ?",c:["Un numerus clausus maintenu","La suppression du numerus clausus pour accéder aux études médicales, remplacé par un quota flexible depuis 2020","Un concours de médecine","Un diplôme européen"],a:1,e:"Depuis 2020, le numerus clausus en médecine a été remplacé par un numerus apertus plus flexible."},
+{theme:"societe",q:"Quel est le rôle de la médecin traitant en France ?",c:["Il gère les urgences","Il assure le suivi médical de base et coordonne les soins (accès au spécialiste)","Il pratique uniquement des opérations","Il prescrit les médicaments sans consultation"],a:1,e:"Le médecin traitant est le pivot du parcours de soins. Le consulter en premier permet un meilleur remboursement."},
+{theme:"societe",q:"Qu'est-ce que l'assurance maladie obligatoire ?",c:["Une assurance privée","Le régime de base de la Sécurité sociale qui rembourse les frais médicaux","Une assurance facultative","Un service hospitalier"],a:1,e:"L'assurance maladie obligatoire (Sécurité sociale) rembourse une partie des frais de santé pour tous les assurés."},
+{theme:"societe",q:"Que rembourse la Sécurité sociale à 100% ?",c:["Tous les médicaments","Les affections de longue durée (ALD), la maternité, les accidents graves","Aucun soin","Seulement les hospitalisations"],a:1,e:"La prise en charge à 100% s'applique aux ALD (maladies chroniques graves), à la maternité après 6 mois, et à certains accidents."},
+{theme:"societe",q:"Qu'est-ce que le ticket modérateur ?",c:["Un billet de transport","La partie des frais de santé non remboursée par la Sécurité sociale (prise en charge par la mutuelle)","Un formulaire médical","Une pénalité médicale"],a:1,e:"Le ticket modérateur est la part non remboursée par l'assurance maladie obligatoire, laissée à la charge de l'assuré."},
+{theme:"societe",q:"Qu'est-ce qu'une mutuelle complémentaire santé ?",c:["La Sécurité sociale","Une assurance complémentaire qui rembourse tout ou partie du ticket modérateur","Un service hospitalier","Une association de patients"],a:1,e:"La mutuelle (ou complémentaire santé) complète les remboursements de la Sécurité sociale."},
+{theme:"societe",q:"Qu'est-ce que la retraite complémentaire AGIRC-ARRCO ?",c:["La retraite de base","Le régime de retraite complémentaire obligatoire pour les salariés du privé","Un régime facultatif","Une retraite d'État"],a:1,e:"L'AGIRC-ARRCO est la caisse de retraite complémentaire obligatoire des salariés du secteur privé."},
+{theme:"societe",q:"Quelle est la durée de cotisation requise pour une retraite à taux plein (génération 1965) ?",c:["40 ans","41 ans","43 ans","45 ans"],a:2,e:"Pour la génération née en 1965 et après, la durée de cotisation requise est de 43 ans (172 trimestres)."},
+{theme:"societe",q:"Qu'est-ce que l'assurance chômage (ARE) ?",c:["Une aide de l'État sans conditions","L'allocation chômage versée par France Travail aux travailleurs involontairement privés d'emploi","Un revenu minimum","Un salaire différé"],a:1,e:"L'ARE (Allocation d'aide au retour à l'emploi) est versée sous conditions par France Travail (ex-Pôle Emploi)."},
+{theme:"societe",q:"Que signifie l'acronyme CPAM ?",c:["Comité des parents et mères","Caisse primaire d'assurance maladie","Centre pour les aides médicales","Commission de prévention des accidents du travail"],a:1,e:"La CPAM gère l'assurance maladie au niveau local."},
+{theme:"societe",q:"Qu'est-ce que l'URSSAF ?",c:["Un syndicat","L'organisme qui collecte les cotisations sociales des employeurs et travailleurs indépendants","Une caisse de retraite","Un organisme de formation"],a:1,e:"L'URSSAF collecte les cotisations sociales et les contributions dues par les employeurs et les indépendants."},
+{theme:"societe",q:"Qu'est-ce que la déclaration préalable à l'embauche (DPAE) ?",c:["Un formulaire de candidature","La déclaration obligatoire de l'employeur à l'URSSAF avant toute embauche","Un contrat de travail","Un formulaire de licenciement"],a:1,e:"L'employeur doit effectuer une DPAE auprès de l'URSSAF avant tout embauche, pour déclarer le salarié."},
+{theme:"societe",q:"Qu'est-ce que le contrat à durée indéterminée (CDI) ?",c:["Un contrat temporaire","Le contrat de travail de droit commun sans limitation de durée, le plus protecteur","Un contrat d'apprentissage","Un contrat saisonnier"],a:1,e:"Le CDI est la forme normale du contrat de travail. Il n'a pas de terme fixé et ne peut être rompu que selon des procédures légales."},
+{theme:"societe",q:"Qu'est-ce que le contrat à durée déterminée (CDD) ?",c:["Un CDI avec période d'essai","Un contrat de travail à terme précis, limité aux cas prévus par le Code du travail","Un contrat de stage","Un contrat de prestation"],a:1,e:"Le CDD est un contrat temporaire à terme fixé. Il ne peut être utilisé que dans des cas limités (remplacement, accroissement temporaire d'activité...)."},
+{theme:"societe",q:"Quelle est la durée maximale d'un CDD ?",c:["3 mois","6 mois","18 mois (renouvelable une fois, 24 mois au total)","24 mois sans renouvellement"],a:2,e:"Un CDD peut durer au maximum 18 mois, renouvelable une fois, soit 24 mois au total."},
+{theme:"societe",q:"Qu'est-ce qu'un contrat d'apprentissage ?",c:["Un contrat pour adultes","Un contrat alternant formation en entreprise et formation en CFA, pour les 16-29 ans","Un stage non rémunéré","Un contrat de travail saisonnier"],a:1,e:"L'apprentissage alterne formation pratique en entreprise et formation théorique en Centre de formation des apprentis (CFA)."},
+{theme:"societe",q:"Qu'est-ce que le baccalauréat ?",c:["Un diplôme universitaire","Le diplôme de fin d'études secondaires qui ouvre l'accès à l'enseignement supérieur","Un concours d'entrée","Un diplôme professionnel"],a:1,e:"Le baccalauréat est le premier diplôme de l'enseignement supérieur en France, obtenu en terminale."},
+{theme:"societe",q:"Combien y a-t-il de types de baccalauréat en France ?",c:["2","3","4","5"],a:1,e:"Il existe 3 séries de bac : général, technologique et professionnel."},
+{theme:"societe",q:"Qu'est-ce que le BTS (Brevet de technicien supérieur) ?",c:["Un diplôme de lycée","Un diplôme bac+2 de l'enseignement supérieur professionnel","Un diplôme universitaire de licence","Un certificat d'aptitude professionnelle"],a:1,e:"Le BTS est un diplôme bac+2 préparé dans des lycées à sections de techniciens supérieurs (STS)."},
+{theme:"societe",q:"Qu'est-ce que le CAP (Certificat d'aptitude professionnelle) ?",c:["Un baccalauréat professionnel","Le premier diplôme professionnel préparé en lycée ou en apprentissage","Un BEP","Un brevet des collèges"],a:1,e:"Le CAP est un diplôme professionnel de niveau 3 (bac-2) préparant à un métier précis."},
+{theme:"societe",q:"Quelle est la différence entre un lycée général et un lycée professionnel ?",c:["Aucune différence","Le lycée général prépare au bac général/technologique ; le lycée pro prépare au bac pro et aux CAP/BEP","Le lycée pro est privé","Le lycée général est plus difficile"],a:1,e:"Le lycée général/technologique prépare au bac G ou T ; le lycée professionnel prépare au bac pro ou aux diplômes pro (CAP)."},
+{theme:"societe",q:"Qu'est-ce que Parcoursup ?",c:["Un réseau social","La plateforme nationale d'admission dans l'enseignement supérieur après le bac","Un site de recherche d'emploi","Une application éducative"],a:1,e:"Parcoursup (depuis 2018) est la plateforme de vœux et d'admission dans l'enseignement supérieur post-bac."},
+{theme:"societe",q:"Qu'est-ce que le numerus clausus en médecine (avant sa suppression) ?",c:["Le nombre de médecins autorisés à exercer","Le nombre maximal d'étudiants admis en 2e année de médecine (PCEM2) après une sélection sévère en 1re année","Le nombre de spécialités médicales","Un diplôme européen"],a:1,e:"Avant 2020, le numerus clausus fixait le nombre de places en 2e année de médecine. Il a été remplacé par le numerus apertus."},
+{theme:"societe",q:"Qu'est-ce qu'une grande école française ?",c:["Une école de grande taille","Un établissement d'enseignement supérieur sélectif préparant des élites (ENA devenue INSP, Polytechnique, HEC...)","Un lycée international","Un établissement public non sélectif"],a:1,e:"Les grandes écoles (Polytechnique, HEC, ENS, Sciences Po...) sont des établissements sélectifs d'excellence formant les élites françaises."},
+{theme:"societe",q:"Qu'est-ce que Sciences Po ?",c:["Une école de sciences","Un Institut d'études politiques préparant aux carrières dans la politique, la diplomatie et les sciences sociales","Un lycée spécialisé","Une école de commerce"],a:1,e:"Sciences Po (anciennement École libre des sciences politiques) forme à la politique, la diplomatie, le droit, l'économie et les médias."},
+{theme:"societe",q:"Quelle est la principale mission de l'Éducation nationale ?",c:["Préparer au marché du travail uniquement","Instruire les jeunes, former les citoyens et réduire les inégalités sociales","Gérer les transports scolaires","Contrôler les établissements privés"],a:1,e:"L'Éducation nationale a pour missions d'instruire, éduquer, former et contribuer à l'égalité des chances."},
+{theme:"societe",q:"Combien de niveaux compte le système d'éducation français (de la maternelle au doctorat) ?",c:["5 niveaux","8 niveaux","En réalité on parle de 8 niveaux de qualification (du niveau 1 au niveau 8)","3 niveaux"],a:2,e:"Le système français compte 8 niveaux de qualification, allant du CAP/BEP (niveau 3) au doctorat (niveau 8)."},
+{theme:"societe",q:"Qu'est-ce que le brevet des collèges (DNB) ?",c:["Un diplôme secondaire","Le diplôme obtenu en fin de 3e, premier diplôme national du collège","Un diplôme professionnel","Un certificat de fin d'école primaire"],a:1,e:"Le Diplôme national du brevet (DNB) est obtenu en fin de 3e (collège). Il n'est pas obligatoire pour passer en lycée."},
+{theme:"societe",q:"Qu'est-ce que le service civique ?",c:["Un service militaire obligatoire","Un engagement volontaire d'intérêt général pour les 16-25 ans, indemnisé","Un stage professionnel","Un service de secourisme"],a:1,e:"Le service civique est un engagement volontaire pour des missions d'intérêt général. Il est ouvert aux 16-25 ans (30 ans pour les jeunes en situation de handicap)."},
+{theme:"societe",q:"Qu'est-ce que le bénévolat ?",c:["Un travail non déclaré","Une activité exercée de manière non rémunérée et libre au service d'une cause ou d'une organisation","Un emploi aidé","Un stage non payé"],a:1,e:"Le bénévolat est une activité librement choisie, exercée sans rémunération au profit d'une association ou d'une cause."},
+{theme:"societe",q:"Qu'est-ce que la loi 1901 sur les associations ?",c:["Une loi sur le travail","La loi qui régit la création et le fonctionnement des associations sans but lucratif en France","Une loi sur les syndicats","Une loi sur les partis politiques"],a:1,e:"La loi du 1er juillet 1901 régit les associations sans but lucratif. Toute association peut se déclarer librement en préfecture."},
+{theme:"societe",q:"Combien d'associations actives compte-t-on en France ?",c:["Environ 100 000","Environ 500 000","Environ 1,5 million","Environ 10 millions"],a:2,e:"La France compte environ 1,5 million d'associations actives, impliquant plus de 20 millions de bénévoles."},
+{theme:"societe",q:"Qu'est-ce que la journée de solidarité ?",c:["Un jour férié supprimé","Une journée de travail non rémunérée dont le produit finance la prise en charge de la dépendance (CNSA)","Un congé obligatoire","Un don aux associations"],a:1,e:"La journée de solidarité (loi de 2004) est une journée de travail supplémentaire non rémunérée pour les salariés, finançant la CNSA."},
+{theme:"societe",q:"Qu'est-ce que la CNSA (Caisse nationale de solidarité pour l'autonomie) ?",c:["Un organisme bancaire","L'organisme finançant l'aide aux personnes âgées et handicapées pour leur autonomie","Un syndicat","Un organisme de retraite"],a:1,e:"La CNSA finance et régule les aides à domicile et en établissement pour les personnes âgées et handicapées."},
+{theme:"societe",q:"Qu'est-ce que l'APA (Allocation personnalisée d'autonomie) ?",c:["Une aide au logement","Une aide financière pour les personnes âgées de 60 ans et plus en perte d'autonomie","Un revenu minimum","Une aide pour les chômeurs"],a:1,e:"L'APA est une aide destinée aux personnes de 60 ans et plus ayant des difficultés à accomplir les actes de la vie quotidienne."},
+{theme:"societe",q:"Qu'est-ce que la Prestation de compensation du handicap (PCH) ?",c:["Une allocation chômage pour les handicapés","Une aide permettant de financer les surcoûts liés au handicap (aide humaine, technique, logement)","Un salaire spécial","Un droit à la retraite anticipée"],a:1,e:"La PCH est une aide personnalisée qui couvre les besoins spécifiques liés au handicap : aide humaine, technique, aménagement..."},
+{theme:"societe",q:"Qu'est-ce que la MDPH (Maison départementale des personnes handicapées) ?",c:["Un hôpital spécialisé","Le guichet unique gérant les droits et les prestations pour les personnes handicapées","Un tribunal spécial","Un service de placement en établissement"],a:1,e:"La MDPH est le guichet unique pour toutes les demandes liées au handicap (reconnaissance, prestations, orientation)."},
+{theme:"societe",q:"Qu'est-ce que la loi ELAN (2018) en matière de logement ?",c:["Une loi sur l'éducation","La loi sur l'évolution du logement, de l'aménagement et du numérique","Une loi sur l'emploi","Une loi sur l'environnement"],a:1,e:"La loi ELAN (2018) réforme le droit du logement : construction, location, copropriété, expulsions..."},
+{theme:"societe",q:"Qu'est-ce que l'encadrement des loyers ?",c:["L'interdiction de louer","Un dispositif plafonnant les loyers dans certaines zones tendues","Un loyer fixé par l'État","Un système de location sociale"],a:1,e:"L'encadrement des loyers plafonne les loyers dans les zones tendues (Paris, Lille, Lyon...) pour limiter leur hausse."},
+{theme:"societe",q:"Qu'est-ce que le logement social (HLM) ?",c:["Un logement privé moins cher","Un logement à loyer modéré géré par des organismes publics ou para-publics, destiné aux ménages modestes","Un logement de fonctionnaire","Un logement gratuit"],a:1,e:"Le logement HLM (Habitation à loyer modéré) est destiné aux personnes ayant des revenus inférieurs aux plafonds fixés."},
+{theme:"societe",q:"Quel organisme gère les demandes de logement social ?",c:["La mairie uniquement","Le guichet enregistreur de la demande de logement social dans chaque département","La préfecture seule","France Travail"],a:1,e:"La demande de logement social se fait via un formulaire unique déposé en mairie, à l'organisme HLM ou en ligne (SNE)."},
+{theme:"societe",q:"Qu'est-ce que le plan local d'urbanisme (PLU) ?",c:["Un programme de travaux de voirie","Le document de planification qui définit les règles d'utilisation des sols dans une commune","Un plan de développement économique","Un registre de propriété"],a:1,e:"Le PLU est le principal document d'urbanisme de la commune, définissant les zones constructibles, les règles de construction..."},
+{theme:"societe",q:"Qu'est-ce qu'un permis de construire ?",c:["Une autorisation de louer","L'autorisation administrative obligatoire pour construire ou agrandir un bâtiment","Un certificat de propriété","Une déclaration fiscale"],a:1,e:"Le permis de construire est une autorisation administrative préalable obligatoire pour toute construction ou modification importante."},
+{theme:"societe",q:"Qu'est-ce que la politique de la ville ?",c:["La gestion des villes par les maires","Une politique publique ciblant les quartiers défavorisés pour réduire les inégalités","La politique de transport","La politique culturelle"],a:1,e:"La politique de la ville est une politique de cohésion urbaine ciblant les quartiers prioritaires (QPV) pour lutter contre les inégalités."},
+{theme:"societe",q:"Qu'est-ce que le zonage prioritaire en matière scolaire (REP/REP+) ?",c:["Une sélection scolaire","Un dispositif octroyant des moyens supplémentaires aux écoles de quartiers défavorisés","Un système de transport scolaire","Une prime pour les professeurs"],a:1,e:"Les réseaux d'éducation prioritaire (REP/REP+) reçoivent des moyens humains et financiers supplémentaires pour compenser les inégalités scolaires."},
+{theme:"societe",q:"Quel est le principe du 'droit au repos dominical' ?",c:["Travailler le dimanche est interdit sans exception","Le dimanche est le jour de repos légal hebdomadaire, avec de nombreuses dérogations","Tout salarié doit se reposer le dimanche","La loi interdit le commerce le dimanche"],a:1,e:"Le droit au repos dominical est un principe général mais soumis à de nombreuses dérogations légales (tourisme, alimentation...)."},
+{theme:"societe",q:"Qu'est-ce que la médiation familiale ?",c:["Un service d'aide juridictionnelle","Un processus aidant les familles en conflit à trouver des solutions amiables avec l'aide d'un tiers professionnel","Un service de placement d'enfants","Un tribunal familial"],a:1,e:"La médiation familiale est un processus dans lequel un médiateur aide les membres d'une famille en conflit à trouver des accords amiables."},
+{theme:"societe",q:"Qu'est-ce que le plan de sauvegarde de l'emploi (PSE) ?",c:["Un contrat de travail","Le plan obligatoire dans les entreprises de 50 salariés et plus souhaitant licencier 10 salariés ou plus pour motif économique","Un congé de formation","Une aide de l'État aux entreprises"],a:1,e:"Le PSE (anciennement plan social) est obligatoire dans les entreprises de 50+ salariés pour les licenciements économiques collectifs importants."},
+{theme:"societe",q:"Qu'est-ce que le chèque emploi service universel (CESU) ?",c:["Un chèque cadeaux","Un moyen de paiement simplifié pour les services à la personne à domicile (ménage, jardinage, garde d'enfants)","Un bon d'achat alimentaire","Un chèque vacances"],a:1,e:"Le CESU est un titre de paiement simplifiant les démarches administratives pour les emplois à domicile et la déclaration des salariés."},
+{theme:"societe",q:"Qu'est-ce que la protection sociale en France ?",c:["Un service privé","L'ensemble des mécanismes de solidarité collective couvrant les risques sociaux (maladie, vieillesse, famille, chômage, accident du travail)","Une assurance facultative","Un service uniquement pour les fonctionnaires"],a:1,e:"La protection sociale française est l'un des systèmes les plus développés au monde, couvrant l'ensemble des risques sociaux."},
+{theme:"societe",q:"Qu'est-ce que le déficit de la Sécurité sociale ?",c:["Un excédent budgétaire","La situation où les dépenses de la Sécurité sociale dépassent ses recettes","Un indicateur de croissance","Un surplus fiscal"],a:1,e:"Le déficit de la Sécurité sociale est le montant par lequel les dépenses dépassent les recettes (cotisations et impôts affectés)."},
+{theme:"societe",q:"Qu'est-ce que la CSG (Contribution sociale généralisée) ?",c:["Un impôt sur les bénéfices","Un prélèvement fiscal finançant la protection sociale, assis sur tous les revenus","Un impôt sur les successions","Une taxe sur les entreprises"],a:1,e:"La CSG est un prélèvement social finançant la Sécurité sociale, prélevé sur l'ensemble des revenus (travail, capital, remplacement)."},
+{theme:"societe",q:"Quel est le taux standard de la CSG sur les revenus d'activité ?",c:["3,8%","6,2%","9,2%","12%"],a:2,e:"Le taux de la CSG sur les revenus d'activité est de 9,2% (7,5% pour les revenus de remplacement)."},
+{theme:"societe",q:"Qu'est-ce que l'Assurance vieillesse (retraite de base) ?",c:["Un produit d'épargne privé","Le régime de base obligatoire gérant les retraites des salariés du privé (CNAV)","Un régime de retraite facultatif","Un régime uniquement pour les fonctionnaires"],a:1,e:"L'assurance vieillesse (CNAV) gère la retraite de base des salariés du régime général."},
+{theme:"societe",q:"Qu'est-ce que le régime spécial de retraite des fonctionnaires ?",c:["Le même régime que le privé","Un régime particulier géré par l'État, avec des règles différentes","Un régime plus avantageux interdit depuis 2010","Un régime européen"],a:1,e:"Les fonctionnaires dépendent de la CNRACL (collectivités) ou du code des pensions civiles (État), avec des règles propres."},
+{theme:"societe",q:"Qu'est-ce que la Charte de la laïcité dans les services publics ?",c:["Un document facultatif","Une charte obligatoirement affichée dans les services publics précisant les droits et devoirs des agents et usagers en matière de laïcité","Un code de déontologie des médecins","Un règlement scolaire"],a:1,e:"La Charte de la laïcité, obligatoirement affichée dans les services publics depuis 2013, informe agents et usagers de leurs droits et obligations."},
+{theme:"societe",q:"Qu'est-ce que l'INSEE ?",c:["Un syndicat","L'Institut national de la statistique et des études économiques, qui produit les données officielles sur la société et l'économie françaises","Un organisme fiscal","Un service de renseignement"],a:1,e:"L'INSEE est l'organisme public qui collecte, produit et diffuse les statistiques officielles de la France."},
+{theme:"societe",q:"Que mesure le PIB (Produit intérieur brut) ?",c:["Le revenu des ménages","La valeur totale de la production de biens et services d'un pays sur une période donnée","Le niveau de vie des citoyens","Les exportations uniquement"],a:1,e:"Le PIB mesure la richesse créée sur un territoire national en une période donnée. Il est l'indicateur économique le plus utilisé."},
+{theme:"societe",q:"Quel organisme publie les comptes nationaux et le PIB de la France ?",c:["La Banque de France","L'INSEE","Le ministère de l'Économie","La Cour des comptes"],a:1,e:"L'INSEE publie les comptes nationaux et les statistiques économiques officielles, dont le PIB."},
+{theme:"societe",q:"Qu'est-ce que l'inflation ?",c:["La baisse générale des prix","La hausse générale et durable des prix, qui érode le pouvoir d'achat","La hausse des salaires","La baisse du chômage"],a:1,e:"L'inflation est la hausse générale des prix. Elle est mesurée par l'indice des prix à la consommation (IPC) publié par l'INSEE."},
+{theme:"societe",q:"Qu'est-ce que le pouvoir d'achat ?",c:["Le salaire brut","La capacité d'acheter des biens et services avec un revenu donné","Le prix des logements","Le montant des impôts"],a:1,e:"Le pouvoir d'achat est la quantité de biens et services qu'un revenu permet d'acheter. Il diminue quand l'inflation augmente."},
+{theme:"societe",q:"Qu'est-ce que le budget de l'État ?",c:["Le budget des collectivités locales","L'ensemble des ressources (impôts, taxes) et des dépenses (services publics, investissements) de l'État pour une année","Le budget de la Sécurité sociale","Un budget d'entreprise publique"],a:1,e:"Le budget de l'État (loi de finances) prévoit les ressources et les dépenses de l'État pour l'année à venir."},
+{theme:"societe",q:"Quel est le principal impôt payé par les particuliers en France ?",c:["La TVA","L'impôt sur le revenu (IR)","La CSG","La taxe foncière"],a:1,e:"L'impôt sur le revenu (IR) est le principal impôt direct payé par les particuliers en France, sur une base progressive."},
+{theme:"societe",q:"Qu'est-ce que le prélèvement à la source de l'impôt sur le revenu ?",c:["Un versement annuel","Un prélèvement mensuel directement sur le salaire ou la pension, évitant l'avance de trésorerie","Un impôt différé","Une retenue pour l'assurance chômage"],a:1,e:"Depuis 2019, l'impôt sur le revenu est prélevé directement chaque mois à la source (sur le bulletin de paie)."},
+{theme:"societe",q:"Qu'est-ce que la politique familiale française ?",c:["Des mesures uniquement pour les familles nombreuses","L'ensemble des dispositifs (allocations, congés, fiscalité) soutenant les familles avec enfants","Une politique de natalité forcée","Un programme privé"],a:1,e:"La France a une politique familiale parmi les plus développées d'Europe : allocations familiales, congé parental, quotient familial..."},
+{theme:"societe",q:"Qu'est-ce que le quotient familial ?",c:["Un calcul pour les notes scolaires","Un mécanisme fiscal divisant le revenu imposable par le nombre de parts fiscales selon la composition du foyer","Un avantage réservé aux riches","Un indice économique"],a:1,e:"Le quotient familial réduit l'impôt sur le revenu selon le nombre d'enfants à charge, favorisant les familles nombreuses."},
+{theme:"societe",q:"Qu'est-ce que le don d'organes en France ?",c:["Un don volontaire obligatoire","Depuis 2017, le principe est le consentement présumé : toute personne est donneur sauf si elle s'y est opposée","Un acte payant","Un droit uniquement pour les adultes"],a:1,e:"Depuis la loi de 2017, le principe est le 'opt-out' : toute personne est présumée donneuse sauf si elle s'est inscrite sur le registre des refus."},
+{theme:"societe",q:"Comment s'inscrire sur le registre national des refus de don d'organes ?",c:["En mairie","Sur le site de l'Agence de la biomédecine","À l'hôpital","À la préfecture"],a:1,e:"Pour refuser le don d'organes, il faut s'inscrire sur le registre national des refus géré par l'Agence de la biomédecine."},
+{theme:"societe",q:"Qu'est-ce que le don du sang ?",c:["Un acte obligatoire","Un acte bénévole, anonyme, gratuit et volontaire permettant de fournir du sang aux patients qui en ont besoin","Un acte payant","Un acte réservé aux médecins"],a:1,e:"Le don du sang est un acte bénévole, anonyme et gratuit. La France a besoin de 10 000 dons de sang par jour."},
+{theme:"societe",q:"Qu'est-ce que le droit des étrangers en matière de regroupement familial ?",c:["Les étrangers ne peuvent pas faire venir leur famille","Un étranger en situation régulière peut demander à faire venir son conjoint et ses enfants mineurs sous certaines conditions","Tout étranger peut faire venir n'importe qui","Uniquement pour les ressortissants européens"],a:1,e:"Le regroupement familial est possible sous conditions : résidence régulière depuis 18 mois, ressources stables, logement décent."},
+{theme:"societe",q:"Qu'est-ce que le titre de séjour ?",c:["Un passeport étranger","L'autorisation délivrée par la préfecture permettant à un étranger non-européen de résider en France","Un visa d'entrée","Un document pour les touristes"],a:1,e:"Le titre de séjour (carte de séjour ou de résident) autorise les ressortissants non-européens à résider en France."},
+{theme:"societe",q:"Quelle est la durée de validité d'une carte de résident ?",c:["1 an","3 ans","10 ans, renouvelable","5 ans"],a:2,e:"La carte de résident est valable 10 ans et est renouvelable. Elle est accordée après 5 ans de résidence régulière."},
+{theme:"societe",q:"Quel titre de séjour permanent accorde des droits équivalents aux citoyens UE en France ?",c:["La carte de séjour temporaire","La carte de résident","La carte de séjour pluriannuelle","La carte de ressortissant UE"],a:1,e:"La carte de résident (10 ans) est le titre de séjour le plus stable pour les non-européens, proche des droits des citoyens UE."},
+{theme:"societe",q:"Qu'est-ce que le statut de réfugié ?",c:["Un titre de séjour ordinaire","La protection accordée à une personne fuyant des persécutions dans son pays, lui donnant des droits spécifiques","Un statut temporaire","Un visa humanitaire"],a:1,e:"Le statut de réfugié, accordé par l'OFPRA, donne droit à une carte de résident de 10 ans et à des droits sociaux."},
+{theme:"societe",q:"Qu'est-ce que l'intégration dans la société française ?",c:["L'assimilation totale et l'abandon de sa culture","Un processus par lequel une personne devient un membre actif de la société en partageant ses valeurs et en respectant ses règles","Une obligation légale","La naturalisation uniquement"],a:1,e:"L'intégration est un processus progressif d'adhésion aux valeurs républicaines et de participation à la vie sociale, sans effacement des origines culturelles."},
+{theme:"valeurs",q:"Quelle est la signification du terme 'laïcité' en France ?",c:["Interdiction des religions","Neutralité de l'État et liberté de conscience","Athéisme officiel","Religion d'État catholique"],a:1,e:"La laïcité garantit la neutralité de l'État et la liberté de conscience pour tous."},
+{theme:"valeurs",q:"Qu'est-ce que la liberté de réunion ?",c:["Droit de se rassembler violemment","Droit de se rassembler pacifiquement","Droit de bloquer les routes","Droit de former des groupes armés"],a:1,e:"La liberté de réunion est le droit de se rassembler pacifiquement."},
+{theme:"valeurs",q:"Quel principe interdit à l'État de favoriser une religion ?",c:["L'égalité","L'universalisme","La laïcité","La neutralité"],a:2,e:"La laïcité interdit à l'État de favoriser ou de défavoriser une religion particulière."},
+{theme:"valeurs",q:"La France reconnaît-elle le droit à l'objection de conscience ?",c:["Non","Oui, pour le service militaire (aujourd'hui suspendu)","Oui, en toutes circonstances","Non, jamais"],a:1,e:"L'objection de conscience était reconnue pour le service militaire, suspendu depuis 2001."},
+{theme:"valeurs",q:"Qu'est-ce que le civisme ?",c:["La connaissance de la Constitution","Le respect des règles et devoirs envers la communauté","Le service militaire","Le paiement des impôts uniquement"],a:1,e:"Le civisme est l'ensemble des comportements qui témoignent du respect envers la communauté."},
+{theme:"valeurs",q:"Que signifie 'République démocratique' ?",c:["Le peuple élit un roi","Le peuple est souverain et gouverne","Les riches gouvernent","Les juges gouvernent"],a:1,e:"République démocratique signifie que le pouvoir émane du peuple."},
+{theme:"valeurs",q:"Que signifie 'République sociale' dans la Constitution ?",c:["L'État gère toutes les entreprises","L'État garantit la solidarité nationale","Tous les biens sont communs","Le socialisme est officiel"],a:1,e:"République sociale signifie que l'État garantit des droits sociaux et la solidarité."},
+{theme:"valeurs",q:"Qu'est-ce que la souveraineté populaire ?",c:["Le roi est souverain","Le pouvoir appartient au peuple","Les élus sont souverains","L'armée est souveraine"],a:1,e:"La souveraineté populaire signifie que le pouvoir réside dans le peuple."},
+{theme:"valeurs",q:"Quel est l'objectif de l'éducation civique à l'école ?",c:["Former des soldats","Former des citoyens responsables","Enseigner uniquement l'histoire","Former des fonctionnaires"],a:1,e:"L'éducation civique vise à former des citoyens responsables, capables de participer à la démocratie."},
+{theme:"valeurs",q:"Qu'est-ce que le 'vivre ensemble' dans la République ?",c:["Uniformité culturelle totale","Respect mutuel et respect des règles communes","Parler la même langue régionale","Abandon de toute identité culturelle"],a:1,e:"Vivre ensemble implique le respect mutuel et l'acceptation des règles communes."},
+{theme:"valeurs",q:"Quel document protège les droits fondamentaux en Europe ?",c:["La DDHC de 1789","La Convention européenne des droits de l'homme (CEDH)","Le traité de Maastricht","La Constitution française"],a:1,e:"La CEDH, signée en 1950, protège les droits fondamentaux dans les États membres du Conseil de l'Europe."},
+{theme:"valeurs",q:"Où siège la Cour européenne des droits de l'homme ?",c:["Bruxelles","Genève","Strasbourg","La Haye"],a:2,e:"La Cour européenne des droits de l'homme siège à Strasbourg, France."},
+{theme:"valeurs",q:"Qu'est-ce que le droit à la dignité humaine ?",c:["Un privilège","Un droit inaliénable au respect de sa personne","Un droit payant","Un droit pour les riches"],a:1,e:"La dignité humaine est le droit fondamental de tout être humain à être respecté."},
+{theme:"valeurs",q:"Qui peut modifier la Constitution française ?",c:["Le seul Président","Le Parlement en Congrès ou le peuple par référendum","Le Premier ministre","Le Conseil constitutionnel"],a:1,e:"La Constitution peut être révisée par le Parlement réuni en Congrès (article 89) ou par référendum."},
+{theme:"valeurs",q:"Quelle disposition constitutionnelle est intangible ?",c:["La durée du mandat présidentiel","La forme républicaine du gouvernement","La liste des droits","La composition du Sénat"],a:1,e:"L'article 89 interdit de réviser la forme républicaine du gouvernement."},
+{theme:"valeurs",q:"Qu'est-ce que la fraternité dans la devise républicaine ?",c:["Appartenance à une même famille","La solidarité entre tous les membres de la société","L'aide uniquement aux Français","La charité religieuse"],a:1,e:"La fraternité exprime la solidarité nationale et l'entraide entre tous."},
+{theme:"valeurs",q:"Que représente le Panthéon à Paris ?",c:["Le siège du gouvernement","Le mausolée des grands hommes de la Nation","L'Académie française","Un musée"],a:1,e:"Le Panthéon est le mausolée des personnalités illustres ayant servi la Nation française."},
+{theme:"valeurs",q:"Quel principe interdit de juger deux fois pour le même fait ?",c:["La présomption d'innocence","Non bis in idem","L'habeas corpus","La rétroactivité"],a:1,e:"Le principe 'non bis in idem' garantit que nul ne peut être poursuivi deux fois pour les mêmes faits."},
+{theme:"valeurs",q:"Qu'est-ce que la Charte de l'environnement de 2004 garantit ?",c:["Le droit à la nature sauvage","Le droit à un environnement sain et le devoir de protéger l'environnement","Le droit à la chasse","Le droit de construire"],a:1,e:"La Charte de l'environnement (valeur constitutionnelle depuis 2005) garantit le droit à un environnement sain."},
+{theme:"valeurs",q:"Quelle est la date de la fête nationale française ?",c:["1er juillet","4 juillet","14 juillet","25 août"],a:2,e:"Le 14 juillet est la fête nationale française, commémorant la prise de la Bastille en 1789."},
+{theme:"valeurs",q:"Qu'est-ce que le droit d'association ?",c:["Le droit de former des partis politiques uniquement","Le droit de se regrouper librement pour défendre une cause","Le droit à la famille","Un droit réservé aux syndicats"],a:1,e:"Le droit d'association, garanti par la loi de 1901, permet à toute personne de créer ou rejoindre une association."},
+{theme:"valeurs",q:"Quel est l'anniversaire de la Déclaration universelle des droits de l'homme ?",c:["14 juillet","10 décembre","26 août","4 novembre"],a:1,e:"La Déclaration universelle des droits de l'homme a été adoptée le 10 décembre 1948."},
+{theme:"valeurs",q:"Qu'est-ce que la liberté de conscience ?",c:["Le droit d'agir sans respecter la loi","Le droit d'avoir ses propres convictions religieuses ou philosophiques","Le droit de ne pas voter","Le droit de refuser tout service"],a:1,e:"La liberté de conscience est le droit pour chacun d'avoir ses propres convictions sans ingérence de l'État."},
+{theme:"valeurs",q:"Depuis quand la peine de mort est-elle abolie en France ?",c:["1946","1958","1981","2000"],a:2,e:"La peine de mort a été abolie en France le 9 octobre 1981."},
+{theme:"valeurs",q:"Qu'est-ce que l'antisémitisme en droit français ?",c:["Une opinion politique","Une idéologie raciste contre les Juifs, punie par la loi","Un mouvement religieux","Une philosophie"],a:1,e:"L'antisémitisme est puni par la loi française (incitation à la haine, discrimination)."},
+{theme:"valeurs",q:"Quel est le principe de non-rétroactivité de la loi pénale ?",c:["Une loi peut s'appliquer aux faits passés","Une loi pénale plus sévère ne s'applique pas aux faits commis avant son entrée en vigueur","Les lois s'appliquent dès la publication","Les lois pénales s'appliquent à tous les faits"],a:1,e:"Le principe de non-rétroactivité protège : on ne peut être jugé plus sévèrement qu'au moment des faits."},
+{theme:"valeurs",q:"Le service militaire est-il obligatoire en France en 2026 ?",c:["Oui, pour tous les hommes à 18 ans","Non, il a été suspendu en 2001","Oui, pour hommes et femmes","Non, sauf en guerre"],a:1,e:"Le service militaire obligatoire a été suspendu en 2001. La JDC est cependant obligatoire."},
+{theme:"valeurs",q:"Qu'est-ce que la Journée défense et citoyenneté (JDC) ?",c:["Un jour de congé","Une journée obligatoire pour les 16-25 ans sur la défense nationale","Une cérémonie militaire","Une journée de commémoration"],a:1,e:"La JDC est obligatoire pour tous les Français entre 16 et 25 ans."},
+{theme:"valeurs",q:"La France est-elle officiellement catholique ?",c:["Oui, le catholicisme est religion d'État","Non, la loi de 1905 a mis fin à tout culte officiel","Oui, depuis le Concordat de 1801","Non, mais le catholicisme est favorisé"],a:1,e:"Non, la France est laïque depuis 1905. L'État ne reconnaît aucune religion officielle."},
+{theme:"valeurs",q:"Qu'est-ce que le Concordat en Alsace-Moselle ?",c:["Un traité militaire","Un régime local maintenant financement des cultes et enseignement religieux","Un accord commercial","Un statut fiscal particulier"],a:1,e:"En Alsace-Moselle, le Concordat de 1801 n'a pas été abrogé par la loi de 1905, ce régime particulier subsiste."},
+{theme:"institutions",q:"Qu'est-ce que la motion de censure ?",c:["Une critique de la politique","Un vote de l'Assemblée pour renverser le gouvernement","Un veto du Président","Une dissolution"],a:1,e:"La motion de censure, si adoptée à la majorité absolue, oblige le gouvernement à démissionner."},
+{theme:"institutions",q:"Quel article prévoit la motion de censure ?",c:["Article 12","Article 34","Article 49","Article 52"],a:2,e:"L'article 49 de la Constitution prévoit la mise en jeu de la responsabilité du gouvernement."},
+{theme:"institutions",q:"Qu'est-ce qu'une loi organique ?",c:["Une loi sur l'environnement","Une loi qui précise l'organisation des pouvoirs publics, soumise au Conseil constitutionnel","Une loi ordinaire","Une loi régionale"],a:1,e:"Les lois organiques précisent l'organisation des pouvoirs publics et sont obligatoirement soumises au Conseil constitutionnel."},
+{theme:"institutions",q:"Qu'est-ce qu'une ordonnance (article 38) ?",c:["Une décision de justice","Un acte du gouvernement dans un domaine législatif, après habilitation du Parlement","Un décret ministériel","Un arrêté municipal"],a:1,e:"L'ordonnance est prise par le gouvernement sur habilitation parlementaire dans un domaine normalement législatif."},
+{theme:"institutions",q:"Quelle est la durée du mandat des conseillers municipaux ?",c:["4 ans","5 ans","6 ans","7 ans"],a:2,e:"Les conseillers municipaux sont élus pour 6 ans."},
+{theme:"institutions",q:"Qu'est-ce qu'un EPCI ?",c:["Une entreprise publique","Un regroupement de communes pour mutualiser des compétences","Un organisme d'État","Un syndicat"],a:1,e:"Un EPCI (Établissement public de coopération intercommunale) regroupe plusieurs communes pour exercer des compétences en commun."},
+{theme:"institutions",q:"Qu'est-ce que la Cour de justice de l'UE ?",c:["Un tribunal pénal international","La juridiction garantissant l'interprétation uniforme du droit européen","Un tribunal commercial","Un comité consultatif"],a:1,e:"La CJUE (Luxembourg) garantit l'interprétation uniforme et le respect du droit de l'UE."},
+{theme:"institutions",q:"Qu'est-ce que le Conseil de l'Europe ?",c:["La même chose que l'UE","Une organisation internationale (47 membres) distincte de l'UE, veillant aux droits humains","Une institution de l'UE","Un organe de l'ONU"],a:1,e:"Le Conseil de l'Europe (47 membres, Strasbourg) est une organisation distincte de l'UE, axée sur les droits humains."},
+{theme:"institutions",q:"Quel est le traité fondateur de l'UE actuellement en vigueur ?",c:["Traité de Rome (1957)","Traité de Maastricht (1992)","Traité de Lisbonne (2007/2009)","Traité de Nice (2001)"],a:2,e:"Le traité de Lisbonne, entré en vigueur en 2009, est le traité de base de l'UE."},
+{theme:"institutions",q:"Qu'est-ce que le droit de veto au Conseil de sécurité de l'ONU ?",c:["Le droit de parler en premier","Le droit des 5 membres permanents de bloquer toute résolution","Un droit de vote double","Un droit de proposer des résolutions"],a:1,e:"Les 5 membres permanents (France, RU, USA, Russie, Chine) peuvent bloquer toute résolution du Conseil de sécurité."},
+{theme:"institutions",q:"Qui est le Secrétaire général de l'ONU depuis 2017 ?",c:["Ban Ki-moon","António Guterres","Kofi Annan","Boutros Boutros-Ghali"],a:1,e:"António Guterres (Portugal) est Secrétaire général des Nations Unies depuis 2017."},
+{theme:"institutions",q:"Quel est le rôle de la Commission nationale consultative des droits de l'homme (CNCDH) ?",c:["Juger les violations des droits","Conseiller le gouvernement sur les droits de l'homme","Gérer les plaintes","Contrôler les médias"],a:1,e:"La CNCDH est une institution nationale indépendante conseillant sur les droits de l'homme."},
+{theme:"institutions",q:"Qu'est-ce que le Défenseur des droits regroupe ?",c:["Médiateur, Défenseur des enfants, HALDE et CNDS","Médiateur et Conseil d'État","Cour des comptes et DGSI","CSM et CNCDH"],a:0,e:"Depuis 2011, le Défenseur des droits regroupe le Médiateur de la République, le Défenseur des enfants, la HALDE et le CNDS."},
+{theme:"institutions",q:"Qui est le garde des Sceaux ?",c:["Le Président du Conseil d'État","Le ministre de la Justice","Le Président de la Cour de cassation","Le Procureur général"],a:1,e:"Le garde des Sceaux est le ministre de la Justice."},
+{theme:"institutions",q:"Qu'est-ce que le Conseil supérieur de la magistrature (CSM) ?",c:["Le syndicat des magistrats","L'organe qui assure l'indépendance de la justice","Le tribunal des juges","Un organe parlementaire"],a:1,e:"Le CSM veille à l'indépendance de l'autorité judiciaire et propose les nominations des magistrats."},
+{theme:"institutions",q:"Quelle est la différence entre magistrats du siège et du parquet ?",c:["Aucune","Les magistrats du siège jugent (inamovibles) ; le parquet poursuit (hiérarchiquement dépendant)","Le siège est plus important","Le parquet est indépendant"],a:1,e:"Les magistrats du siège (juges) sont inamovibles ; les magistrats du parquet dépendent du ministère de la Justice."},
+{theme:"institutions",q:"Qu'est-ce que l'immunité parlementaire ?",c:["Droit de ne jamais être jugés","Irresponsabilité pour votes et opinions, protection contre l'arrestation sans autorisation","Avantages fiscaux","Protection contre les critiques"],a:1,e:"L'immunité parlementaire comprend l'irresponsabilité (opinions et votes) et l'inviolabilité."},
+{theme:"institutions",q:"Comment les Français de l'étranger sont-ils représentés à l'Assemblée ?",c:["Ils ne le sont pas","Par 11 députés élus dans des circonscriptions pour les Français hors de France","Par des représentants nommés","Par le MAE"],a:1,e:"11 circonscriptions pour les Français établis hors de France permettent d'élire 11 députés."},
+{theme:"institutions",q:"Qu'est-ce que la Commission mixte paritaire (CMP) ?",c:["Une commission d'enquête","7 députés et 7 sénateurs pour trouver un accord sur un texte en désaccord","Une commission des femmes","Une commission budgétaire"],a:1,e:"La CMP réunit 7 députés et 7 sénateurs pour trouver un compromis sur un texte en désaccord."},
+{theme:"institutions",q:"Qu'est-ce que la déconcentration ?",c:["Transfert de compétences aux collectivités","Délégation de pouvoirs à des représentants locaux de l'État","Privatisation des services","Suppression de l'État central"],a:1,e:"La déconcentration délègue des décisions à des agents de l'État dans les territoires (préfets, recteurs...)."},
+{theme:"institutions",q:"Combien de membres compte le Parlement européen (depuis 2024) ?",c:["620","705","720","800"],a:2,e:"Le Parlement européen compte 720 membres (eurodéputés) depuis les élections de 2024."},
+{theme:"institutions",q:"Quel est le mandat des eurodéputés ?",c:["4 ans","5 ans","6 ans","7 ans"],a:1,e:"Les eurodéputés sont élus pour 5 ans."},
+{theme:"institutions",q:"Combien de pays utilisent l'euro en 2025 ?",c:["17","19","20","27"],a:2,e:"En 2025, 20 pays de l'UE utilisent l'euro (zone euro)."},
+{theme:"institutions",q:"Qu'est-ce que l'espace Schengen ?",c:["L'UE élargie","Un espace de libre circulation sans contrôle aux frontières intérieures","L'EEE","La zone de libre-échange"],a:1,e:"L'espace Schengen regroupe des pays européens où les contrôles aux frontières intérieures sont supprimés."},
+{theme:"institutions",q:"Qu'est-ce que la Cour d'assises ?",c:["Une juridiction civile","La juridiction qui juge les crimes avec un jury","Un tribunal correctionnel","Une juridiction administrative"],a:1,e:"La Cour d'assises juge les crimes (faits les plus graves) avec un jury de citoyens."},
+{theme:"institutions",q:"Qu'est-ce que le tribunal correctionnel ?",c:["Un tribunal qui juge les crimes","Un tribunal qui juge les délits","Un tribunal administratif","Un tribunal de commerce"],a:1,e:"Le tribunal correctionnel juge les délits (faits de moyenne gravité)."},
+{theme:"institutions",q:"Qu'est-ce que le Conseil des prud'hommes ?",c:["Un tribunal administratif","Une juridiction réglant les litiges entre employeurs et salariés","Un tribunal de commerce","Un tribunal familial"],a:1,e:"Le Conseil de prud'hommes règle les litiges individuels entre employeurs et salariés."},
+{theme:"institutions",q:"Quel est le rôle du procureur de la République ?",c:["Défendre les accusés","Représenter le ministère public et soutenir l'accusation","Juger les affaires","Gérer les prisons"],a:1,e:"Le procureur dirige la police judiciaire, décide des poursuites et soutient l'accusation."},
+{theme:"institutions",q:"Quel est le rôle de la Police nationale ?",c:["Protéger les intérêts financiers","Assurer la sécurité publique en milieu urbain","Surveiller les frontières exclusivement","Protéger les forêts"],a:1,e:"La Police nationale assure la sécurité publique, notamment en milieu urbain."},
+{theme:"institutions",q:"Quel est le rôle de la Gendarmerie nationale ?",c:["Uniquement la surveillance des routes","Assurer la sécurité publique en zone rurale et périurbaine","Gérer les prisons","Surveiller les côtes"],a:1,e:"La Gendarmerie assure la sécurité en zones rurales et périurbaines."},
+{theme:"institutions",q:"Qu'est-ce que la police municipale ?",c:["La même que la Police nationale","Une police locale sous l'autorité du maire","Un service de médiation","Une branche de la Gendarmerie"],a:1,e:"La police municipale est placée sous l'autorité du maire et s'occupe de la tranquillité locale."},
+{theme:"droits",q:"Qu'est-ce que la liberté d'expression ?",c:["Le droit de tout dire sans limite","Le droit d'exprimer ses opinions dans le respect de la loi","Le droit de critiquer uniquement le gouvernement","Le droit à l'anonymat"],a:1,e:"La liberté d'expression est le droit d'exprimer ses opinions, sous réserve des limites légales."},
+{theme:"droits",q:"Qu'est-ce que la liberté de la presse ?",c:["Le droit de publier n'importe quoi","Le droit d'informer librement dans le respect de la loi","Le droit de critiquer l'État uniquement","L'exonération fiscale des journalistes"],a:1,e:"La liberté de la presse est le droit d'informer et publier librement, dans le respect des lois."},
+{theme:"droits",q:"Qu'est-ce que la prescription en droit pénal ?",c:["Une ordonnance médicale","Le délai au-delà duquel les poursuites ne peuvent plus être engagées","La fin d'une peine","La libération conditionnelle"],a:1,e:"La prescription est le délai au-delà duquel une action pénale ne peut plus être engagée."},
+{theme:"droits",q:"Les crimes contre l'humanité sont-ils prescrits en France ?",c:["Oui, après 30 ans","Oui, après 50 ans","Non, ils sont imprescriptibles","Oui, après 20 ans"],a:2,e:"Les crimes contre l'humanité et les crimes de guerre sont imprescriptibles en droit français."},
+{theme:"droits",q:"Qu'est-ce que l'autorité parentale ?",c:["Le droit d'imposer ses choix à ses enfants adultes","L'ensemble des droits et devoirs des parents pour protéger leurs enfants mineurs","Un pouvoir exclusif de la mère","Un droit accordé par le juge"],a:1,e:"L'autorité parentale est l'ensemble des droits et devoirs confiés aux parents pour leurs enfants mineurs."},
+{theme:"droits",q:"Qu'est-ce que le droit à la scolarité pour les enfants en France ?",c:["Un droit optionnel","L'instruction est obligatoire de 3 à 16 ans pour tout enfant résidant en France","Un droit uniquement pour les citoyens","Un service payant"],a:1,e:"L'instruction est obligatoire de 3 à 16 ans pour tous les enfants résidant en France."},
+{theme:"droits",q:"Qu'est-ce que l'aide juridictionnelle ?",c:["Une subvention pour les avocats","Une prise en charge des frais de justice pour les personnes aux revenus insuffisants","Un fonds d'urgence","Un syndicat d'avocats"],a:1,e:"L'aide juridictionnelle permet aux personnes aux ressources insuffisantes de bénéficier d'un avocat."},
+{theme:"droits",q:"Qu'est-ce que la liberté conditionnelle ?",c:["La libération définitive","La remise en liberté avant la fin de la peine sous conditions","Un pardon présidentiel","Une grâce amnistiante"],a:1,e:"La liberté conditionnelle permet de libérer un détenu avant la fin de sa peine, sous conditions imposées."},
+{theme:"droits",q:"Quel est le délai de prescription pour les crimes en France ?",c:["6 ans","10 ans","20 ans","Imprescriptibles"],a:2,e:"Le délai de prescription pour les crimes est de 20 ans en France."},
+{theme:"droits",q:"Qu'est-ce que le droit de retrait au travail ?",c:["Le droit de quitter l'entreprise","Le droit de se retirer d'une situation présentant un danger grave et imminent","Le droit de prendre des congés","Le droit de refuser des heures supp."],a:1,e:"Le droit de retrait permet à un salarié de quitter son poste face à un danger grave et imminent."},
+{theme:"droits",q:"Qu'est-ce que la loi DALO de 2007 ?",c:["Une loi sur l'urbanisme","La loi instaurant le droit au logement opposable","Une loi sur la construction","Une loi fiscale"],a:1,e:"La loi DALO (2007) permet aux personnes sans logement décent de saisir un tribunal administratif."},
+{theme:"droits",q:"Qu'est-ce que la sécurité sociale au sens large ?",c:["Une police privée","Le système public de protection contre les risques sociaux","Une assurance facultative","Un service pour fonctionnaires"],a:1,e:"La Sécurité sociale (1945) protège contre la maladie, la maternité, la vieillesse, les accidents du travail."},
+{theme:"droits",q:"Qu'est-ce que le droit au repos hebdomadaire légal ?",c:["Un repos d'une journée par semaine minimum","Un repos de deux journées par semaine","Un repos de 35 heures","Applicable uniquement le dimanche"],a:0,e:"Tout salarié a droit à au moins 24 heures de repos consécutives par semaine."},
+{theme:"droits",q:"Qu'est-ce que le Compte personnel de formation (CPF) ?",c:["Un compte bancaire","Un compte crédité annuellement permettant de financer des formations","Un compte d'épargne retraite","Une allocation chômage"],a:1,e:"Le CPF crédite chaque actif d'un montant annuel utilisable pour financer des formations professionnelles."},
+{theme:"droits",q:"Qu'est-ce que le droit d'accès aux soins ?",c:["Un droit réservé aux assurés","Un droit fondamental pour toute personne résidant en France","Un droit uniquement pour les Français","Un service payant"],a:1,e:"Toute personne en France a droit à des soins, notamment via la complémentaire santé solidaire."},
+{theme:"droits",q:"Le travail du dimanche est-il possible en France ?",c:["Non, totalement interdit","Oui, avec des dérogations dans certains secteurs","Oui, sans restriction","Non, sauf pour les médecins"],a:1,e:"Le travail du dimanche est possible dans les secteurs à dérogation permanente ou sur autorisation."},
+{theme:"droits",q:"Qu'est-ce que la tutelle pour un adulte ?",c:["La même chose que la curatelle","Une protection pour les adultes totalement incapables, où le tuteur représente la personne","Un service hospitalier","Un contrat de mandataire"],a:1,e:"La tutelle est la protection la plus complète : le tuteur représente la personne protégée pour tous les actes."},
+{theme:"droits",q:"Qu'est-ce que la curatelle ?",c:["Une tutelle pour mineurs","Une mesure pour adultes dont les facultés sont altérées, leur laissant une certaine autonomie","Un contrat d'assurance","Une aide sociale"],a:1,e:"La curatelle est une protection juridique pour les adultes dont les facultés sont partiellement altérées."},
+{theme:"droits",q:"Qu'est-ce que le PACS par rapport au mariage ?",c:["Le PACS est identique au mariage","Le PACS est un contrat plus souple avec moins d'obligations que le mariage","Le PACS est plus protecteur que le mariage","Le PACS est une forme de mariage religieux"],a:1,e:"Le PACS est un contrat de vie commune plus souple que le mariage, avec moins d'obligations."},
+{theme:"droits",q:"Qu'est-ce que le droit de grève dans les services publics ?",c:["Interdit totalement","Possible avec un préavis de 5 jours et parfois un service minimum","Sans restriction","Interdit sauf autorisé"],a:1,e:"Dans les services publics, la grève nécessite un préavis de 5 jours et peut être soumise à un service minimum."},
+{theme:"droits",q:"Quelle est la durée maximale d'un CDD ?",c:["3 mois","6 mois","18 mois (24 mois maximum avec renouvellement)","36 mois"],a:2,e:"Un CDD peut durer au maximum 18 mois, renouvelable une fois, soit 24 mois au total."},
+{theme:"droits",q:"Qu'est-ce que la discrimination à l'embauche ?",c:["Un recrutement sélectif normal","Le refus d'embaucher basé sur critères prohibés (origine, sexe, âge, handicap...)","Un test de compétences","La préférence pour l'expérience"],a:1,e:"La discrimination à l'embauche est interdite sur les critères prohibés par la loi."},
+{theme:"droits",q:"Qu'est-ce que le droit à l'information en matière de santé ?",c:["Le médecin n'informe pas","Tout patient a le droit d'être informé de son état et des traitements","Réservé à la famille","Dépend du médecin"],a:1,e:"La loi Kouchner de 2002 consacre le droit du patient à l'information médicale complète."},
+{theme:"droits",q:"Qu'est-ce que la loi Gayssot ?",c:["Une loi sur les transports","La loi de 1990 punissant la contestation des crimes contre l'humanité (négationnisme)","Une loi sur l'éducation","Une loi sur l'immigration"],a:1,e:"La loi Gayssot (1990) punit la négation ou la minimisation des crimes contre l'humanité reconnus par les tribunaux."},
+{theme:"droits",q:"À quel âge la responsabilité pénale d'un mineur est-elle engagée ?",c:["6 ans","10 ans","13 ans","15 ans"],a:1,e:"Depuis le Code de la justice pénale des mineurs (2021), les mineurs de 13 ans et plus peuvent être condamnés pénalement."},
+{theme:"droits",q:"Qu'est-ce que le droit de visite et d'hébergement ?",c:["Le droit de visiter n'importe qui","Le droit du parent non-gardien de voir ses enfants selon un calendrier","Le droit de visiter les prisons","Un droit hôtelier"],a:1,e:"Le droit de visite et d'hébergement permet au parent sans garde principale de voir ses enfants."},
+{theme:"droits",q:"Qu'est-ce que la pension alimentaire ?",c:["Une aide au logement","Une somme versée par un parent à l'autre pour l'entretien des enfants","Un revenu de retraite","Une aide de l'État"],a:1,e:"La pension alimentaire est versée par un parent à l'autre pour contribuer à l'entretien des enfants."},
+{theme:"droits",q:"Qu'est-ce que le droit à l'éducation garanti par le Préambule de 1946 ?",c:["Un droit pour les riches","Le droit de l'enfant à recevoir une instruction gratuite et laïque","Un droit optionnel","Un service commercial"],a:1,e:"Le Préambule de 1946 garantit à tout enfant et adulte le droit à l'instruction et à la formation."},
+{theme:"droits",q:"Combien de types de divorces existent en France ?",c:["2","3","4","5"],a:2,e:"Il existe 4 types de divorce : consentement mutuel, accepté, altération du lien conjugal, faute."},
+{theme:"histoire",q:"Qui est Vercingétorix ?",c:["Un général romain","Le chef gaulois qui a capitulé devant César à Alésia en 52 av. J.-C.","Un roi franc","Un conquérant viking"],a:1,e:"Vercingétorix est le chef arverne qui a mené la résistance gauloise et capitulé à Alésia en 52 av. J.-C."},
+{theme:"histoire",q:"Qu'est-ce que l'Édit de Nantes (1598) ?",c:["Un traité de paix avec l'Espagne","Un édit de tolérance religieuse accordé aux Protestants par Henri IV","Une loi sur l'impôt","Un accord commercial"],a:1,e:"L'Édit de Nantes (1598) accordait aux Protestants la liberté de culte, mettant fin aux guerres de Religion."},
+{theme:"histoire",q:"Qui a révoqué l'Édit de Nantes en 1685 ?",c:["Richelieu","Mazarin","Louis XIV","Colbert"],a:2,e:"Louis XIV a révoqué l'Édit de Nantes par l'Édit de Fontainebleau le 22 octobre 1685."},
+{theme:"histoire",q:"Qu'est-ce que le Code civil napoléonien ?",c:["Un code militaire","Un code unifiant les lois civiles françaises, promulgué en 1804","Un code pénal","Un code commercial"],a:1,e:"Le Code civil (1804) a unifié le droit civil français. Il est encore largement en vigueur."},
+{theme:"histoire",q:"Qu'est-ce que la Restauration (1814-1830) ?",c:["Le retour de Napoléon","Le retour de la monarchie avec Louis XVIII puis Charles X","La proclamation de la République","Un régime républicain"],a:1,e:"La Restauration est le retour de la monarchie bourbonienne avec Louis XVIII (1814) et Charles X (1824)."},
+{theme:"histoire",q:"Qui a écrit J'accuse pour défendre Dreyfus ?",c:["Victor Hugo","Émile Zola","Georges Clemenceau","Jean Jaurès"],a:1,e:"Émile Zola a publié 'J'accuse' le 13 janvier 1898 dans L'Aurore."},
+{theme:"histoire",q:"Quelle bataille fut la plus symbolique du front français en 1916 ?",c:["La Marne","L'Yser","Verdun","La Somme"],a:2,e:"La bataille de Verdun (1916) est la plus emblématique de la Première Guerre mondiale côté français."},
+{theme:"histoire",q:"En quelle année la CEE a-t-elle été créée ?",c:["1951","1957","1962","1968"],a:1,e:"La CEE a été créée par le traité de Rome signé le 25 mars 1957."},
+{theme:"histoire",q:"Qu'est-ce que le traité de l'Élysée (1963) ?",c:["Un traité de paix","Le traité scellant la réconciliation et l'amitié franco-allemande","Un accord commercial","L'entrée dans l'OTAN"],a:1,e:"Le traité de l'Élysée (22 janvier 1963) a scellé l'amitié franco-allemande."},
+{theme:"histoire",q:"Qu'est-ce que la Rafle du Vél d'Hiv (1942) ?",c:["Une rafle de résistants","La rafle des 16-17 juillet 1942 par la police française de Juifs de Paris","Une opération militaire","Une arrestation politique"],a:1,e:"La Rafle du Vél d'Hiv (16-17 juillet 1942) a vu la police française arrêter 13 152 Juifs, livrés aux nazis."},
+{theme:"histoire",q:"Qu'est-ce que mai 1968 ?",c:["Une révolution réussie","Une crise sociale marquée par grèves et manifestations étudiantes","Une guerre civile","Un coup d'État"],a:1,e:"Mai 1968 est une période de crise sociale majeure avec grèves massives et manifestations étudiantes."},
+{theme:"histoire",q:"Quel Président a nationalisé de nombreuses entreprises en 1981-1982 ?",c:["Pompidou","Giscard d'Estaing","François Mitterrand","Chirac"],a:2,e:"François Mitterrand a mené de grandes nationalisations bancaires et industrielles en 1981-1982."},
+{theme:"histoire",q:"Quelle est la superficie approximative de la France métropolitaine ?",c:["451 000 km²","551 000 km²","643 000 km²","750 000 km²"],a:1,e:"La France métropolitaine a une superficie d'environ 551 000 km²."},
+{theme:"histoire",q:"Quel est le plus grand aéroport de France ?",c:["Lyon-Saint-Exupéry","Nice","Paris-Charles de Gaulle","Paris-Orly"],a:2,e:"Paris-Charles de Gaulle (Roissy) est le plus grand aéroport de France."},
+{theme:"histoire",q:"Qui est Claude Monet ?",c:["Un sculpteur","Un peintre impressionniste, auteur des Nymphéas","Un architecte","Un musicien"],a:1,e:"Claude Monet (1840-1926) est le chef de file de l'impressionnisme."},
+{theme:"histoire",q:"Qui est Marcel Proust ?",c:["Un peintre","L'auteur d'À la recherche du temps perdu","Un philosophe existentialiste","Un compositeur"],a:1,e:"Marcel Proust (1871-1922) est l'auteur d'À la recherche du temps perdu (1913-1927)."},
+{theme:"histoire",q:"Qui est Albert Camus ?",c:["Un peintre surréaliste","L'écrivain et philosophe auteur de L'Étranger et La Peste, prix Nobel 1957","Un compositeur","Un homme politique"],a:1,e:"Albert Camus (1913-1960), écrivain de l'absurde, a reçu le prix Nobel de littérature en 1957."},
+{theme:"histoire",q:"Quel est le plus grand port de France ?",c:["Nantes","Le Havre","Marseille","Dunkerque"],a:1,e:"Le Havre est le plus grand port à conteneurs de France."},
+{theme:"histoire",q:"En quelle année la France a-t-elle accueilli les Jeux Olympiques à Paris en 2024 ?",c:["Pour la 1re fois","Pour la 2e fois","Pour la 3e fois","Pour la 4e fois"],a:2,e:"Paris a accueilli les JO en 1900, 1924 et 2024 (3e fois)."},
+{theme:"histoire",q:"Quel est le musée le plus visité au monde, situé à Paris ?",c:["Le musée d'Orsay","Le musée du Louvre","Le Centre Pompidou","Le Grand Palais"],a:1,e:"Le musée du Louvre est le musée le plus visité au monde."},
+{theme:"histoire",q:"Qui est Jean-Paul Sartre ?",c:["Un romancier du XIXe s.","Le philosophe existentialiste français, auteur de L'Être et le Néant","Un physicien","Un mathématicien"],a:1,e:"Jean-Paul Sartre (1905-1980) est le chef de file de l'existentialisme français."},
+{theme:"histoire",q:"Quelle ville française est connue pour son festival de cinéma ?",c:["Paris","Cannes","Lyon","Nice"],a:1,e:"Le Festival de Cannes est l'un des plus prestigieux festivals de cinéma au monde."},
+{theme:"histoire",q:"Quelle est la monnaie française avant l'euro ?",c:["Le Napoléon","Le Franc","L'Écu","Le Florin"],a:1,e:"Le franc français était la monnaie nationale jusqu'au 31 décembre 2001."},
+{theme:"histoire",q:"En quelle année Napoléon a-t-il été vaincu une première fois ?",c:["1812","1813","1814","1815"],a:2,e:"Napoléon a abdiqué pour la première fois le 6 avril 1814, avant d'être exilé à l'île d'Elbe."},
+{theme:"histoire",q:"Qu'est-ce que la bataille d'Austerlitz (1805) ?",c:["Une victoire de Wellington","La victoire napoléonienne sur l'Autriche et la Russie, chef-d'œuvre militaire","Une défaite napoléonienne","Une bataille de 1914-18"],a:1,e:"Austerlitz (2 décembre 1805) est surnommée la 'bataille des trois empereurs', victoire brillante de Napoléon."},
+{theme:"histoire",q:"Qui est Auguste Rodin ?",c:["Un peintre impressionniste","Le sculpteur français auteur du Penseur et du Baiser","Un architecte","Un musicien"],a:1,e:"Auguste Rodin (1840-1917) est le père de la sculpture moderne (Le Penseur, Le Baiser)."},
+{theme:"societe",q:"Qu'est-ce que le ticket modérateur ?",c:["Un billet de transport","La partie des frais non remboursée par la Sécurité sociale","Un formulaire médical","Une pénalité médicale"],a:1,e:"Le ticket modérateur est la part des frais médicaux non remboursée par l'assurance maladie."},
+{theme:"societe",q:"Qu'est-ce qu'une mutuelle complémentaire santé ?",c:["La Sécurité sociale","Une assurance complémentaire qui rembourse tout ou partie du ticket modérateur","Un service hospitalier","Une association de patients"],a:1,e:"La mutuelle complète les remboursements de la Sécurité sociale."},
+{theme:"societe",q:"Qu'est-ce que le BTS ?",c:["Un diplôme de lycée","Un diplôme bac+2 de l'enseignement supérieur professionnel","Un diplôme de licence","Un certificat d'aptitude"],a:1,e:"Le BTS est un diplôme bac+2 préparé dans des sections de techniciens supérieurs."},
+{theme:"societe",q:"Qu'est-ce que l'obligation alimentaire ?",c:["L'obligation de nourrir ses animaux","L'obligation légale de subvenir aux besoins de ses ascendants et descendants directs","L'obligation de nourrir ses voisins","Un contrat de restauration"],a:1,e:"L'obligation alimentaire impose aux enfants de subvenir aux besoins de leurs parents dans le besoin, et réciproquement."},
+{theme:"societe",q:"Que rembourse la Sécurité sociale à 100% ?",c:["Tous les médicaments","Les affections de longue durée (ALD), la maternité, les accidents graves","Aucun soin","Seulement les hospitalisations"],a:1,e:"La prise en charge à 100% s'applique aux ALD, à la maternité après 6 mois et à certains accidents."},
+{theme:"societe",q:"Qu'est-ce que le RSA (Revenu de solidarité active) ?",c:["Une aide pour les handicapés","Un revenu minimum garanti aux personnes sans ressources suffisantes","Un revenu pour les retraités","Un prêt de l'État"],a:1,e:"Le RSA garantit un niveau minimum de ressources."},
+{theme:"societe",q:"Qu'est-ce que l'AAH ?",c:["Une aide pour les parents d'enfants handicapés","Une aide financière pour les adultes handicapés ne pouvant pas travailler","Un arrêt maladie prolongé","Une pension d'invalidité"],a:1,e:"L'AAH est une aide pour les adultes ayant un taux d'incapacité d'au moins 80%."},
+{theme:"societe",q:"Qu'est-ce que la MDPH ?",c:["Un hôpital spécialisé","Le guichet unique gérant les droits et prestations pour les personnes handicapées","Un tribunal spécial","Un service de placement"],a:1,e:"La MDPH est le guichet unique pour toutes les demandes liées au handicap."},
+{theme:"societe",q:"Qu'est-ce que le logement HLM ?",c:["Un logement privé moins cher","Un logement à loyer modéré pour les ménages modestes","Un logement de fonctionnaire","Un logement gratuit"],a:1,e:"Le logement HLM est destiné aux personnes dont les revenus sont inférieurs aux plafonds."},
+{theme:"societe",q:"Quel est le taux de TVA sur la restauration ?",c:["5,5%","10%","20%","2,1%"],a:1,e:"La restauration sur place est soumise au taux intermédiaire de TVA de 10%."},
+{theme:"societe",q:"Qu'est-ce que l'URSSAF ?",c:["Un syndicat","L'organisme qui collecte les cotisations sociales","Une caisse de retraite","Un organisme de formation"],a:1,e:"L'URSSAF collecte les cotisations sociales et contributions des employeurs."},
+{theme:"societe",q:"Qu'est-ce que le prélèvement à la source ?",c:["Un versement annuel","Un prélèvement mensuel directement sur le salaire ou la pension","Un impôt différé","Une retenue pour le chômage"],a:1,e:"Depuis 2019, l'impôt sur le revenu est prélevé directement chaque mois à la source."},
+{theme:"societe",q:"Qu'est-ce que le don d'organes par consentement présumé ?",c:["Un don obligatoire","Toute personne est donneuse sauf si elle s'y est opposée (registre des refus)","Un acte payant","Un droit limité aux adultes"],a:1,e:"Depuis 2017, toute personne est présumée donneuse sauf si elle est inscrite sur le registre des refus."},
+{theme:"societe",q:"Qu'est-ce que le dépôt de garantie dans une location ?",c:["Un cadeau au propriétaire","Une somme versée à l'entrée dans les lieux, restituée à la fin sauf dégradations","Un paiement de loyer d'avance","Une assurance habitation"],a:1,e:"Le dépôt de garantie est restitué dans les 2 mois suivant la sortie des lieux."},
+{theme:"societe",q:"Qu'est-ce que France Travail (ex-Pôle Emploi) ?",c:["Un syndicat","L'opérateur public du service de l'emploi en France","Une agence de placement privée","Un organisme de formation"],a:1,e:"France Travail (anciennement Pôle Emploi) gère l'inscription des demandeurs d'emploi et verse les allocations chômage."},
+{theme:"societe",q:"Qu'est-ce que le CPF (Compte personnel de formation) ?",c:["Un compte bancaire","Un compte crédité annuellement pour financer des formations professionnelles","Un compte d'épargne retraite","Une allocation chômage"],a:1,e:"Le CPF crédite chaque actif d'un montant annuel utilisable pour financer des formations."},
+{theme:"societe",q:"Qu'est-ce que la CNSA ?",c:["Un organisme bancaire","L'organisme finançant l'aide aux personnes âgées et handicapées pour leur autonomie","Un syndicat","Un organisme de retraite"],a:1,e:"La CNSA finance et régule les aides à domicile et en établissement pour les personnes âgées et handicapées."},
+{theme:"societe",q:"Qu'est-ce que le plan local d'urbanisme (PLU) ?",c:["Un programme de travaux","Le document définissant les règles d'utilisation des sols dans une commune","Un plan économique","Un registre de propriété"],a:1,e:"Le PLU est le principal document d'urbanisme de la commune."},
+{theme:"societe",q:"Qu'est-ce que la politique de la ville ?",c:["La gestion des villes","Une politique ciblant les quartiers défavorisés pour réduire les inégalités","La politique de transport","La politique culturelle"],a:1,e:"La politique de la ville cible les quartiers prioritaires (QPV) pour lutter contre les inégalités."},
+{theme:"societe",q:"Qu'est-ce que le REP (Réseau d'éducation prioritaire) ?",c:["Une sélection scolaire","Un dispositif octroyant des moyens supplémentaires aux écoles de quartiers défavorisés","Un système de transport scolaire","Une prime pour les professeurs"],a:1,e:"Les REP/REP+ reçoivent des moyens supplémentaires pour compenser les inégalités scolaires."},
+{theme:"societe",q:"Qu'est-ce que la CNIL ?",c:["Un syndicat","La Commission nationale de l'informatique et des libertés, protégeant les données personnelles","Un organe judiciaire","Un service fiscal"],a:1,e:"La CNIL veille à la protection des données personnelles en France."},
+{theme:"societe",q:"Qu'est-ce que l'INSEE ?",c:["Un syndicat","L'Institut national de la statistique et des études économiques","Un organisme fiscal","Un service de renseignement"],a:1,e:"L'INSEE produit et diffuse les statistiques officielles de la France."},
+{theme:"societe",q:"Qu'est-ce que le PIB ?",c:["Le revenu des ménages","La valeur totale de la production d'un pays sur une période","Le niveau de vie des citoyens","Les exportations uniquement"],a:1,e:"Le PIB mesure la richesse créée sur un territoire national."},
+{theme:"societe",q:"Qu'est-ce que le bénévolat ?",c:["Un travail non déclaré","Une activité exercée librement et sans rémunération au service d'une cause","Un emploi aidé","Un stage non payé"],a:1,e:"Le bénévolat est une activité librement choisie, exercée sans rémunération."},
+{theme:"societe",q:"Qu'est-ce que la journée de solidarité ?",c:["Un jour férié supprimé","Une journée de travail non rémunérée dont le produit finance la dépendance","Un congé obligatoire","Un don aux associations"],a:1,e:"La journée de solidarité (loi de 2004) finance la CNSA via une journée de travail supplémentaire."},
+{theme:"societe",q:"Qu'est-ce que la trêve hivernale pour les locataires ?",c:["Une pause des loyers","La période (1er nov-31 mars) pendant laquelle les expulsions locatives sont interdites","Un congé spécial","Une aide chauffage"],a:1,e:"Pendant la trêve hivernale, les expulsions de locataires sont suspendues."},
+{theme:"societe",q:"Qu'est-ce qu'un contrat d'apprentissage ?",c:["Un contrat pour adultes","Un contrat alternant formation en entreprise et CFA, pour les 16-29 ans","Un stage non rémunéré","Un contrat saisonnier"],a:1,e:"L'apprentissage alterne formation pratique en entreprise et formation théorique en CFA."},
+{theme:"societe",q:"Qu'est-ce que le CESU ?",c:["Un chèque cadeaux","Un moyen de paiement simplifié pour les services à la personne à domicile","Un bon d'achat alimentaire","Un chèque vacances"],a:1,e:"Le CESU est un titre de paiement simplifiant les démarches pour les emplois à domicile."},
+{theme:"societe",q:"Qu'est-ce que le droit au repos dominical ?",c:["Travailler le dimanche est interdit sans exception","Le dimanche est le jour de repos légal hebdomadaire, avec de nombreuses dérogations","Tout salarié doit se reposer le dimanche","Le commerce est interdit le dimanche"],a:1,e:"Le droit au repos dominical est un principe général soumis à de nombreuses dérogations légales."},
+{theme:"societe",q:"Qu'est-ce que le permis de construire ?",c:["Une autorisation de louer","L'autorisation administrative obligatoire pour construire ou agrandir un bâtiment","Un certificat de propriété","Une déclaration fiscale"],a:1,e:"Le permis de construire est une autorisation préalable obligatoire pour toute construction importante."},
 ];
-export default QUESTIONS;
+// END OF QUESTIONS
+
+export default ALL_QUESTIONS;
