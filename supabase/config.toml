@@ -1,4 +1,10 @@
 
+[functions.translate]
+enabled = true
+verify_jwt = true
+import_map = "./functions/translate/deno.json"
+entrypoint = "./functions/translate/index.ts"
+
 [functions.stripe-webhook]
 enabled = true
 verify_jwt = true

@@ -4,7 +4,6 @@ import FrenchPractice from './FrenchPractice';
 
 const STRIPE_LINK = "https://buy.stripe.com/9B63cxewr3QW3w2bXG0sU00";
 const TRIAL_PER_THEME = 10;
-const ANTHROPIC_KEY = (import.meta.env.VITE_ANTHROPIC_KEY || "").trim();
 const SUPABASE_URL = "https://vnctdsnfxvwvmkxqygaw.supabase.co";
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZuY3Rkc25meHZ3dm1reHF5Z2F3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzEyNDk1NjcsImV4cCI6MjA4NjgyNTU2N30.qGAMzs2doeMFo3HoIlp4ao2s-crYR2JoOL_A7xrRCm8";
 
@@ -364,25 +363,23 @@ async function validateCode(raw) {
 }
 
 const BATCH_SIZE = 5;
-const TRANSLATION_ENDPOINT = "https://api.anthropic.com/v1/messages";
+// Translation runs through the Supabase Edge Function "translate" so the
+// Anthropic key stays server-side and is never shipped in the browser bundle.
+const TRANSLATION_ENDPOINT = `${SUPABASE_URL}/functions/v1/translate`;
 
 async function translateBatch(questions, targetLangCode) {
-  if (!ANTHROPIC_KEY) throw new Error("Missing Anthropic API key.");
-  const langName = LANGUAGES.find(l=>l.code===targetLangCode)?.label||targetLangCode;
-  const payload = questions.map(q=>({q:q.q,c:q.c,e:q.e}));
   const res = await fetch(TRANSLATION_ENDPOINT, {
-    method:"POST",
-    headers:{"Content-Type":"application/json","Authorization":`Bearer ${ANTHROPIC_KEY}`},
-    body: JSON.stringify({
-      model:"claude-sonnet-4-20250514", max_tokens:2000, temperature:0.2,
-      messages:[{role:"user",content:`Translate these French civic exam questions into ${langName}. Return ONLY a valid JSON array, no markdown. Keep numbers, dates, proper nouns unchanged. Structure: [{"q":"...","c":["...","...","...","..."],"e":"..."}]\n${JSON.stringify(payload)}`}],
-    }),
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "apikey": SUPABASE_KEY,
+      "Authorization": `Bearer ${SUPABASE_KEY}`,
+    },
+    body: JSON.stringify({ questions: questions.map(q=>({q:q.q,c:q.c,e:q.e})), lang: targetLangCode }),
   });
-  const text = await res.text();
   if (!res.ok) throw new Error(`Translation failed (${res.status})`);
-  const data = JSON.parse(text);
-  const merged = (data.content||[]).map(b=>b.text||"").join("").replace(/```json|```/g,"").trim();
-  const parsed = JSON.parse(merged);
+  const data = await res.json();
+  const parsed = data.translations;
   if (!Array.isArray(parsed)) throw new Error("Bad translation response");
   return parsed.map((translated, idx) => {
     const original = questions[idx];
@@ -445,7 +442,7 @@ function StatsCard({ label, value }) {
 }
 
 // ── SIDEBAR NAV ───────────────────────────────────────────────────────────────
-function Sidebar({ activeLevel, setActiveLevel, screen, setScreen, isPremium, stats, stopAll }) {
+function Sidebar({ activeLevel, setActiveLevel, screen, setScreen, isPremium, stats, stopAll, onNavigate }) {
   const navItems = [
     { id:"home", label:"Accueil", icon:"🏠" },
     ...LEVELS.map(l => ({ id:`level-${l.id}`, label:l.label, icon:l.icon, levelId:l.id })),
@@ -460,8 +457,8 @@ function Sidebar({ activeLevel, setActiveLevel, screen, setScreen, isPremium, st
         <div style={{display:"flex",alignItems:"center",gap:8}}>
           <span style={{fontSize:20}}>📖</span>
           <div>
-            <span style={{fontWeight:800,fontSize:14,color:"#1A3A5C"}}>prépa</span>
-            <span style={{fontWeight:800,fontSize:14,color:"#0F1923"}}>civique</span>
+            <span style={{fontWeight:800,fontSize:14,color:"#E8B84B"}}>prépa</span>
+            <span style={{fontWeight:800,fontSize:14,color:"#FFFFFF"}}>civique</span>
           </div>
         </div>
         {isPremium && <div style={{marginTop:6,background:"rgba(232,184,75,.2)",color:"#E8B84B",borderRadius:4,padding:"2px 8px",fontSize:10,fontWeight:700,display:"inline-block"}}>⭐ PREMIUM</div>}
@@ -479,6 +476,7 @@ function Sidebar({ activeLevel, setActiveLevel, screen, setScreen, isPremium, st
               if (item.id === "home") { setActiveLevel(null); setScreen("home"); }
               else if (item.levelId) { setActiveLevel(item.levelId); setScreen("level"); }
               else { setActiveLevel(null); setScreen(item.id); }
+              onNavigate?.();
             }} style={{
               display:"flex",alignItems:"center",gap:10,width:"100%",padding:"9px 12px",
               borderRadius:8,border:"none",cursor:"pointer",textAlign:"left",marginBottom:2,
@@ -494,7 +492,7 @@ function Sidebar({ activeLevel, setActiveLevel, screen, setScreen, isPremium, st
 
       {/* Unlock banner */}
       {!isPremium && (
-        <div style={{margin:"10px",background:"#0F1923",borderRadius:8,padding:"14px 12px",color:"white",cursor:"pointer"}} onClick={() => setScreen("pricing")}>
+        <div style={{margin:"10px",background:"#1A3A5C",borderRadius:8,padding:"14px 12px",color:"white",cursor:"pointer"}} onClick={() => { setScreen("pricing"); onNavigate?.(); }}>
           <div style={{fontWeight:700,fontSize:12,marginBottom:4}}>🔓 Débloquer l'accès</div>
           <div style={{fontSize:11,opacity:.7,marginBottom:8}}>{ALL_QUESTIONS.length} questions · 11 langues · Audio</div>
           <div style={{background:"#1A3A5C",borderRadius:6,padding:"6px",textAlign:"center",fontWeight:700,fontSize:12}}>5,00 € →</div>
@@ -711,6 +709,7 @@ export default function App() {
   const [lang, setLang]             = useState(() => { try { return localStorage.getItem("prepacivique_lang")||"fr"; } catch { return "fr"; } });
   const [showLangMenu, setShowLangMenu] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [translations, setTranslations] = useState({});
   const [xlateProgress, setXlateProgress] = useState(0);
   const [xlateError, setXlateError] = useState(null);
@@ -1034,8 +1033,9 @@ export default function App() {
         .choice-wrong{border-color:#C0392B!important;background:#FDF0EF!important}
         .shimmer{animation:shimmer 1.2s ease infinite}
         ::-webkit-scrollbar{width:4px}::-webkit-scrollbar-thumb{background:#D1D5DB;border-radius:4px}
-        @media(max-width:640px){.sidebar{display:none!important}.mobile-header{display:flex!important}}
-        .mobile-header{display:none}
+        .mobile-only{display:none}
+        @media(max-width:640px){.sidebar{display:none!important}.mobile-only{display:flex!important}}
+        @keyframes slideIn{from{transform:translateX(-100%)}to{transform:translateX(0)}}
       `}</style>
 
       {/* Paywall */}
@@ -1099,16 +1099,32 @@ export default function App() {
         );
       })()}
 
-      {/* Sidebar */}
+      {/* Sidebar (desktop) */}
       <div className="sidebar">
         <Sidebar activeLevel={activeLevel} setActiveLevel={setActiveLevel} screen={screen} setScreen={setScreen} isPremium={isPremium} stats={globalStats} stopAll={stopAll}/>
       </div>
+
+      {/* Mobile nav drawer */}
+      {mobileNavOpen && (
+        <div onClick={() => setMobileNavOpen(false)}
+          style={{position:"fixed",inset:0,background:"rgba(0,0,0,.5)",zIndex:300,display:"flex"}}>
+          <div onClick={e=>e.stopPropagation()} style={{animation:"slideIn .25s ease",boxShadow:"4px 0 24px rgba(0,0,0,.25)"}}>
+            <Sidebar activeLevel={activeLevel} setActiveLevel={setActiveLevel} screen={screen} setScreen={setScreen} isPremium={isPremium} stats={globalStats} stopAll={stopAll} onNavigate={() => setMobileNavOpen(false)}/>
+          </div>
+          <button onClick={() => setMobileNavOpen(false)} aria-label="Fermer le menu"
+            style={{position:"absolute",top:14,right:16,background:"rgba(255,255,255,.15)",border:"none",color:"white",borderRadius:8,width:38,height:38,fontSize:20,cursor:"pointer"}}>✕</button>
+        </div>
+      )}
 
       {/* Main content */}
       <div style={{flex:1,overflowY:"auto"}}>
         {/* Top bar */}
         <div style={{background:"white",borderBottom:"1px solid #EAECEF",padding:"0 24px",height:56,display:"flex",alignItems:"center",justifyContent:"space-between",position:"sticky",top:0,zIndex:50}}>
           <div style={{display:"flex",alignItems:"center",gap:8}}>
+            <button className="mobile-only" onClick={() => setMobileNavOpen(true)} aria-label="Ouvrir le menu"
+              style={{alignItems:"center",justifyContent:"center",background:"none",border:"1px solid #E5E7EB",borderRadius:6,padding:"5px 9px",cursor:"pointer",color:"#374151",fontSize:16,lineHeight:1}}>
+              ☰
+            </button>
             {(screen!=="home"||activeLevel) && (
               <button onClick={() => { stopAll(); if(screen==="quiz"||screen==="results"||screen==="listen"){setScreen(activeLevel?"level":"home");}else{setActiveLevel(null);setScreen("home");} }}
                 style={{background:"none",border:"none",cursor:"pointer",color:"#6B7280",fontSize:13,display:"flex",alignItems:"center",gap:4,padding:"6px 10px",borderRadius:6,fontWeight:500}}>

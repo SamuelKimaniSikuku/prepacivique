@@ -31,10 +31,18 @@ npm run build
 prepacivique/
 ├── src/
 │   ├── main.jsx              # Point d'entrée React
-│   ├── App.jsx               # Application principale
+│   ├── App3.jsx              # Application principale
+│   ├── FrenchPractice.jsx    # Module de pratique du français (DILF/DELF/…)
 │   └── data/
-│       ├── questions.js      # 736 questions (5 thèmes)
-│       └── codes.js          # Hashes SHA-256 des codes d'activation
+│       ├── questions.js      # 736 questions civiques (5 thèmes)
+│       └── french_questions.js
+├── public/
+│   ├── robots.txt
+│   ├── sitemap.xml
+│   └── og-image.svg          # Image de partage (Open Graph)
+├── supabase/
+│   └── functions/
+│       └── translate/        # Proxy serveur pour la traduction (clé Anthropic côté serveur)
 ├── index.html
 ├── package.json
 ├── vite.config.js
@@ -74,7 +82,7 @@ Le système utilise **Stripe** pour les paiements et des **codes d'activation** 
 
 ### Configurer Stripe
 
-1. Ouvrez `src/App.jsx`
+1. Ouvrez `src/App3.jsx`
 2. Modifiez la ligne :
    ```js
    const STRIPE_LINK = "https://buy.stripe.com/VOTRE_LIEN";
@@ -82,12 +90,26 @@ Le système utilise **Stripe** pour les paiements et des **codes d'activation** 
 
 ### Gérer les codes d'activation
 
-- Les codes sont dans `/activation-codes.txt` (**ne pas publier ce fichier**)
-- Les hashes SHA-256 sont dans `src/data/codes.js` (sûr à publier)
-- Envoyez un code par email après chaque paiement
+- Les codes d'activation sont validés côté serveur via Supabase (`activation_codes`)
 - Format : `CIVIC-XXXX-XXXX-XXXX`
 
-> ⚠️ **Important** : ajoutez `activation-codes.txt` à votre `.gitignore` pour ne pas publier les codes bruts.
+---
+
+## 🌍 Traduction (fonction Edge Supabase)
+
+La traduction des questions passe par la fonction Edge **`translate`**, ce qui garde la clé Anthropic **côté serveur** (jamais incluse dans le bundle navigateur).
+
+```bash
+# 1. Définir le secret (clé Anthropic) — une seule fois
+supabase secrets set ANTHROPIC_API_KEY=sk-ant-...
+
+# 2. Déployer la fonction
+supabase functions deploy translate
+```
+
+Le client appelle `${SUPABASE_URL}/functions/v1/translate` avec la clé anon Supabase.
+
+> ⚠️ **N'utilisez jamais** `VITE_ANTHROPIC_KEY` côté client : toute variable `VITE_*` est intégrée au bundle public et donc extractible.
 
 ---
 
@@ -113,9 +135,9 @@ base: '/prepacivique/',
 
 - **React 18** + **Vite 5**
 - **Web Speech API** — synthèse vocale native (sans coût)
-- **Claude API** (Anthropic) — traduction IA
+- **Supabase Edge Functions** — proxy de traduction (Claude / Anthropic) côté serveur
 - **Stripe** — paiement
-- **crypto.subtle** — validation des codes côté client (SHA-256)
+- **Supabase** — validation des codes d'activation
 
 ---
 

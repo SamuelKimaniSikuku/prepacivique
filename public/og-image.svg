@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0F1923"/>
+      <stop offset="1" stop-color="#1A3A5C"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <rect x="0" y="0" width="16" height="630" fill="#C41E3A"/>
+  <rect x="16" y="0" width="16" height="630" fill="#FFFFFF"/>
+  <rect x="32" y="0" width="16" height="630" fill="#1A3A5C"/>
+  <text x="96" y="200" font-family="'DM Sans',Arial,sans-serif" font-size="40" fill="#E8B84B" font-weight="700">📖 PrépaCivique</text>
+  <text x="96" y="320" font-family="'DM Sans',Arial,sans-serif" font-size="92" fill="#FFFFFF" font-weight="800">Examen civique 2026</text>
+  <text x="96" y="410" font-family="'DM Sans',Arial,sans-serif" font-size="40" fill="#C9D4E0" font-weight="500">736 questions officielles · Examens blancs · Audio</text>
+  <text x="96" y="475" font-family="'DM Sans',Arial,sans-serif" font-size="40" fill="#C9D4E0" font-weight="500">Traduction en 11 langues · CSP · CR · Naturalisation</text>
+  <rect x="96" y="525" width="300" height="64" rx="10" fill="#E8B84B"/>
+  <text x="246" y="567" font-family="'DM Sans',Arial,sans-serif" font-size="32" fill="#0F1923" font-weight="700" text-anchor="middle">prepexamcivique.fr</text>
+</svg>
