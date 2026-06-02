@@ -1,7 +1,7 @@
 {
   "name": "prepacivique-2026",
   "version": "1.0.0",
-  "description": "Application de préparation à l'examen civique 2026 — 736 questions officielles",
+  "description": "Application de préparation à l'examen civique 2026 — 743 questions d'entraînement",
   "type": "module",
   "scripts": {
     "dev": "vite",

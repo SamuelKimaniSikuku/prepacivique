@@ -542,7 +542,7 @@ function LevelDashboard({ level, stats, onStartQuiz, onPromptQuiz, onStartMockEx
             }
           </div>
           <div style={{fontWeight:700,fontSize:15,color:"#0F1923",marginBottom:4}}>Pratiquer par sections</div>
-          <div style={{fontSize:12,color:"#6B7280"}}>{isPremium ? "Accès aux 441 questions officielles" : "Entraînez-vous sur les 5 thèmes de l'examen"}</div>
+          <div style={{fontSize:12,color:"#6B7280"}}>{isPremium ? `Accès aux ${ALL_QUESTIONS.length} questions d'entraînement` : "Entraînez-vous sur les 5 thèmes de l'examen"}</div>
         </div>
 
         {/* Mock exam */}
@@ -1235,11 +1235,11 @@ export default function App() {
           {screen==="pricing" && (
             <div className="fade">
               <h2 style={{margin:"0 0 6px",fontSize:22,fontWeight:700,color:"#0F1923"}}>Accès complet</h2>
-              <p style={{margin:"0 0 24px",color:"#6B7280"}}>{ALL_QUESTIONS.length} questions officielles · Mode écoute · 11 langues</p>
+              <p style={{margin:"0 0 24px",color:"#6B7280"}}>{ALL_QUESTIONS.length} questions d'entraînement · Mode écoute · 11 langues</p>
               <div style={{background:"white",borderRadius:12,border:"2px solid #1A3A5C",padding:"28px",maxWidth:420,marginBottom:20}}>
                 <div style={{fontWeight:800,fontSize:28,color:"#0F1923",marginBottom:4}}>5,00 €</div>
                 <div style={{color:"#6B7280",fontSize:13,marginBottom:20}}>Paiement unique · Accès à vie</div>
-                {["✓ "+ALL_QUESTIONS.length+" questions officielles","✓ Mode écoute Play All","✓ 11 langues + traduction IA","✓ Résultats et analyses détaillés","✓ Vitesse audio réglable","✓ Accès à vie"].map(f=>(
+                {["✓ "+ALL_QUESTIONS.length+" questions d'entraînement","✓ Mode écoute Play All","✓ 11 langues + traduction IA","✓ Résultats et analyses détaillés","✓ Vitesse audio réglable","✓ Accès à vie"].map(f=>(
                   <div key={f} style={{fontSize:13,color:"#374151",marginBottom:8,fontWeight:500}}>{f}</div>
                 ))}
                 <a href={STRIPE_LINK} target="_blank" rel="noopener noreferrer" style={{display:"block",marginTop:20,background:"#0F1923",color:"white",borderRadius:8,padding:"13px",fontWeight:700,fontSize:14,textDecoration:"none",textAlign:"center"}}>

@@ -1,0 +1,37 @@
+# PrépaCivique 2026
+
+> Application web de préparation à l'examen civique français, obligatoire depuis le 1er janvier 2026 pour la carte de séjour pluriannuelle (CSP), la carte de résident (CR) et la naturalisation. Des centaines de questions d'entraînement à choix multiples avec explications, examens blancs chronométrés, mode écoute audio et traduction en 11 langues.
+
+PrépaCivique est un outil de révision en ligne (React + Vite). Il aide les personnes étrangères à préparer le test de connaissance des principes, valeurs, institutions, histoire et règles de vie en société de la République française.
+
+## L'examen civique
+
+- Obligatoire depuis le 1er janvier 2026 pour certains titres de séjour et la naturalisation française.
+- Évalue la connaissance des principes et valeurs de la République, des institutions, de l'histoire, de la géographie et de la vie en société.
+- Trois parcours sont proposés : CSP (carte de séjour pluriannuelle), CR (carte de résident) et NAT (naturalisation).
+
+## Les 5 thèmes
+
+- **Principes & Valeurs** : devise, symboles, laïcité, Déclaration des droits de l'homme de 1789, égalité, liberté.
+- **Institutions & Politique** : Président, Gouvernement, Assemblée nationale, Sénat, Conseil constitutionnel, élections.
+- **Droits & Devoirs** : droit de vote, justice, protection sociale, impôts, obligations du citoyen.
+- **Histoire, Géographie & Culture** : grandes dates, Révolution française, Républiques, géographie, patrimoine.
+- **Vie en Société** : services publics, école, santé, démarches administratives, vivre-ensemble.
+
+## Fonctionnalités
+
+- Questions à choix multiples avec explications détaillées (contenu d'entraînement, non officiel OFII).
+- Examens blancs chronométrés au format officiel.
+- Mode écoute audio (question, réponse, explication) via la synthèse vocale du navigateur.
+- Traduction des questions en 11 langues : français, anglais, arabe, espagnol, portugais, italien, allemand, turc, chinois, roumain, polonais.
+- Suivi de progression par thème et par parcours.
+
+## Accès
+
+- Entraînement gratuit par thème.
+- Accès complet (toutes les questions, examens blancs, mode écoute, traductions) : paiement unique de 5 €.
+
+## Liens
+
+- Application : https://prepexamcivique.fr/
+- Plan du site : https://prepexamcivique.fr/sitemap.xml

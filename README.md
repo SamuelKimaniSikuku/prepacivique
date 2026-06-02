@@ -2,7 +2,7 @@
 
 Application de préparation à l'examen civique français — obligatoire depuis le **1er janvier 2026**.
 
-**736 questions officielles** couvrant les 5 thèmes du programme, mode écoute audio, traduction en 11 langues, et système d'activation par code.
+**743 questions d'entraînement** couvrant les 5 thèmes du programme, mode écoute audio, traduction en 11 langues, et système d'activation par code.
 
 ---
 
@@ -34,7 +34,7 @@ prepacivique/
 │   ├── App3.jsx              # Application principale
 │   ├── FrenchPractice.jsx    # Module de pratique du français (DILF/DELF/…)
 │   └── data/
-│       ├── questions.js      # 736 questions civiques (5 thèmes)
+│       ├── questions.js      # 743 questions civiques (5 thèmes)
 │       └── french_questions.js
 ├── public/
 │   ├── robots.txt
@@ -57,12 +57,12 @@ prepacivique/
 
 | Thème | Questions |
 |---|---|
-| ⚖️ Principes & Valeurs | 108 |
-| 🏛️ Institutions & Politique | 111 |
-| 📜 Droits & Devoirs | 91 |
-| 🗺️ Histoire, Géo & Culture | 193 |
-| 🤝 Vie en Société | 233 |
-| **Total** | **736** |
+| ⚖️ Principes & Valeurs | 138 |
+| 🏛️ Institutions & Politique | 141 |
+| 📜 Droits & Devoirs | 122 |
+| 🗺️ Histoire, Géo & Culture | 166 |
+| 🤝 Vie en Société | 176 |
+| **Total** | **743** |
 
 ---
 
