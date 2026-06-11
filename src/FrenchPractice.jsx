@@ -33,9 +33,18 @@ export default function FrenchPractice({ isPremium, onBack }) {
   const [wrong, setWrong]           = useState([]);
   const [infoExam, setInfoExam]     = useState(null);
   const [speaking, setSpeaking]     = useState(false);
+  // ── Listen mode (mode écoute) ──
+  const [listenQs, setListenQs]     = useState([]);
+  const [listenIdx, setListenIdx]   = useState(0);
+  const [listenPlaying, setPlaying] = useState(false);
+  const [listenPhase, setPhase]     = useState("question"); // question | answer | explanation | pause
+  const [speed, setSpeed]           = useState(1);
   const synthRef = useRef(window.speechSynthesis);
+  const listenRef = useRef({ active:false, idx:0, qs:[], speed:1, paused:false });
 
   useEffect(() => () => synthRef.current?.cancel(), []);
+
+  const SPEEDS = [0.75, 1, 1.25, 1.5];
 
   const speak = useCallback((text) => {
     if (!synthRef.current) return;
@@ -48,6 +57,90 @@ export default function FrenchPractice({ isPremium, onBack }) {
     setSpeaking(true);
     synthRef.current.speak(utt);
   }, [speaking]);
+
+  // ── Listen mode engine ──────────────────────────────────────────────────────
+  const speakOne = useCallback((text, onEnd) => {
+    if (!synthRef.current) { onEnd?.(); return; }
+    const utt = new SpeechSynthesisUtterance(text);
+    utt.lang = "fr-FR";
+    utt.rate = 0.95 * (listenRef.current.speed || 1);
+    utt.onend = () => onEnd?.();
+    utt.onerror = () => onEnd?.();
+    synthRef.current.speak(utt);
+  }, []);
+
+  const runListenFrom = useCallback((idx) => {
+    const st = listenRef.current;
+    if (!st.active || st.paused) return;
+    const qs = st.qs;
+    if (idx >= qs.length) { st.active = false; setPlaying(false); setPhase("question"); return; }
+    st.idx = idx;
+    setListenIdx(idx);
+    const q = qs[idx];
+    setPhase("question");
+    speakOne(`Question ${idx + 1} sur ${qs.length}. ${q.q}`, () => {
+      if (!st.active || st.paused) return;
+      setPhase("answer");
+      speakOne(`La bonne réponse est : ${q.c[q.a]}.`, () => {
+        if (!st.active || st.paused) return;
+        setPhase("explanation");
+        speakOne(q.e, () => {
+          if (!st.active || st.paused) return;
+          setPhase("pause");
+          runListenFrom(idx + 1);
+        });
+      });
+    });
+  }, [speakOne]);
+
+  const startListen = (levelId, catId = "all") => {
+    synthRef.current?.cancel(); setSpeaking(false);
+    let pool = FRENCH_QUESTIONS.filter(q => q.level === levelId);
+    if (catId !== "all") pool = pool.filter(q => q.cat === catId);
+    pool = [...pool].sort(() => Math.random() - 0.5);
+    if (!pool.length) return;
+    setListenQs(pool);
+    setListenIdx(0); setPhase("question"); setPlaying(true);
+    listenRef.current = { active:true, idx:0, qs:pool, speed, paused:false };
+    setView("listen");
+    runListenFrom(0);
+  };
+
+  const toggleListenPause = () => {
+    const st = listenRef.current;
+    if (st.paused) {
+      st.paused = false; setPlaying(true);
+      runListenFrom(st.idx);
+    } else {
+      st.paused = true; setPlaying(false);
+      synthRef.current?.cancel();
+    }
+  };
+
+  const skipTo = (i) => {
+    const st = listenRef.current;
+    if (i < 0 || i >= st.qs.length) return;
+    synthRef.current?.cancel();
+    st.idx = i; st.paused = false; st.active = true;
+    setListenIdx(i); setPlaying(true);
+    runListenFrom(i);
+  };
+
+  const changeSpeed = (s) => {
+    setSpeed(s);
+    listenRef.current.speed = s;
+    if (listenRef.current.active && !listenRef.current.paused) {
+      synthRef.current?.cancel();
+      runListenFrom(listenRef.current.idx);
+    }
+  };
+
+  const stopListen = () => {
+    listenRef.current.active = false; listenRef.current.paused = false;
+    synthRef.current?.cancel();
+    setPlaying(false); setPhase("question");
+    setView("home");
+  };
 
   const startQuiz = (levelId, catId = "all") => {
     synthRef.current?.cancel();
@@ -135,11 +228,19 @@ export default function FrenchPractice({ isPremium, onBack }) {
               <div style={{fontSize:12,color:lv.dark?"rgba(255,255,255,.7)":"#4A4540",lineHeight:1.6,marginBottom:12}}>{lv.desc}</div>
               <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
                 <span style={{fontSize:11,color:lv.dark?"rgba(255,255,255,.6)":"#8A8480"}}>{count} questions</span>
-                <button
-                  onClick={e => { e.stopPropagation(); startQuiz(lv.id); }}
-                  style={{background:lv.color,color:"white",border:"none",borderRadius:4,padding:"6px 14px",cursor:"pointer",fontWeight:700,fontSize:12}}>
-                  Commencer →
-                </button>
+                <div style={{display:"flex",gap:6}}>
+                  <button
+                    onClick={e => { e.stopPropagation(); startListen(lv.id); }}
+                    title="Mode écoute"
+                    style={{background:lv.dark?"rgba(255,255,255,.15)":"rgba(0,0,0,.06)",color:lv.dark?"white":lv.color,border:"none",borderRadius:4,padding:"6px 10px",cursor:"pointer",fontWeight:700,fontSize:12}}>
+                    🎧
+                  </button>
+                  <button
+                    onClick={e => { e.stopPropagation(); startQuiz(lv.id); }}
+                    style={{background:lv.color,color:"white",border:"none",borderRadius:4,padding:"6px 14px",cursor:"pointer",fontWeight:700,fontSize:12}}>
+                    Commencer →
+                  </button>
+                </div>
               </div>
             </div>
           );
@@ -168,10 +269,17 @@ export default function FrenchPractice({ isPremium, onBack }) {
               );
             })}
           </div>
-          <button onClick={() => startQuiz(selectedLevel, selectedCat)}
-            style={{background:"linear-gradient(135deg,#1C1917,#C41E3A)",color:"white",border:"none",borderRadius:4,padding:"12px 24px",cursor:"pointer",fontWeight:700,fontSize:14,width:"100%",boxShadow:"0 4px 16px rgba(196,30,58,.2)"}}>
-            🎯 Commencer {selectedCat === "all" ? "toutes les catégories" : FRENCH_CATEGORIES.find(c=>c.id===selectedCat)?.label}
-          </button>
+          <div style={{display:"flex",gap:8}}>
+            <button onClick={() => startQuiz(selectedLevel, selectedCat)}
+              style={{flex:1,background:"linear-gradient(135deg,#1C1917,#C41E3A)",color:"white",border:"none",borderRadius:4,padding:"12px 18px",cursor:"pointer",fontWeight:700,fontSize:14,boxShadow:"0 4px 16px rgba(196,30,58,.2)"}}>
+              🎯 Commencer {selectedCat === "all" ? "toutes les catégories" : FRENCH_CATEGORIES.find(c=>c.id===selectedCat)?.label}
+            </button>
+            <button onClick={() => startListen(selectedLevel, selectedCat)}
+              title="Écouter les questions"
+              style={{background:"#6B21A8",color:"white",border:"none",borderRadius:4,padding:"12px 18px",cursor:"pointer",fontWeight:700,fontSize:14,whiteSpace:"nowrap"}}>
+              🎧 Écouter
+            </button>
+          </div>
         </div>
       )}
 
@@ -245,6 +353,90 @@ export default function FrenchPractice({ isPremium, onBack }) {
           style={{display:"block",textAlign:"center",background:"white",border:"2px solid #C41E3A",borderRadius:4,padding:"12px",color:"#C41E3A",fontWeight:700,fontSize:14,textDecoration:"none",marginBottom:8}}>
           🔗 Site officiel {infoExam} →
         </a>
+      </div>
+    );
+  }
+
+  // ── LISTEN (mode écoute) ────────────────────────────────────────────────────
+  if (view === "listen" && listenQs.length > 0) {
+    const q = listenQs[listenIdx];
+    const lvInfo = FRENCH_LEVELS.find(l => l.id === q.level);
+    const catInfo = FRENCH_CATEGORIES.find(c => c.id === q.cat);
+    const showAnswer = listenPhase === "answer" || listenPhase === "explanation" || listenPhase === "pause";
+    const showExpl = listenPhase === "explanation" || listenPhase === "pause";
+    const phaseLabel = { question:"🎙 Question", answer:"✅ Réponse", explanation:"💡 Explication", pause:"⏸ Suivant…" }[listenPhase] || "";
+    return (
+      <div className="fade">
+        <button onClick={stopListen} style={{background:"none",border:"none",color:"#C41E3A",fontWeight:700,fontSize:13,cursor:"pointer",marginBottom:16,padding:0}}>← Retour</button>
+
+        {/* Player card */}
+        <div style={{background:"linear-gradient(160deg,#1C1917,#2D1832,#6B21A8)",color:"white",borderRadius:8,padding:"26px 24px",marginBottom:14,position:"relative",overflow:"hidden"}}>
+          <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:14}}>
+            <div style={{display:"inline-flex",alignItems:"center",gap:6,background:"rgba(255,255,255,.13)",border:"1px solid rgba(255,255,255,.2)",borderRadius:6,padding:"4px 12px",fontSize:10,fontWeight:700,letterSpacing:1,textTransform:"uppercase"}}>
+              🎧 Mode Écoute · {lvInfo?.cefr}
+            </div>
+            <span style={{fontSize:12,fontWeight:700,opacity:.85}}>{listenIdx+1} / {listenQs.length}</span>
+          </div>
+
+          {/* Progress */}
+          <div style={{background:"rgba(255,255,255,.15)",borderRadius:6,height:5,overflow:"hidden",marginBottom:18}}>
+            <div style={{width:`${((listenIdx+1)/listenQs.length)*100}%`,height:"100%",background:"#fff",borderRadius:6,transition:"width .4s ease"}}/>
+          </div>
+
+          <div style={{fontSize:10,fontWeight:700,letterSpacing:1,textTransform:"uppercase",opacity:.7,marginBottom:8}}>
+            {catInfo?.icon} {catInfo?.label} · {phaseLabel}
+          </div>
+          <div style={{fontSize:18,fontWeight:700,lineHeight:1.5,fontFamily:"'Playfair Display',serif",marginBottom:14}}>{q.q}</div>
+
+          {showAnswer && (
+            <div className="fade" style={{background:"rgba(255,255,255,.12)",border:"1px solid rgba(255,255,255,.2)",borderRadius:6,padding:"12px 14px",marginBottom:showExpl?10:0}}>
+              <div style={{fontSize:10,fontWeight:700,opacity:.7,marginBottom:4,textTransform:"uppercase",letterSpacing:.8}}>Bonne réponse</div>
+              <div style={{fontSize:14,fontWeight:700}}>{q.c[q.a]}</div>
+            </div>
+          )}
+          {showExpl && (
+            <div className="fade" style={{fontSize:12.5,lineHeight:1.7,opacity:.85}}>{q.e}</div>
+          )}
+
+          {/* Controls */}
+          <div style={{display:"flex",alignItems:"center",justifyContent:"center",gap:18,marginTop:22}}>
+            <button onClick={() => skipTo(listenIdx-1)} disabled={listenIdx===0}
+              style={{background:"none",border:"none",color:"white",cursor:listenIdx===0?"default":"pointer",opacity:listenIdx===0?.3:1,fontSize:22,padding:0}}>⏮</button>
+            <button onClick={toggleListenPause}
+              style={{background:"white",color:"#6B21A8",border:"none",borderRadius:"50%",width:54,height:54,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",fontSize:20,boxShadow:"0 4px 14px rgba(0,0,0,.3)"}}>
+              {listenPlaying ? "⏸" : "▶"}
+            </button>
+            <button onClick={() => skipTo(listenIdx+1)} disabled={listenIdx>=listenQs.length-1}
+              style={{background:"none",border:"none",color:"white",cursor:listenIdx>=listenQs.length-1?"default":"pointer",opacity:listenIdx>=listenQs.length-1?.3:1,fontSize:22,padding:0}}>⏭</button>
+          </div>
+
+          {/* Speed */}
+          <div style={{display:"flex",justifyContent:"center",gap:8,marginTop:18}}>
+            {SPEEDS.map(s => (
+              <button key={s} onClick={() => changeSpeed(s)}
+                style={{background:speed===s?"#fff":"rgba(255,255,255,.12)",color:speed===s?"#6B21A8":"white",border:"1px solid rgba(255,255,255,.2)",borderRadius:6,padding:"4px 11px",fontSize:11,fontWeight:700,cursor:"pointer"}}>
+                {s}×
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Playlist */}
+        <div style={card}>
+          <div style={{fontWeight:700,fontSize:13,marginBottom:12}}>📃 Liste de lecture ({listenQs.length})</div>
+          <div style={{maxHeight:340,overflowY:"auto",display:"flex",flexDirection:"column",gap:6}}>
+            {listenQs.map((lq, i) => (
+              <div key={i} onClick={() => skipTo(i)}
+                style={{display:"flex",alignItems:"center",gap:11,padding:"10px 12px",borderRadius:4,cursor:"pointer",
+                  background:i===listenIdx?"#F3EAFB":"#fafafa",border:`1px solid ${i===listenIdx?"#6B21A8":"#eef0f8"}`}}>
+                <span style={{width:24,height:24,borderRadius:"50%",flexShrink:0,background:i===listenIdx?"#6B21A8":"#e2e6f3",color:i===listenIdx?"white":"#6B21A8",display:"flex",alignItems:"center",justifyContent:"center",fontSize:11,fontWeight:700}}>
+                  {i===listenIdx && listenPlaying ? "▶" : i+1}
+                </span>
+                <span style={{fontSize:12.5,color:"#1C1917",fontWeight:i===listenIdx?700:400,lineHeight:1.45,overflow:"hidden",textOverflow:"ellipsis",display:"-webkit-box",WebkitLineClamp:2,WebkitBoxOrient:"vertical"}}>{lq.q}</span>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     );
   }
