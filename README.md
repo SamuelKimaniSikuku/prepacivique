@@ -4,6 +4,8 @@ Application de préparation à l'examen civique français — obligatoire depuis
 
 **743 questions d'entraînement** couvrant les 5 thèmes du programme, mode écoute audio, traduction en 11 langues, et système d'activation par code.
 
+La banque française a fait l’objet d’une [revue éditoriale le 7 octobre 2026](docs/question-review-2026-10-07.md) : 175 corrections ou précisions, sources consultables et vérification du mélange des réponses. Il s’agit d’une préparation indépendante, pas d’un corrigé officiel du ministère.
+
 ---
 
 ## 🚀 Démarrage rapide

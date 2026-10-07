@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import ALL_QUESTIONS from './data/questions';
 import { normalizeCode, requestActivation, CODE_MESSAGES } from './activation';
+import { shuffleChoices, translatedChoice } from './quiz';
 
 const STRIPE_LINK = "https://buy.stripe.com/9B63cxewr3QW3w2bXG0sU00";
 const TRIAL_PER_THEME = 10;
@@ -25,7 +26,7 @@ const LEVELS = [
     icon: "🎓",
     color: "#1A3A5C",
     bg: "#F0F4F8",
-    themes: ["valeurs","societe","droits"],
+    themes: ["valeurs","institutions","droits","histoire","societe"],
     desc: "Multi-year residence permit",
   },
   {
@@ -67,6 +68,16 @@ const LANGUAGES = [
 ];
 
 const SPEEDS = [{ label:"0.75×", v:0.75 },{ label:"1×", v:1 },{ label:"1.25×", v:1.25 },{ label:"1.5×", v:1.5 }];
+
+function QuestionSource({ question, light = false }) {
+  if (!question.source) return null;
+  return (
+    <div style={{marginTop:8,fontSize:11,lineHeight:1.6,color:light?"#D1D5DB":"#6B7280"}}>
+      <a href={question.source} target="_blank" rel="noopener noreferrer" style={{color:light?"#DBEAFE":"#1A3A5C",textDecoration:"underline"}}>Source de référence ↗</a>
+      {question.reviewedAt && <span> · Relu le 07/10/2026</span>}
+    </div>
+  );
+}
 
 const BATCH_SIZE = 5;
 // Translation runs through the Supabase Edge Function "translate" so the
@@ -258,12 +269,12 @@ function LevelDashboard({ level, stats, onStartQuiz, onPromptQuiz, onStartMockEx
           <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:12}}>
             <div style={{width:40,height:40,background:"#F3F4F6",borderRadius:8,display:"flex",alignItems:"center",justifyContent:"center",fontSize:18}}>📝</div>
             <div style={{display:"flex",gap:5,alignItems:"center"}}>
-              <span style={{fontSize:11,color:"#9CA3AF"}}>26 examens</span>
+              <span style={{fontSize:11,color:"#9CA3AF"}}>40 questions</span>
               {!isPremium && <span style={{fontSize:12}}>🔒</span>}
             </div>
           </div>
           <div style={{fontWeight:700,fontSize:15,color:"#0F1923",marginBottom:4}}>Passer un examen blanc</div>
-          <div style={{fontSize:12,color:"#6B7280"}}>Simulez l'examen officiel (40 questions, 45 min)</div>
+          <div style={{fontSize:12,color:"#6B7280"}}>Entraînement chronométré (40 questions, 45 min)</div>
         </div>
 
         {/* Listen - Réviser erreurs */}
@@ -353,7 +364,8 @@ function HomeDashboard({ stats, onSelectLevel }) {
   return (
     <div>
       <h1 style={{margin:"0 0 4px",fontSize:22,fontWeight:700,color:"#0F1923"}}>{greeting} !</h1>
-      <p style={{margin:"0 0 24px",color:"#6B7280",fontSize:14}}>Choisissez votre niveau de préparation pour l'examen civique français.</p>
+      <p style={{margin:"0 0 12px",color:"#6B7280",fontSize:14}}>Choisissez votre niveau de préparation pour l'examen civique français.</p>
+      <p style={{margin:"0 0 24px",color:"#6B7280",fontSize:12,lineHeight:1.6}}>Questions d’entraînement indépendantes, non officielles. Contenu français relu le 07/10/2026. <a href="https://formation-civique.interieur.gouv.fr/examen-civique/" target="_blank" rel="noopener noreferrer" style={{color:"#1A3A5C"}}>Consulter les ressources du ministère ↗</a></p>
 
       {/* Global stats */}
       <div style={{display:"flex",gap:12,marginBottom:28,flexWrap:"wrap"}}>
@@ -413,6 +425,7 @@ export default function App() {
   const [selected, setSelected]     = useState(null);
   const [answered, setAnswered]     = useState(false);
   const [scores, setScores]         = useState({});
+  const [answerIndices, setAnswerIndices] = useState({});
   const [wrongAnswers, setWrongAnswers] = useState([]);
   const [allWrongAnswers, setAllWrongAnswers] = useState([]);
   const [mockTimeLeft, setMockTimeLeft] = useState(null);
@@ -575,7 +588,7 @@ export default function App() {
         { text:q.q, lang:"fr", phase:"question" },
         ...(t&&lang!=="fr"?[{text:t.q,lang,phase:"question"}]:[]),
         { text:`La bonne réponse est : ${q.c[q.a]}`, lang:"fr", phase:"answer", ci:q.a },
-        ...(t&&lang!=="fr"?[{text:t.c[q.a],lang,phase:"answer",ci:q.a}]:[]),
+        ...(t&&lang!=="fr"?[{text:translatedChoice(q,t,q.a),lang,phase:"answer",ci:q.a}]:[]),
         ...(listenIncludeExpl?[{text:q.e,lang:"fr",phase:"explanation"},...(t&&lang!=="fr"?[{text:t.e,lang,phase:"explanation"}]:[])]:[] ),
       ];
       let si = 0;
@@ -635,13 +648,7 @@ export default function App() {
     ).slice();
     for (let i=pool.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[pool[i],pool[j]]=[pool[j],pool[i]];}
     // Shuffle choices within each question
-    pool = pool.map(q => {
-      const indices = [0,1,2,3];
-      for(let i=3;i>0;i--){const j=Math.floor(Math.random()*(i+1));[indices[i],indices[j]]=[indices[j],indices[i]];}
-      const newC = indices.map(i => q.c[i]);
-      const newA = indices.indexOf(q.a);
-      return {...q, c: newC, a: newA};
-    });
+    pool = pool.map(q => shuffleChoices(q));
     if (isPremium && limit) { pool = pool.slice(0, limit); }
     if (!isPremium) {
       if (themeId) { pool = pool.slice(0, TRIAL_PER_THEME); }
@@ -651,7 +658,7 @@ export default function App() {
       }
     }
     setCurrentQuizTheme(themeId);
-    setQuizQs(pool); setQIdx(0); setSelected(null); setAnswered(false); setScores({}); setWrongAnswers([]);
+    setQuizQs(pool); setQIdx(0); setSelected(null); setAnswered(false); setScores({}); setAnswerIndices({}); setWrongAnswers([]);
     setIsMockExam(false); setMockTimeLeft(null); setAutoReadQuiz(false);
     setScreen("quiz");
   };
@@ -659,14 +666,8 @@ export default function App() {
   const startMockExam = () => {
     if (!checkPremium("quiz")) return;
     let pool = [...ALL_QUESTIONS].map((q,i)=>({...q,origIdx:i})).sort(()=>Math.random()-.5).slice(0,40);
-    pool = pool.map(q => {
-      const indices = [0,1,2,3];
-      for(let i=3;i>0;i--){const j=Math.floor(Math.random()*(i+1));[indices[i],indices[j]]=[indices[j],indices[i]];}
-      const newC = indices.map(i => q.c[i]);
-      const newA = indices.indexOf(q.a);
-      return {...q, c: newC, a: newA};
-    });
-    setQuizQs(pool); setQIdx(0); setSelected(null); setAnswered(false); setScores({}); setWrongAnswers([]);
+    pool = pool.map(q => shuffleChoices(q));
+    setQuizQs(pool); setQIdx(0); setSelected(null); setAnswered(false); setScores({}); setAnswerIndices({}); setWrongAnswers([]);
     setCurrentQuizTheme(null); setIsMockExam(true); setMockTimeLeft(45*60); setScreen("quiz");
   };
 
@@ -676,6 +677,7 @@ export default function App() {
     setSelected(idx); setAnswered(true);
     const correct = idx === quizQs[qIdx].a;
     setScores(p => ({...p,[qIdx]:correct}));
+    setAnswerIndices(p => ({...p,[qIdx]:idx}));
     if (!correct) setWrongAnswers(p => [...p, quizQs[qIdx]]);
     if (!isPremium) { const theme=quizQs[qIdx].theme; setTrialUsed(u=>({...u,[theme]:Math.max(u[theme]||0,qIdx+1)})); }
     // Update global stats
@@ -1004,7 +1006,7 @@ export default function App() {
                   </div>
                 )}
                 {(listenPhase==="explanation"||listenPhase==="pause") && (
-                  <div style={{background:"rgba(255,255,255,.1)",borderRadius:8,padding:"10px 14px",fontSize:12,lineHeight:1.75}}>💡 {listenCurQ.e}</div>
+                  <div style={{background:"rgba(255,255,255,.1)",borderRadius:8,padding:"10px 14px",fontSize:12,lineHeight:1.75}}>💡 {listenCurQ.e}<QuestionSource question={listenCurQ} light /></div>
                 )}
                 <div style={{display:"flex",justifyContent:"center",alignItems:"center",gap:14,marginTop:20}}>
                   <button onClick={()=>skipTo(Math.max(0,listenIdx-1))} style={{background:"rgba(255,255,255,.15)",border:"none",color:"white",borderRadius:8,width:40,height:40,cursor:"pointer",fontSize:16}}>⏮</button>
@@ -1107,7 +1109,7 @@ export default function App() {
                           <span style={{width:26,height:26,borderRadius:6,background:letterBg,color:letterTx,display:"flex",alignItems:"center",justifyContent:"center",fontSize:12,fontWeight:700,flexShrink:0,marginTop:1,transition:"all .15s"}}>{letter}</span>
                           <div>
                             <div style={{color:showResult&&idx===q.a?"#2E7D52":"#0F1923",fontWeight:showResult&&idx===q.a?600:400}}>{ch}</div>
-                            {t?.c?.[idx]&&lang!=="fr"&&<div style={{fontSize:11.5,color:"#9CA3AF",fontStyle:"italic",marginTop:2,direction:isRTL?"rtl":"ltr"}}>{t.c[idx]}</div>}
+                            {translatedChoice(q,t,idx)&&lang!=="fr"&&<div style={{fontSize:11.5,color:"#9CA3AF",fontStyle:"italic",marginTop:2,direction:isRTL?"rtl":"ltr"}}>{translatedChoice(q,t,idx)}</div>}
                           </div>
                         </button>
                       );
@@ -1133,6 +1135,7 @@ export default function App() {
                         </button>
                       </div>
                       <div style={{fontSize:13,color:"#374151",lineHeight:1.7}}>{q.e}</div>
+                      <QuestionSource question={q} />
                       {t?.e&&lang!=="fr"&&<div style={{marginTop:8,fontSize:12.5,color:"#6B7280",fontStyle:"italic",lineHeight:1.7,direction:isRTL?"rtl":"ltr",borderTop:"1px solid rgba(0,0,0,.06)",paddingTop:8}}>{t.e}</div>}
                     </div>
                   )}
@@ -1179,11 +1182,12 @@ export default function App() {
                         </div>
                         <div style={{fontWeight:600,fontSize:13,color:"#0F1923",marginBottom:8}}>{wq.q}</div>
                         {!correct && feedbackMode==="end" && (
-                          <div style={{fontSize:12,color:"#C0392B",marginBottom:4}}>Votre réponse : {wq.c?.[selected]||"—"}</div>
+                          <div style={{fontSize:12,color:"#C0392B",marginBottom:4}}>Votre réponse : {wq.c?.[answerIndices[i]]||"—"}</div>
                         )}
                         <div style={{fontSize:12,color:"#2E7D52",fontWeight:600,marginBottom:8}}>Bonne réponse : {wq.c?.[wq.a]}</div>
                         <div style={{fontSize:12,color:"#6B7280",lineHeight:1.7,background:"#F5F6F8",borderRadius:6,padding:"10px 12px"}}>
                           <strong>Explication : </strong>{wq.e}
+                          <QuestionSource question={wq} />
                         </div>
                       </div>
                     );
