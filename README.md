@@ -32,10 +32,8 @@ prepacivique/
 ├── src/
 │   ├── main.jsx              # Point d'entrée React
 │   ├── App3.jsx              # Application principale
-│   ├── FrenchPractice.jsx    # Module de pratique du français (DILF/DELF/…)
 │   └── data/
-│       ├── questions.js      # 743 questions civiques (5 thèmes)
-│       └── french_questions.js
+│       └── questions.js      # 743 questions civiques (5 thèmes)
 ├── public/
 │   ├── robots.txt
 │   ├── sitemap.xml
@@ -71,7 +69,7 @@ prepacivique/
 - **Quiz par thème** — 10 questions d'essai gratuites par thème
 - **Mode Écoute** — lecture audio automatique (question + réponse + explication)
 - **Traduction IA** — 11 langues via l'API Claude (Premium)
-- **Système freemium** — codes d'activation SHA-256, persistance localStorage
+- **Système freemium** — codes d'activation vérifiés côté serveur, persistance localStorage
 - **Déploiement automatique** — GitHub Actions → GitHub Pages
 
 ---
@@ -90,8 +88,29 @@ Le système utilise **Stripe** pour les paiements et des **codes d'activation** 
 
 ### Gérer les codes d'activation
 
-- Les codes d'activation sont validés côté serveur via Supabase (`activation_codes`)
-- Format : `CIVIC-XXXX-XXXX-XXXX`
+- Les codes sont vérifiés par la fonction Edge `activation`. Le navigateur n'a aucun accès direct à la table `activation_codes` ni aux e-mails des clients.
+- Format courant : `CIVIC-XXXX-XXXX-XXXX` ; les anciens codes restent pris en charge.
+- `used = true` signifie **attribué**, et non expiré. Un code d'accès à vie reste valide pour retrouver l'accès sur un autre appareil.
+- La validation normalise la casse, les espaces et les tirets typographiques. Les erreurs du service ne sont pas présentées comme des codes invalides.
+
+### Attribution après paiement
+
+- `stripe-webhook` vérifie la signature Stripe du corps brut avec le secret existant `STRIPE_WEBHOOK_SECRET`. Sa vérification JWT Supabase doit être désactivée : Stripe n'envoie pas de JWT Supabase.
+- Seuls les paiements réels de 5 € en EUR, avec une URL de retour HTTPS sur `prepexamcivique.fr` ou `www.prepexamcivique.fr`, attribuent un code. Les paiements de test, impayés et autres produits sont ignorés.
+- `assign_checkout_code` est réservé au rôle serveur. Les notifications répétées renvoient le même code ; les achats simultanés réservent des codes distincts.
+- Configurer le retour du Payment Link Stripe sur `https://prepexamcivique.fr/?payment=success&session_id={CHECKOUT_SESSION_ID}`.
+- Le navigateur récupère le code avec cette référence de session. Aucune recherche par e-mail n'est autorisée.
+- Le code est affiché après paiement et doit être conservé. Ce handler n'envoie pas d'e-mail ; les secrets Resend existants ne sont pas utilisés.
+- Événements à livrer au webhook : `checkout.session.completed` et `checkout.session.async_payment_succeeded`.
+
+### Déploiement d'une mise à jour de l'activation
+
+1. Déployer `activation` avec `supabase functions deploy activation --project-ref vnctdsnfxvwvmkxqygaw --use-api`.
+2. Publier le frontend, puis appliquer la migration `repair_activation_flow` (elle retire l'accès public à la table).
+3. Déployer `stripe-webhook` avec `supabase functions deploy stripe-webhook --project-ref vnctdsnfxvwvmkxqygaw --use-api`.
+4. Exécuter `npm test` et `npm run build`. Vérifier l'activation, le retour de paiement et les livraisons Stripe. Ne pas effectuer de paiement réel pour un simple test.
+
+L'application propose uniquement la préparation à l'examen civique (CSP, CR, NAT). Les entraînements aux diplômes et tests de français ont été retirés.
 
 ---
 

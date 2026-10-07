@@ -4,6 +4,7 @@
   "description": "Application de préparation à l'examen civique 2026 — 743 questions d'entraînement",
   "type": "module",
   "scripts": {
+    "test": "node --test",
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview"

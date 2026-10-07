@@ -5,9 +5,16 @@ verify_jwt = true
 import_map = "./functions/translate/deno.json"
 entrypoint = "./functions/translate/index.ts"
 
-[functions.stripe-webhook]
+[functions.activation]
 enabled = true
 verify_jwt = true
+entrypoint = "./functions/activation/index.ts"
+
+[functions.stripe-webhook]
+enabled = true
+# Stripe signs the raw body; it does not send a Supabase JWT. The handler
+# authenticates every request with STRIPE_WEBHOOK_SECRET before accessing data.
+verify_jwt = false
 import_map = "./functions/stripe-webhook/deno.json"
 # Uncomment to specify a custom file path to the entrypoint.
 # Supported file extensions are: .ts, .js, .mjs, .jsx, .tsx
